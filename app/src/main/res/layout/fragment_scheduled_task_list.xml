@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fragment_scheduled_task_list_constraint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.task.scheduled_task_list.ScheduledTaskListFragment">
+
+        <Button
+            android:id="@+id/scheduled_task_list_fragment_btn_previous_month"
+            style="@style/Widget.SimpleToDo.Button.TextButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_chevron_left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/scheduled_task_list_fragment_tv_current_date"
+            style="@style/Widget.SimpleToDo.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textAppearance="@style/TextAppearance.SimpleToDo.Headline6"
+            app:icon="@drawable/ic_expand"
+            app:iconGravity="textEnd"
+            app:layout_constraintBottom_toBottomOf="@id/scheduled_task_list_fragment_btn_previous_month"
+            app:layout_constraintEnd_toStartOf="@+id/scheduled_task_list_fragment_btn_next_month"
+            app:layout_constraintStart_toEndOf="@+id/scheduled_task_list_fragment_btn_previous_month"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="October" />
+
+        <Button
+            android:id="@+id/scheduled_task_list_fragment_btn_next_month"
+            style="@style/Widget.SimpleToDo.Button.TextButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_chevron_right"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/scheduled_task_list_fragment_tv_current_date" >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/scheduled_task_list_fragment_rv_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/scheduled_task_list_fragment_rv_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+

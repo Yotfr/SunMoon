@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:background="?attr/colorSurface"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".presentation.task.task_date_selector.BottomSheetTaskDateSelectorFragment">
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
+        android:dateTextAppearance="@style/CalenderViewDateCustomText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSelectedTime"
+        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_clock"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        tools:text="16:40"
+        android:layout_marginStart="@dimen/default_margin"/>
+
+    <Button
+        android:id="@+id/btnReminder"
+        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_ring"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        tools:text="Remind"
+        android:layout_marginEnd="@dimen/default_margin"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipDateHelpers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSelectedTime"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipToday"
+            style="@style/Widget.SimpleToDo.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="today"
+            android:text="@string/today" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipTomorrow"
+            style="@style/Widget.SimpleToDo.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="tomorrow"
+            android:text="@string/tomorrow" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipInTwoDays"
+            style="@style/Widget.SimpleToDo.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="intwodays"
+            android:text="@string/in_two_days" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipNextWeek"
+            style="@style/Widget.SimpleToDo.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="nextweek"
+            android:text="@string/next_week" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipOnWeekend"
+            style="@style/Widget.SimpleToDo.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="onweekend"
+            android:text="@string/on_weekend" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipWithoutDate"
+            style="@style/Widget.SimpleToDo.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="withoutdate"
+            android:text="@string/without_date" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <Button
+        android:id="@+id/btnCancel"
+        style="@style/Widget.SimpleToDo.Button.TextButton"
+        android:textColor="?attr/colorSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chipDateHelpers" />
+
+    <Button
+        android:id="@+id/btnWithoutDate"
+        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        android:text="@string/without_date"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/default_margin"/>
+
+    <Button
+        android:id="@+id/btnReschedule"
+        style="@style/Widget.SimpleToDo.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reschedule"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chipDateHelpers" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

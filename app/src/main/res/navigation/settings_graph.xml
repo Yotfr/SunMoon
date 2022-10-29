@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_graph"
+    app:startDestination="@id/settingsFragment">
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.yotfr.sunmoon.presentation.settings.settings_root.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_settingsThemeFragment"
+            app:destination="@id/settingsThemeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsThemeFragment"
+        android:name="com.yotfr.sunmoon.presentation.settings.settings_theme.SettingsThemeFragment"
+        android:label="@string/theme"
+        tools:layout="@layout/fragment_theme_picker" />
+</navigation>

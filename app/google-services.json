@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "75748744870",
+    "project_id": "sunmoon-b384a",
+    "storage_bucket": "sunmoon-b384a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75748744870:android:3c91b9a45f9140062ade67",
+        "android_client_info": {
+          "package_name": "com.yotfr.sunmoon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "75748744870-6gpbb24eqpmtnqej24iu50901n06u7ng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHg1aHfKOWW-9YHT8Wgf17MYfpRmI_Csk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "75748744870-6gpbb24eqpmtnqej24iu50901n06u7ng.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

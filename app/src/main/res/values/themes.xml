@@ -1,0 +1,26 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.SimpleToDo" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.SimpleToDo.BottomSheetDialog</item>
+
+        <item name="toolbarStyle">@style/Widget.SimpleToDo.Toolbar</item>
+        <item name="materialDividerStyle">@style/Widget.SimpleToDo.MaterialDivider</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.SimpleToDo.LinearProgressIndicator</item>
+
+        <item name="floatingActionButtonStyle">@style/Widget.SimpleToDo.FloatingActionButton</item>
+        <item name="extendedFloatingActionButtonStyle">@style/Widget.SimpleToDo.ExtendedFloatingActionButton</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.SimpleToDo.Button.OutlinedButton</item>
+        <item name="textInputStyle">@style/Widget.SimpleToDo.TextInputLayout</item>
+
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.SimpleToDo.MaterialAlertDialog</item>
+
+        <item name="android:textColorPrimary">?attr/colorPrimary</item>
+
+    </style>
+
+</resources>

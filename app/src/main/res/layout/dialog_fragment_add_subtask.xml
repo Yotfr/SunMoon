@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="?attr/colorSurface"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/default_padding">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginStart="@dimen/small_margin"
+        android:textColor="?attr/colorSecondary"
+        android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+        android:text="@string/add_sub_task"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_dialog_subtask_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin"
+        android:hint="@string/input_here">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:textColor="?attr/colorSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_note_root"
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:fitsSystemWindows="true"
+        android:id="@+id/fragment_note_root_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            app:titleEnabled="false"
+            app:statusBarScrim="?attr/colorSurface"
+            app:contentScrim="?attr/colorSurface"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            android:layout_width="match_parent"
+            android:layout_height="240dp" >
+
+            <ImageView
+                android:fitsSystemWindows="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/karich"
+                android:background="?attr/colorSurface"
+                app:layout_collapseMode="parallax" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.7"
+                android:background="@drawable/gradient"
+                android:fitsSystemWindows="true"/>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_gravity="top"
+                android:layout_marginBottom="48dp"
+                app:layout_collapseMode="pin"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                android:id="@+id/fragment_note_root_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:background="@android:color/transparent"
+                android:layout_gravity="bottom"
+                android:id="@+id/fragment_note_root_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabMode="scrollable"
+                app:tabTextAppearance = "@style/TextAppearance.SimpleToDo.Headline6">
+
+                <com.google.android.material.tabs.TabItem
+                    android:text="@string/notes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <com.google.android.material.tabs.TabItem
+                    android:text="@string/archive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <com.google.android.material.tabs.TabItem
+                    android:text="@string/categories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+            </com.google.android.material.tabs.TabLayout>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/fragment_note_root_scroll_view"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/fragment_note_rool_fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fragment_note_root_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add"
+        android:text="@string/category"
+        app:layout_anchorGravity="bottom|right|end"
+        android:contentDescription="@string/content_description_fab_add_task"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_gravity="end|bottom"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

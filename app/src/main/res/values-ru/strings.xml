@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SimpleToDo</string>
+    <string name="delete">УДАЛИТЬ</string>
+    <string name="edit">ИЗМЕНИТЬ</string>
+    <string name="add_as_to_do">TODO</string>
+    <string name="search">SEARCH</string>
+    <string name="sort_by_name">SORT BY NAME</string>
+    <string name="sort_by_date_created">SORT BY DATE CREATED</string>
+    <string name="hide_completed_task">HIDE COMPLETED TASKS</string>
+    <string name="delete_completed_task">DELETE COMPLETED TASKS</string>
+    <string name="confirm_deletion">CONFIRM DELETION</string>
+    <string name="yes">ДА</string>
+    <string name="pin">PIN</string>
+    <string name="logout">LOGOUT</string>
+    <string name="profile">PROFILE</string>
+
+    <string name="settings">Settings</string>
+    <string name="list">NOTES</string>
+    <string name="restore">RESTORE</string>
+    <string name="delete_all">УДАЛИТЬ ВСЕ</string>
+    <string name="add">ADD</string>
+    <string name="title">Title</string>
+    <string name="apply">APPLY</string>
+
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="addTask">New task</string>
+
+    <string name="task_list_appbar_title">Задачи</string>
+    <string name="unplanned_tasks_appbar_item">Незапланированные задачи</string>
+    <string name="scheduled_tasks_appbar_item">Запланированные задачи</string>
+
+    <string name="text_input_hint_add_task">Введите описание задачи</string>
+
+    <string name="undo_delete_task_description">Задача помещена в корзину</string>
+    <string name="undo_delete_subtask_description">Подзадача удалена</string>
+    <string name="undo_delete_task_button_text">ОТМЕНА</string>
+
+    <string name="content_description_fab_add_task">Добавить задачу</string>
+    <string name="task_display_appbar_description">Display task</string>
+    <string name="search_appbar_description">Поиск</string>
+    <string name="delete_all_tasks_appbar_description">Удалить все задачи</string>
+    <string name="content_description_appbar_icon_scheduled_task">Запланированные задачи</string>
+    <string name="content_description_appbar_icon_unplanned_task">Запланированные задачи</string>
+
+    <string name="today">Сегодня</string>
+    <string name="tomorrow">Завтра</string>
+    <string name="in_two_days">Послезавтра</string>
+    <string name="next_week">Через неделю</string>
+    <string name="without_date">Без даты</string>
+    <string name="without_time">Без времени</string>
+    <string name="on_weekend">На выходных</string>
+
+    <string name="select_time">Выбрать время</string>
+    <string name="select_date">Выбрать дату</string>
+
+    <string name="cancel">Отмена</string>
+    <string name="reschedule">Запланировать</string>
+
+    <string name="menu_task_details_title">Детали задачи</string>
+
+    <string name="menu_note_list_title">Заметки</string>
+
+    <string name="vtext">Vertical text</string>
+
+    <string name="all">Все</string>
+    <string name="undo_delete_note_description">Заметка помещена в корзину</string>
+
+    <string name="without_category">Без категории</string>
+    <string name="add_category">Добавить категорию</string>
+
+    <string name="save">Сохранить</string>
+
+    <string name="manage_categories">Управление категориями</string>
+    <string name="trash">Корзина</string>
+
+    <string name="notes">Заметки</string>
+    <string name="tasks">Задачи</string>
+
+    <string name="add_sub_task">Добавить подзадачу</string>
+
+    <string name="content_description_fab_add_category">Добавить категорию</string>
+
+    <string name="content_description_fab_add_note">Добавить заметку</string>
+
+    <string name="archive">Архив</string>
+    <string name="completed_tasks">Выполненные задачи</string>
+
+    <string name="scheduled">Запланированные</string>
+    <string name="completed">Выполненные</string>
+    <string name="outdated">Устаревшие</string>
+    <string name="unplanned">Незапланированные</string>
+
+    <string name="set_time">Установить время</string>
+
+    <string name="category">Категория</string>
+
+    <string name="deleteSelectedDay">На выбранные день</string>
+
+    <string name="deleteAllScheduled">Все запланированные</string>
+
+
+    <string name="set">Установить</string>
+    <string name="task_scheduled">Задача запланированна</string>
+    <string name="task_overdue">Просрочено на:</string>
+    <string name="task_overdue_part_two">дней</string>
+
+    <string name="mark_undone">Сделать невыполненным</string>
+    <string name="schedule">Запланировать</string>
+    <string name="make_unplanned">Сделать незапланированным</string>
+
+    <string name="input_here">Введите сюда</string>
+
+    <string name="task_deleted">Задача удалена</string>
+
+    <string name="task_restored">Задача восстановлена</string>
+
+    <string name="note_unarchived">Задача разархивированна</string>
+
+    <string name="categories">Категории</string>
+
+    <string name="customize">Внешний вид</string>
+
+    <string name="theme">Темы</string>
+
+    <string name="date_time">Дата &amp; Время</string>
+
+    <string name="date_format">Формат даты</string>
+
+    <string name="time_format">Формат времени</string>
+
+    <string name="general">Общие</string>
+
+    <string name="language">Язык</string>
+
+    <string name="yellow">Желтая</string>
+    <string name="pink">Розовая</string>
+    <string name="orange">Оранжевая</string>
+    <string name="night">Темная</string>
+
+    <string name="choose_delete_options">Выберите опции удаления</string>
+
+    <string name="confirm_delete">Подтверждение удаления</string>
+
+    <string name="sure_delete">Вы действительно хотите удалить эту задачу?</string>
+    <string name="sure_delete_note">Вы действительно хотите удалить все заметки?</string>
+    <string name="sure_delete_archive_note">Вы действительно хотите удалить все архивные заметки?</string>
+    <string name="sure_delete_trashed_note">Вы действительно хотите удалить все заметки из корзины?</string>
+    <string name="sure_delete_category">Вы действительно хотите удалить эту категорию?</string>
+
+    <string name="NO">НЕТ</string>
+
+
+    <string name="all_unplanned">Все незапланированные</string>
+    <string name="all_outdated">Все устаревшие</string>
+    <string name="all_scheduled_completed">Выполненные запланированные</string>
+    <string name="unplanned_completed">Выполненные незапланированные</string>
+    <string name="outdated_completed">Выполненные устаревшие</string>
+    <string name="scheduled_completed_selcted">Выполненные на выбранный день</string>
+    <string name="all_trashed">Все в корзине</string>
+    <string name="all_trashed_completed">Все выполненные в корзине</string>
+
+    <string name="note_archived">Заметка помещена в архив</string>
+    <string name="note_restored">Заметка восстановлена</string>
+
+    <string name="select_date_format">Выберите формат даты</string>
+
+    <string name="no_task_in_scheduled">Не вижу ни одной запланированной задачи</string>
+    <string name="no_task_in_unplanned">Не вижу ни одной незапланированной задачи</string>
+    <string name="no_task_in_outdated">Вы не просрочили ни одной задачи</string>
+    <string name="click_add_to_create">Нажмите + чтобы добавить задачу</string>
+
+    <string name="restart_required">Чтобы изменения вступили в силу, необходимо перезагрузить приложение</string>
+
+    <string name="am_pm">12-часовой</string>
+    <string name="normal_hour">24-часовой</string>
+    <string name="system_default">По умолчанию</string>
+</resources>

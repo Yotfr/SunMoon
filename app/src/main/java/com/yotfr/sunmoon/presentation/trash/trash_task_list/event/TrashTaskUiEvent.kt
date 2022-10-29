@@ -1,0 +1,11 @@
+package com.yotfr.sunmoon.presentation.trash.trash_task_list.event
+
+import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskListModel
+
+sealed interface TrashTaskUiEvent {
+
+    data class ShowUndoDeleteSnackbar(val task: TrashedTaskListModel) : TrashTaskUiEvent
+
+    object ShowRestoreSnackbar : TrashTaskUiEvent
+
+}

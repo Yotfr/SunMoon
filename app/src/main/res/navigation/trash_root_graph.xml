@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/trash_root_graph"
+    app:startDestination="@id/trashRootFragment">
+
+    <fragment
+        android:id="@+id/trashRootFragment"
+        android:name="com.yotfr.sunmoon.presentation.trash.TrashRootFragment"
+        android:label="@string/trash" />
+</navigation>

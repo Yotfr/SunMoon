@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/item_add_new_category"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/small_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.SimpleToDo.Body2"
+        android:textColor="?attr/colorPrimary"
+        android:text="@string/add_category"
+        android:layout_height="match_parent"/>
+
+    <Button
+        android:id="@+id/btnAddCategoryPopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.SimpleToDo.Button.TextButton.IconOnly"
+        app:icon ="@drawable/ic_add"/>
+
+</LinearLayout>

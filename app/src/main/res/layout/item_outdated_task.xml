@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/item_outdated_task_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeWidth="@dimen/default_stroke_width"
+        app:strokeColor="?attr/colorPrimaryVariant"
+        app:cardCornerRadius="@dimen/default_corner_radius"
+        android:elevation="0dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/small_padding">
+
+                <TextView
+                    android:alpha="0.5"
+                    android:id="@+id/item_outdated_task_tv_task_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline3"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textColor="?attr/colorPrimary"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+                    tools:text="Do your stuff" />
+
+                <CheckBox
+                    android:alpha="0.5"
+                    android:enabled="false"
+                    android:id="@+id/item_outdated_task_cb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/selector_checkbox"
+                    android:buttonTint="?attr/colorPrimary"
+                    app:useMaterialThemeColors ="false"
+                    app:layout_constraintBottom_toBottomOf="@+id/item_outdated_task_tv_task_description"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/item_outdated_task_tv_task_description" />
+
+                <TextView
+                    android:alpha="0.5"
+                    android:id="@+id/item_outdated_task_tv_scheduled_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/item_outdated_task_cb"
+                    tools:text="28.08" />
+
+                <TextView
+                    android:id="@+id/item_scheduled_task_tv_set_time"
+                    android:alpha="0.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+                    android:textColor="?attr/colorSecondary"
+                    app:drawableRightCompat="@drawable/ic_clock"
+                    app:drawableTint="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/item_outdated_task_cb" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:alpha="0.5"
+                    android:id="@+id/item_outdated_task_task_progress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline3"
+                    app:layout_constraintTop_toBottomOf="@+id/item_outdated_task_cb" />
+
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.2" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/item_outdated_task_tv_overdue"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    tools:text ="Task overdue on 2 days"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+                    android:textColor="?attr/colorPrimary"
+                    android:alpha="0.5"/>
+
+                <Button
+                    android:id="@+id/item_outdated_task_reschedule"
+                    style="@style/Widget.SimpleToDo.Button.TextButton"
+                    android:text="@string/reschedule"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:textColor="?attr/colorPrimary"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</LinearLayout>

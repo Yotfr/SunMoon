@@ -1,0 +1,60 @@
+<LinearLayout
+    android:orientation="vertical"
+    android:background="?attr/colorSurface"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yotfr.sunmoon.presentation.settings.settings_theme.SettingsThemeFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/fragment_theme_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"/>
+
+    <Button
+        android:id="@+id/btnThemeOrange"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:icon ="@drawable/ic_theme"
+        app:iconTint = "@color/primary_color"
+        android:text="@string/orange"
+        android:textColor="@color/primary_color"
+        android:textAlignment="textStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnThemePink"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:icon ="@drawable/ic_theme"
+        app:iconTint = "@color/primary_color_pink"
+        android:text="@string/pink"
+        android:textColor="@color/primary_color_pink"
+        android:textAlignment="textStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnThemeYellow"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:icon ="@drawable/ic_theme"
+        app:iconTint = "@color/primary_color_yellow"
+        android:text="@string/yellow"
+        android:textColor="@color/primary_color_yellow"
+        android:textAlignment="textStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnThemeNight"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        app:icon ="@drawable/ic_theme"
+        app:iconTint = "@color/primary_color_night"
+        android:text="@string/night"
+        android:textColor="@color/primary_color_night"
+        android:textAlignment="textStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

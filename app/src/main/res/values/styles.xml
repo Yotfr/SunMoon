@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="OverlayThemeOrange" parent="Theme.SimpleToDo">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorSecondary">@color/secondary_color</item>
+        <item name="colorSurface">@color/background_color</item>
+        <item name="colorOnSurface">@color/primary_color</item>
+        <item name="colorOnBackground">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_transparent_color</item>
+        <item name="colorSecondaryVariant">@color/secondary_transparent_color</item>
+    </style>
+
+    <style name="OverlayThemePink" parent="Theme.SimpleToDo">
+        <item name="colorPrimary">@color/primary_color_pink</item>
+        <item name="colorSecondary">@color/secondary_color_pink</item>
+        <item name="colorSurface">@color/background_color_pink</item>
+        <item name="colorOnSurface">@color/primary_color_pink</item>
+        <item name="colorOnBackground">@color/primary_color_pink</item>
+        <item name="colorPrimaryVariant">@color/primary_transparent_color_pink</item>
+        <item name="colorSecondaryVariant">@color/secondary_transparent_color_pink</item>
+    </style>
+
+    <style name="OverlayThemeYellow" parent="Theme.SimpleToDo">
+        <item name="colorPrimary">@color/primary_color_yellow</item>
+        <item name="colorSecondary">@color/secondary_yellow</item>
+        <item name="colorSurface">@color/background_color_yellow</item>
+        <item name="colorOnSurface">@color/primary_color_yellow</item>
+        <item name="colorOnBackground">@color/primary_color_yellow</item>
+        <item name="colorPrimaryVariant">@color/primary_transparent_yellow</item>
+        <item name="colorSecondaryVariant">@color/secondary_transparent_yellow</item>
+    </style>
+
+    <style name="OverlayThemeNight" parent="Theme.SimpleToDo">
+        <item name="colorPrimary">@color/primary_color_night</item>
+        <item name="colorSecondary">@color/secondary_night</item>
+        <item name="colorSurface">@color/background_color_night</item>
+        <item name="colorOnSurface">@color/primary_color_night</item>
+        <item name="colorOnBackground">@color/primary_color_night</item>
+        <item name="colorPrimaryVariant">@color/primary_transparent_night</item>
+        <item name="colorSecondaryVariant">@color/secondary_transparent_night</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Button.TextButton.IconOnly" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Button.ContainedButton.IconOnly" parent="Widget.MaterialComponents.Button">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.SmallComponent.IconButton</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.SimpleToDo.Toolbar</item>
+        <item name="titleTextAppearance">@style/TextAppearance.SimpleToDo.Headline6</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.SimpleToDo.Subtitle1</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.Toolbar" parent="">
+        <item name="colorPrimary">?attr/colorSurface</item>
+        <item name="colorPrimaryVariant">?attr/colorSurface</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.SimpleToDo.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:fontFamily">@font/alata</item>
+    </style>
+
+    <style name="TextAppearance.SimpleToDo.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:fontFamily">@font/alata</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.MaterialDivider" parent="Widget.MaterialComponents.MaterialDivider">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.SimpleToDo.MaterialDivider</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.MaterialDivider" parent="">
+        <item name="colorOnSurface">?attr/colorPrimary</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="dividerThickness">2dp</item>
+    </style>
+
+    <style name="TextAppearance.SimpleToDo.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:fontFamily">@font/alata</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.SimpleToDo.Button</item>
+    </style>
+
+    <style name="TextAppearance.SimpleToDo.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:fontFamily">@font/alata</item>
+    </style>
+
+    <style name="TextAppearance.SimpleToDo.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:fontFamily">@font/alata</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.LinearProgressIndicator" parent="Widget.MaterialComponents.LinearProgressIndicator">
+        <item name="trackCornerRadius">16dp</item>
+        <item name="indicatorColor">?attr/colorPrimary</item>
+        <item name="trackThickness">7dp</item>
+    </style>
+
+
+
+    <style name="Widget.SimpleToDo.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.SimpleToDo.FloatingActionButton</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.SimpleToDo.SmallComponent.FAB</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.ExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton.Icon">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.SimpleToDo.FloatingActionButton</item>
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearance.SimpleToDo.SmallComponent.FAB
+        </item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.SmallComponent.FAB" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/default_corner_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.SmallComponent.TextInput" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.SmallComponent.Button" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.SmallComponent.IconButton" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.FloatingActionButton" parent="">
+        <item name="colorSecondary">?attr/colorPrimary</item>
+        <item name="colorOnSecondary">?attr/colorOnPrimary</item>
+        <item name="colorOnSurface">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.SimpleToDo.TextInputLayout</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.SmallComponent.TextInput</item>
+        <item name="hintTextColor">?attr/colorSecondary</item>
+        <item name="boxStrokeWidth">3dp</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.TextInputLayout" parent="">
+        <item name="colorPrimary">?attr/colorSecondary</item>
+        <item name="colorOnSurface">?attr/colorSecondary</item>
+        <item name="colorError">?attr/colorPrimary</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.SimpleToDo.Subtitle1</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.SimpleToDo.Caption</item>
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox</item>
+    </style>
+
+    <style name="TextAppearance.SimpleToDo.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:fontFamily">@font/alata</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Button.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAppearance">@style/TextAppearance.SimpleToDo.Button</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.SmallComponent.Button</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Button.OutlinedButton.Chip" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.SimpleToDo.Button.TextButton.Chip</item>
+        <item name="android:textAppearance">@style/TextAppearance.SimpleToDo.Button</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.SmallComponent.Button</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="strokeColor">@color/selector_button_chip_background_color</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.Button.TextButton.Chip" parent="">
+        <item name="colorPrimary">?attr/colorPrimary</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.Button.TextButton" parent="">
+        <item name="colorPrimary">?attr/colorPrimary</item>
+    </style>
+
+    <style name="CalenderViewCustom" parent="Theme.AppCompat">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="CalenderViewDateCustomText" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="CalenderViewWeekCustomText" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeColor">?attr/colorSecondary</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.SmallComponent.Chip.Choice</item>
+    </style>
+
+
+    <style name="ThemeOverlay.SimpleToDo.Chip.Choice" parent="">
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.SmallComponent.Chip.Choice" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="Theme.SimpleToDo.EditText" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:textCursorDrawable">?attr/colorSecondary</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.Chip.Choice.Primary" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_color_primary</item>
+        <item name="android:textColor">@color/chip_text_color_primary</item>
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeColor">?attr/colorPrimary</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.SmallComponent.Chip.Choice.Primary</item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.SmallComponent.Chip.Choice.Primary" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">24dp</item>
+        <item name="cornerSizeTopRight">24dp</item>
+    </style>
+
+    <style name="Widget.SimpleToDo.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.SimpleToDo.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.BottomNavigationView" parent="">
+        <item name="colorPrimary">?attr/colorPrimary</item>
+        <item name="colorOnPrimary">?attr/colorSurface</item>
+    </style>
+
+    <style name="ThemeOverlay.SimpleToDo.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSecondary">?attr/colorPrimary</item>
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.SimpleToDo</item>
+    </style>
+
+    <style name="MaterialAlertDialog.SimpleToDo" parent="MaterialAlertDialog.MaterialComponents">
+        <item name="shapeAppearance">@style/ShapeAppearance.SimpleToDo.MediumComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.SimpleToDo.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/default_corner_radius</item>
+    </style>
+
+    <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_shape</item>
+    </style>
+
+</resources>

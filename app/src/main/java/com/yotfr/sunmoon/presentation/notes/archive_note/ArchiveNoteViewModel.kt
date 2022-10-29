@@ -1,0 +1,108 @@
+package com.yotfr.sunmoon.presentation.notes.archive_note
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.yotfr.sunmoon.domain.interactor.note.NoteUseCase
+import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteEvent
+import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteUiEvent
+import com.yotfr.sunmoon.presentation.notes.archive_note.mapper.ArchiveNoteMapper
+import com.yotfr.sunmoon.presentation.notes.archive_note.model.ArchiveNoteModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ArchiveNoteViewModel @Inject constructor(
+    private val noteUseCase: NoteUseCase,
+    preferencesHelper: PreferencesHelper
+) : ViewModel() {
+
+    private val archiveNoteListMapper = ArchiveNoteMapper()
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    val dateFormat = MutableStateFlow("dd/MM/yyyy")
+
+    private val _uiState = MutableStateFlow<List<ArchiveNoteModel>?>(null)
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<ArchiveNoteUiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
+
+    init {
+        dateFormat.value = preferencesHelper.getDateFormat() ?: "dd/MM/yyyy"
+        viewModelScope.launch {
+            noteUseCase.getArchiveNotes(_searchQuery).collect { notes ->
+                _uiState.value = archiveNoteListMapper.fromDomainList(
+                    notes,
+                    dateFormat.value
+                )
+            }
+        }
+    }
+
+
+    fun onEvent(event: ArchiveNoteEvent) {
+        when (event) {
+
+            is ArchiveNoteEvent.DeleteArchiveNote -> {
+                viewModelScope.launch {
+                    noteUseCase.trashUntrashNote(
+                        archiveNoteListMapper.toDomain(
+                            event.note
+                        )
+                    )
+                }
+                sendToUi(
+                    ArchiveNoteUiEvent.ShowUndoDeleteSnackbar(
+                        note = event.note.copy(
+                            trashed = true
+                        )
+                    )
+                )
+            }
+
+            is ArchiveNoteEvent.UndoDeleteArchiveNote -> {
+                viewModelScope.launch {
+                    noteUseCase.trashUntrashNote(
+                        archiveNoteListMapper.toDomain(
+                            event.note
+                        )
+                    )
+                }
+            }
+            is ArchiveNoteEvent.UnarchiveArchiveNote -> {
+                viewModelScope.launch {
+                    noteUseCase.changeArchiveNoteState(
+                        archiveNoteListMapper.toDomain(
+                            event.note
+                        )
+                    )
+                }
+                sendToUi(ArchiveNoteUiEvent.ShowUnarchiveSnackbar)
+            }
+            is ArchiveNoteEvent.UpdateSearchQuery -> {
+                _searchQuery.value = event.searchQuery
+            }
+            is ArchiveNoteEvent.DeleteAllUnarchivedNote -> {
+                viewModelScope.launch {
+                    noteUseCase.deleteAllArchivedNotes()
+                }
+            }
+        }
+    }
+
+
+    private fun sendToUi(event: ArchiveNoteUiEvent) {
+        viewModelScope.launch {
+            _uiEvent.send(event)
+        }
+    }
+
+}

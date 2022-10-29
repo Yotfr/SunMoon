@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/note_root_graph"
+            android:icon="@drawable/ic_note"
+            android:title="@string/notes" />
+
+        <item
+            android:id="@+id/task_root_graph"
+            android:icon="@drawable/ic_task"
+            android:title="@string/tasks" />
+
+        <item
+            android:id="@+id/trash_root_graph"
+            android:icon="@drawable/ic_delete_outlined"
+            android:title="@string/trash" />
+
+        <item
+            android:id="@+id/settings_graph"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+
+    </group>
+
+
+
+</menu>

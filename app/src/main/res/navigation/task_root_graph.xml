@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/task_root_graph"
+    app:startDestination="@id/taskRootFragment">
+
+    <fragment
+        android:id="@+id/taskRootFragment"
+        android:name="com.yotfr.sunmoon.presentation.task.TaskRootFragment"
+        android:label="@string/tasks" >
+        <action
+            android:id="@+id/action_taskRootFragment_to_bottomSheetAddTaskFragment"
+            app:destination="@id/bottomSheetAddTaskFragment" />
+        <action
+            android:id="@+id/action_taskRootFragment_to_taskDetailsFragment"
+            app:destination="@id/taskDetailsFragment"
+            app:enterAnim="@anim/transition_scale_enter_animation" />
+    </fragment>
+    <dialog
+        android:id="@+id/bottomSheetAddTaskFragment"
+        android:name="com.yotfr.sunmoon.presentation.task.add_task.BottomSheetAddTaskFragment"
+        android:label="@string/tasks"
+        tools:layout="@layout/fragment_bottom_sheet_add_task" >
+        <action
+            android:id="@+id/action_bottomSheetAddTaskFragment_to_bottomSheetTaskDateSelectorFragment"
+            app:destination="@id/bottomSheetTaskDateSelectorFragment" />
+        <argument
+            android:name="selectedDate"
+            app:argType="long" />
+    </dialog>
+    <dialog
+        android:id="@+id/bottomSheetTaskDateSelectorFragment"
+        android:name="com.yotfr.sunmoon.presentation.task.task_date_selector.BottomSheetTaskDateSelectorFragment"
+        android:label="@string/tasks"
+        tools:layout="@layout/fragment_bottom_sheet_date_time_selector" >
+        <argument
+            android:name="selectedDate"
+            app:argType="long" />
+        <argument
+            android:name="selectedTime"
+            app:argType="long" />
+    </dialog>
+    <fragment
+        android:id="@+id/taskDetailsFragment"
+        android:name="com.yotfr.sunmoon.presentation.task.task_details.TaskDetailsFragment"
+        android:label="@string/menu_task_details_title"
+        tools:layout="@layout/fragment_task_details" >
+        <argument
+            android:name="taskId"
+            app:argType="long" />
+        <argument
+            android:name="destination"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_taskDetailsFragment_to_addSubTaskDialogFragment"
+            app:destination="@id/addSubTaskDialogFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/addSubTaskDialogFragment"
+        android:name="com.yotfr.sunmoon.presentation.task.add_subtask.AddSubTaskDialogFragment"
+        android:label="AddSubTaskDialogFragment" >
+        <argument
+            android:name="taskId"
+            app:argType="long" />
+    </dialog>
+</navigation>

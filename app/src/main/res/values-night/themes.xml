@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.SimpleToDo" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+        <item name="colorPrimary">@color/primary_color_night</item>
+        <item name="colorSecondary">@color/secondary_night</item>
+        <item name="colorSurface">@color/background_color_night</item>
+        <item name="colorOnSurface">@color/primary_color_night</item>
+        <item name="colorOnBackground">@color/primary_color_night</item>
+
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+
+        <item name="toolbarStyle">@style/Widget.SimpleToDo.Toolbar</item>
+        <item name="materialDividerStyle">@style/Widget.SimpleToDo.MaterialDivider</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.SimpleToDo.LinearProgressIndicator</item>
+
+        <item name="floatingActionButtonStyle">@style/Widget.SimpleToDo.FloatingActionButton</item>
+        <item name="extendedFloatingActionButtonStyle">@style/Widget.SimpleToDo.ExtendedFloatingActionButton</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.SimpleToDo.Button.OutlinedButton</item>
+        <item name="textInputStyle">@style/Widget.SimpleToDo.TextInputLayout</item>
+
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.SimpleToDo.MaterialAlertDialog</item>
+
+    </style>
+</resources>

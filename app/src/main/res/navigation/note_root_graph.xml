@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/note_root_graph"
+    app:startDestination="@id/noteRootFragment">
+
+    <fragment
+        android:id="@+id/noteRootFragment"
+        android:name="com.yotfr.sunmoon.presentation.notes.NoteRootFragment"
+        android:label="@string/notes" >
+        <action
+            android:id="@+id/action_noteRootFragment_to_bottomSheetAddEditNoteFragment"
+            app:destination="@id/bottomSheetAddEditNoteFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/addCategoryDialogFragment"
+        android:name="com.yotfr.sunmoon.presentation.notes.add_category.AddCategoryDialogFragment"
+        android:label="@string/notes" >
+        <argument
+            android:name="categoryId"
+            app:argType="long" />
+        <argument
+            android:name="categoryDescription"
+            app:argType="string" />
+    </dialog>
+    <action android:id="@+id/action_global_addCategoryDialogFragment" app:destination="@id/addCategoryDialogFragment" />
+    <dialog
+        android:id="@+id/bottomSheetAddEditNoteFragment"
+        android:name="com.yotfr.sunmoon.presentation.notes.add_edit_note.BottomSheetAddEditNoteFragment"
+        android:label="@string/notes"
+        tools:layout="@layout/fragment_bottom_sheet_add_edit_note" >
+        <argument
+            android:name="noteId"
+            app:argType="long" />
+        <argument
+            android:name="categoryId"
+            app:argType="long" />
+    </dialog>
+</navigation>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:background="?attr/colorSurface"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yotfr.sunmoon.presentation.settings.settings_root.SettingsFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            android:id="@+id/fragment_settings_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/customize"
+                android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+                android:textColor="?attr/colorSecondary"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:strokeColor="?attr/colorSecondary"
+                app:strokeWidth="@dimen/default_stroke_width"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_margin"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btnChangeTheme"
+                    style="@style/Widget.SimpleToDo.Button.TextButton"
+                    app:icon = "@drawable/ic_theme"
+                    android:text="@string/theme"
+                    android:textAlignment="textStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/default_margin"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+                android:textColor="?attr/colorSecondary"
+                android:layout_marginStart="@dimen/default_margin"
+                android:text="@string/date_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:strokeColor="?attr/colorSecondary"
+                app:strokeWidth="@dimen/default_stroke_width"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_margin"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btnTimeFormat"
+                        style="@style/Widget.SimpleToDo.Button.TextButton"
+                        app:icon = "@drawable/ic_time"
+                        android:text="@string/time_format"
+                        android:textAlignment="textStart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/default_margin"/>
+
+                    <Button
+                        android:id="@+id/btnDateFormat"
+                        style="@style/Widget.SimpleToDo.Button.TextButton"
+                        app:icon = "@drawable/ic_calendar"
+                        android:text="@string/date_format"
+                        android:textAlignment="textStart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/default_margin"
+                        android:layout_marginEnd="@dimen/default_margin"
+                        android:layout_marginBottom="@dimen/default_margin"/>
+
+                </LinearLayout>
+
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:textColor="?attr/colorSecondary"
+                android:layout_marginStart="@dimen/default_margin"
+                android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+                android:text="@string/general"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_corner_radius"
+                app:strokeColor="?attr/colorSecondary"
+                app:strokeWidth="@dimen/default_stroke_width"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_margin"
+                android:layout_height="wrap_content">
+
+                <Button
+                    style="@style/Widget.SimpleToDo.Button.TextButton"
+                    app:icon = "@drawable/ic_language"
+                    android:text="@string/language"
+                    android:textAlignment="textStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/default_margin"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

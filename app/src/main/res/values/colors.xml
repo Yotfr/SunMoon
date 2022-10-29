@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#d81b60</color>
+    <color name="primaryLightColor">#ff5c8d</color>
+    <color name="primaryDarkColor">#a00037</color>
+    <color name="secondaryColor">#6a1b9a</color>
+    <color name="secondaryLightColor">#9c4dcc</color>
+    <color name="secondaryDarkColor">#38006b</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>
+    <color name="blackColor">#000000</color>
+
+    //orangeTheme
+    <color name="background_color">#FFF2EDE6</color>
+    <color name="primary_color">#FFF2775C</color>
+    <color name="secondary_color">#FF7689C4</color>
+    <color name="primary_transparent_color">#50F2775C</color>
+    <color name="secondary_transparent_color">#507689C4</color>
+    <color name="error_transparent_color">#50a00037</color>
+
+    //orangeTheme
+    <color name="background_color_pink">#FFF2EDE6</color>
+    <color name="primary_color_pink">#E57CB5</color>
+    <color name="secondary_color_pink">#6EAA91</color>
+    <color name="primary_transparent_color_pink">#50E57CB5</color>
+    <color name="secondary_transparent_color_pink">#506EAA91</color>
+    <color name="error_transparent_color_pink">#50a00037</color>
+
+    //orangeTheme
+    <color name="background_color_yellow">#FFF2EDE6</color>
+    <color name="primary_color_yellow">#F8C922</color>
+    <color name="secondary_yellow">#B098D7</color>
+    <color name="primary_transparent_yellow">#50F8C922</color>
+    <color name="secondary_transparent_yellow">#50B098D7</color>
+    <color name="error_transparent_yellow">#59a00037</color>
+
+    //nightTheme
+    <color name="background_color_night">#3A3A3A</color>
+    <color name="primary_color_night">#F8C922</color>
+    <color name="secondary_night">#FFFFFF</color>
+    <color name="primary_transparent_night">#50F8C922</color>
+    <color name="secondary_transparent_night">#50FFFFFF</color>
+    <color name="error_transparent_night">#59a00037</color>
+
+
+
+
+</resources>
+
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mi_action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search_appbar_description"
+        android:contentDescription="@string/search_appbar_description"
+        app:showAsAction="always"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item
+        android:id="@+id/mi_delete_all_tasks"
+        android:icon="@drawable/ic_delete_outlined"
+        android:title="@string/delete_all_tasks_appbar_description"
+        android:contentDescription="@string/delete_all_tasks_appbar_description"
+        app:showAsAction="ifRoom"/>
+
+</menu>

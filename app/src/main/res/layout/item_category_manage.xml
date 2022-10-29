@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="0dp"
+    app:cardCornerRadius="@dimen/default_corner_radius"
+    app:strokeColor="?attr/colorSecondary"
+    app:strokeWidth="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:maxLines="1"
+            android:id="@+id/tvCategoryDescription"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_weight="16"
+            android:gravity="center|start"
+            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+            android:textColor="?attr/colorSecondary"
+            tools:text="Personal" />
+
+        <TextView
+            android:layout_marginStart="@dimen/default_margin"
+            android:id="@+id/noteCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+            android:textColor="?attr/colorSecondary"
+            tools:text="3"/>
+
+        <CheckBox
+            android:id="@+id/cb_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/sl_visibility"
+            android:buttonTint="?attr/colorSecondary" />
+
+        <Button
+            android:id="@+id/btnEditCategory"
+            style="@style/Widget.SimpleToDo.Button.TextButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:icon="@drawable/ic_edit"
+            app:iconTint="?attr/colorSecondary" />
+
+        <Button
+            android:id="@+id/btnDeleteCategory"
+            style="@style/Widget.SimpleToDo.Button.TextButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:background="@android:color/transparent"
+            app:icon="@drawable/ic_delete_outlined"
+            app:iconTint="?attr/colorSecondary" />
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

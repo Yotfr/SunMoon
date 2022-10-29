@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trash_note_graph"
+    app:startDestination="@id/trashNoteFragment">
+
+    <fragment
+        android:id="@+id/trashNoteFragment"
+        android:name="com.yotfr.sunmoon.presentation.trash.trash_note_list.TrashNoteFragment"
+        android:label="fragment_trash_note"
+        tools:layout="@layout/fragment_trash_note" />
+</navigation>

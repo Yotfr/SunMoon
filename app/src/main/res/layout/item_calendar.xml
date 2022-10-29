@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/frame_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/item_calendar_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:strokeColor="@color/selector_calendar_stroke_color"
+        app:strokeWidth="2dp"
+        android:layout_margin="@dimen/small_margin"
+        app:cardCornerRadius="@dimen/default_corner_radius"
+        app:cardBackgroundColor="@color/selector_calendar_background_color">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:background="@color/selector_calendar_tv_background"
+            android:padding="@dimen/small_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                tools:text="9"
+                android:background="@color/selector_calendar_tv_background"
+                android:textColor="@color/selector_calendar_text_color"
+                android:id="@+id/item_tv_day"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:background="@color/selector_calendar_tv_background"
+                android:textColor="@color/selector_calendar_text_color"
+                tools:text="Mon"
+                android:layout_gravity="center"
+                android:id="@+id/item_tv_day_of_week"/>
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>
+
