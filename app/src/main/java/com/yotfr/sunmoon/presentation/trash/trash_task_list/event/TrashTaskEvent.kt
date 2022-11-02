@@ -4,17 +4,23 @@ import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskLis
 
 sealed interface TrashTaskEvent {
 
-    data class RestoreTrashedTask(val task: TrashedTaskListModel): TrashTaskEvent
+    data class RestoreTrashedTask(val task: TrashedTaskListModel) : TrashTaskEvent
 
-    data class DeleteTrashedTask(val task: TrashedTaskListModel): TrashTaskEvent
+    data class RestoreTrashedTaskWithDateTimeChanged(
+        val task: TrashedTaskListModel,
+        val date: Long?,
+        val time: Long?
+    ) : TrashTaskEvent
 
-    data class UpdateSearchQuery(val searchQuery:String): TrashTaskEvent
+    data class DeleteTrashedTask(val task: TrashedTaskListModel) : TrashTaskEvent
 
-    data class UndoDeleteTrashedTask(val task: TrashedTaskListModel): TrashTaskEvent
+    data class UpdateSearchQuery(val searchQuery: String) : TrashTaskEvent
 
-    object DeleteAllTrashedTask: TrashTaskEvent
+    data class UndoDeleteTrashedTask(val task: TrashedTaskListModel) : TrashTaskEvent
 
-    object DeleteAllTrashedCompletedTask: TrashTaskEvent
+    object DeleteAllTrashedTask : TrashTaskEvent
 
-    object ChangeCompletedTasksVisibility: TrashTaskEvent
+    object DeleteAllTrashedCompletedTask : TrashTaskEvent
+
+    object ChangeCompletedTasksVisibility : TrashTaskEvent
 }

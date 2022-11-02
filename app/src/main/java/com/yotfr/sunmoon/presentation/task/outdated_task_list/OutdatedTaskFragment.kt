@@ -117,7 +117,9 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             }
 
             override fun schedulePressed(task: OutdatedTaskListModel) {
-                showDateTimePicker { selectedDate, selectedTime ->
+                showDateTimePicker(
+                    currentTimeFormat = viewModel.timeFormat.value
+                ) { selectedDate, selectedTime ->
                     viewModel.onEvent(
                         OutdatedTaskEvent.ScheduleTask(
                             task = task,
@@ -140,7 +142,9 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             }
 
             override fun schedulePressed(task: OutdatedTaskListModel) {
-                showDateTimePicker { selectedDate, selectedTime ->
+                showDateTimePicker(
+                    currentTimeFormat = viewModel.timeFormat.value
+                ) { selectedDate, selectedTime ->
                     viewModel.onEvent(
                         OutdatedTaskEvent.ScheduleTask(
                             task = task,
@@ -257,6 +261,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     }
 
     private fun showDateTimePicker(
+        currentTimeFormat:Int,
         onResult: (
             selectedDate: Long?, selectedTime: Long?
         ) -> Unit
@@ -284,7 +289,10 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             val currentHour = calendarTime.get(Calendar.HOUR_OF_DAY)
             val currentMinute = calendarTime.get(Calendar.MINUTE)
             val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(requireContext())
-            val timeFormat = if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+
+            val timeFormat = if (currentTimeFormat != 2) {
+                currentTimeFormat
+            }else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(timeFormat)

@@ -6,6 +6,8 @@ sealed interface TrashTaskUiEvent {
 
     data class ShowUndoDeleteSnackbar(val task: TrashedTaskListModel) : TrashTaskUiEvent
 
+    data class ShowDateTimeChangeDialog(val task: TrashedTaskListModel): TrashTaskUiEvent
+
     object ShowRestoreSnackbar : TrashTaskUiEvent
 
 }

@@ -3,12 +3,11 @@ package com.yotfr.sunmoon.presentation.trash.trash_note_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.note.*
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.event.TrashNoteEvent
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.event.TrashNoteUiEvent
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.mapper.TrashNoteMapper
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteFooterModel
-import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteModel
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TrashNoteViewModel @Inject constructor(
     private val noteUseCase: NoteUseCase,
-    preferencesHelper: PreferencesHelper
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val trashNoteMapper = TrashNoteMapper()
@@ -27,7 +26,6 @@ class TrashNoteViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    val dateFormat = MutableStateFlow("dd/MM/yyyy")
 
     private val _uiState = MutableStateFlow<TrashNoteUiState?>(null)
     val uiState = _uiState.asStateFlow()
@@ -36,17 +34,21 @@ class TrashNoteViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        dateFormat.value = preferencesHelper.getDateFormat() ?: "dd/MM/yyyy"
         viewModelScope.launch {
-            noteUseCase.getTrashedNoteList(
-                searchQuery = _searchQuery
-            ).collect { notes ->
+            combine(
+                dataStoreRepository.getDateFormat(),
+                noteUseCase.getTrashedNoteList(
+                    searchQuery = _searchQuery
+                )
+            ){ dateFormat, notes ->
+                Pair(dateFormat,notes)
+            }.collect{
                 _uiState.value = TrashNoteUiState(
-                    notes = notes.map {
-                        trashNoteMapper.fromDomain(it, dateFormat.value)
+                    notes = it.second.map { note ->
+                        trashNoteMapper.fromDomain(note, it.first ?: "yyyy/MM/dd")
                     },
                     footerState = TrashNoteFooterModel(
-                        isVisible = notes.isEmpty()
+                        isVisible = it.second.isEmpty()
                     )
                 )
             }

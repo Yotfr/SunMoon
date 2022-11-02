@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.note.*
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListUiEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.mapper.CategoryNoteListMapper
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteListViewModel @Inject constructor(
     private val noteUseCase: NoteUseCase,
-    preferencesHelper: PreferencesHelper
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -30,8 +30,6 @@ class NoteListViewModel @Inject constructor(
 
     private val noteListMapper = NoteListMapper()
     private val categoryNoteListMapper = CategoryNoteListMapper()
-
-    val dateFormat = MutableStateFlow("dd/MM/yyyy")
 
     private val _noteListUiState = MutableStateFlow<NoteListUiStateModel?>(null)
     val noteListUiState = _noteListUiState.asStateFlow()
@@ -45,18 +43,21 @@ class NoteListViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-
-        dateFormat.value = preferencesHelper.getDateFormat() ?: "dd/MM/yyyy"
         viewModelScope.launch {
-            selectedCategoryId.collectLatest { selectedId ->
-                if (selectedId == -1L) {
+            combine(
+                dataStoreRepository.getDateFormat(),
+                selectedCategoryId
+            ) { dateFormat, selectedCategoryId ->
+                Pair(dateFormat, selectedCategoryId)
+            }.collectLatest {
+                if (it.second == -1L) {
                     noteUseCase.getAllNotes(
                         searchQuery = _searchQuery
                     ).collect { notes ->
                         _noteListUiState.value = NoteListUiStateModel(
                             notes = noteListMapper.fromDomainList(
                                 notes,
-                                dateFormat.value
+                                it.first ?: "yyyy/MM/dd"
                             ),
                             footerState = NoteListFooterModel(
                                 isVisible = notes.isEmpty()
@@ -73,7 +74,7 @@ class NoteListViewModel @Inject constructor(
                                 catWithNotes ?: throw IllegalArgumentException(
                                     "Not found category for selected chip"
                                 ),
-                                dateFormat.value
+                                it.first ?: "yyyy/MM/dd"
                             ).notes,
                             footerState = NoteListFooterModel(
                                 isVisible = catWithNotes.notes.isEmpty()
@@ -86,7 +87,10 @@ class NoteListViewModel @Inject constructor(
         viewModelScope.launch {
             noteUseCase.getVisibleCategoryList().collect { categories ->
                 _categoryListUiState.value =
-                    categoryNoteListMapper.fromDomainList(categories, dateFormat.value)
+                    categoryNoteListMapper.fromDomainList(
+                        categories,
+                        dataStoreRepository.getDateFormat().first() ?: "yyyy/MM/dd"
+                    )
             }
         }
     }
@@ -122,7 +126,7 @@ class NoteListViewModel @Inject constructor(
 
             is NoteListEvent.ChangeSelectedCategory -> {
                 selectedCategoryId.value = event.selectedCategoryId
-                Log.d("TEST","selectedCategoryChanged -> ${selectedCategoryId.value}")
+                Log.d("TEST", "selectedCategoryChanged -> ${selectedCategoryId.value}")
             }
 
             is NoteListEvent.ArchiveNote -> {

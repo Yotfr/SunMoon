@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
@@ -191,7 +190,9 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             }
 
             override fun taskTimePressed(task: ScheduledTaskListModel) {
-                showTimePicker { selectedTime ->
+                showTimePicker(
+                    timeFormat = viewModel.timeFormat.value
+                ) { selectedTime ->
                     viewModel.onEvent(
                         ScheduledTaskListEvent.ChangeTaskScheduledTime(
                             task = task,
@@ -272,8 +273,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                         uncompletedTaskListAdapter.tasks = uiModel.uncompletedTasks
                         completedTaskHeaderAdapter.headerState = uiModel.headerState
                         scheduledFooterAdapter.footerState = uiModel.footerState
-                        Log.d("TEST", "${state.footerState}")
-                        Log.d("TEST", "${state.uncompletedTasks}")
                     }
                 }
             }
@@ -442,15 +441,20 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             }.show()
     }
 
-    private fun showTimePicker(onPositive: (date: Long) -> Unit) {
+    private fun showTimePicker(
+        timeFormat:Int,
+        onPositive: (date: Long) -> Unit
+    ) {
         val calendar = Calendar.getInstance(Locale.getDefault())
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
         val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(requireContext())
-        val timeFormat = if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+        val format = if (timeFormat != 2) {
+            timeFormat
+        }else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
         val picker = MaterialTimePicker.Builder()
-            .setTimeFormat(timeFormat)
+            .setTimeFormat(format)
             .setHour(currentHour)
             .setMinute(currentMinute)
             .setTitleText(getString(R.string.select_time))

@@ -3,7 +3,7 @@ package com.yotfr.sunmoon.presentation.task.outdated_task_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.event.OutdatedTaskEvent
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.event.OutdatedTaskUiEvent
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.mapper.OutdatedTaskListMapper
@@ -11,7 +11,7 @@ import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedComp
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedDeleteOption
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedFooterModel
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTaskListUiStateModel
-import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledFooterModel
+import com.yotfr.sunmoon.presentation.utils.Quadruple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OutdatedTaskViewModel @Inject constructor(
     private val taskUseCase: TaskUseCase,
-    preferencesHelper: PreferencesHelper
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val outdatedTaskListMapper = OutdatedTaskListMapper()
@@ -33,10 +33,8 @@ class OutdatedTaskViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-
-    //TODO:change to sharedPrefs to dataStore
-    private val _sdfPattern = MutableStateFlow(preferencesHelper.getTimeFormat())
-    val sdfPattern = _sdfPattern.asStateFlow()
+    private val _timeFormat = MutableStateFlow(0)
+    val timeFormat = _timeFormat.asStateFlow()
 
     private val completedTasksHeaderState = MutableStateFlow(
         OutdatedCompletedHeaderStateModel()
@@ -56,25 +54,36 @@ class OutdatedTaskViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            dataStoreRepository.getTimeFormat().collect {
+                _timeFormat.value = it ?: 2
+            }
+        }
+        viewModelScope.launch {
             combine(
                 taskUseCase.getOutdatedTaskList(
                     searchQuery = _searchQuery,
                     currentDate = getCurrentDate()
                 ),
-                completedTasksHeaderState
-            ) { tasks, headerState ->
-                Triple(tasks.first, tasks.second, headerState)
+                completedTasksHeaderState,
+                dataStoreRepository.getTimePattern()
+            ) { tasks, headerState, timePattern ->
+                Quadruple(tasks.first, tasks.second, headerState, timePattern)
             }.collect { state ->
                 changeHeaderVisibility(state.second.isNotEmpty())
                 _uiState.value = OutdatedTaskListUiStateModel(
-                    uncompletedTasks = outdatedTaskListMapper.fromDomainList(state.first,
-                    _sdfPattern.value, currentDate),
+                    uncompletedTasks = outdatedTaskListMapper.fromDomainList(
+                        state.first,
+                        state.fourth,
+                        currentDate
+                    ),
                     completedTasks = if (completedTasksHeaderState.value.isExpanded) {
-                        outdatedTaskListMapper.fromDomainList(state.second, _sdfPattern.value,
-                        currentDate)
+                        outdatedTaskListMapper.fromDomainList(
+                            state.second, state.fourth,
+                            currentDate
+                        )
                     } else emptyList(),
                     headerState = state.third,
-                    footerState  = outdatedFooterState.value.copy(
+                    footerState = outdatedFooterState.value.copy(
                         isVisible = (state.first.isEmpty() && state.second.isEmpty())
                     )
                 )
@@ -93,7 +102,7 @@ class OutdatedTaskViewModel @Inject constructor(
                 viewModelScope.launch {
                     val task = if (event.isMakeUndoneNeeded) event.task.copy(
                         isCompleted = false
-                    )else event.task
+                    ) else event.task
                     taskUseCase.changeTaskScheduledDateTime(
                         task = outdatedTaskListMapper.toDomain(
                             task
@@ -134,7 +143,7 @@ class OutdatedTaskViewModel @Inject constructor(
 
             is OutdatedTaskEvent.DeleteTasks -> {
                 viewModelScope.launch {
-                    when(event.deleteOption) {
+                    when (event.deleteOption) {
                         OutdatedDeleteOption.ALL_OUTDATED -> {
                             taskUseCase.deleteOutdated(
                                 expDate = currentDate

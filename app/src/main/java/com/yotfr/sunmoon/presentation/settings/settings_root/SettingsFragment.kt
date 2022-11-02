@@ -10,12 +10,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.timepicker.TimeFormat.*
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentSettingsBinding
 import com.yotfr.sunmoon.presentation.MainActivity
 import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsEvent
 import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsUiEvent
+import com.yotfr.sunmoon.presentation.settings.settings_root.model.DatePattern
+import com.yotfr.sunmoon.presentation.settings.settings_root.model.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -40,19 +41,24 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentSettingsToolbar)
 
         binding.btnDateFormat.setOnClickListener {
-            showDateFormatSelectorDialog { dateFormat ->
+            showDateFormatSelectorDialog(
+                viewModel.settingsUiState.value.datePattern
+            ) { datePattern ->
                 viewModel.onEvent(
                     SettingsEvent.ChangeDateFormat(
-                        dateFormat = dateFormat.pattern
+                        dateFormat = datePattern.pattern
                     )
                 )
             }
         }
 
         binding.btnTimeFormat.setOnClickListener {
-            showTimeFormatSelectorDialog { timeFormat ->
+            showTimeFormatSelectorDialog(
+                viewModel.settingsUiState.value.timeFormat,
+            ) { timePattern, timeFormat ->
                 viewModel.onEvent(
                     SettingsEvent.ChangeTimeFormat(
+                        timePattern = timePattern,
                         timeFormat = timeFormat
                     )
                 )
@@ -86,13 +92,18 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
 
-    private fun showDateFormatSelectorDialog(onResult: (dateFormat: DateFormat) -> Unit) {
+    private fun showDateFormatSelectorDialog(
+        currentDatePattern: DatePattern,
+        onResult: (datePattern: DatePattern) -> Unit
+    ) {
         val dialogOptions = arrayOf(
-            parseCurrentTimeToString(DateFormat.YEAR_FIRST),
-            parseCurrentTimeToString(DateFormat.MONTH_FIRST),
-            parseCurrentTimeToString(DateFormat.DAY_FIRST),
+            parseCurrentTimeToString(DatePattern.YEAR_FIRST),
+            parseCurrentTimeToString(DatePattern.MONTH_FIRST),
+            parseCurrentTimeToString(DatePattern.DAY_FIRST),
         )
-        val checkedItem = 0
+        val checkedItem = dialogOptions.indexOf(
+            parseCurrentTimeToString(currentDatePattern)
+        )
         var selectedItem = 0
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.select_date_format))
@@ -103,20 +114,34 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
             .setPositiveButton(resources.getString(R.string.save)) { _, _ ->
                 when (selectedItem) {
-                    0 -> onResult(DateFormat.YEAR_FIRST)
-                    1 -> onResult(DateFormat.MONTH_FIRST)
-                    2 -> onResult(DateFormat.DAY_FIRST)
+                    0 -> onResult(DatePattern.YEAR_FIRST)
+                    1 -> onResult(DatePattern.MONTH_FIRST)
+                    2 -> onResult(DatePattern.DAY_FIRST)
                 }
             }.show()
     }
 
-    private fun showTimeFormatSelectorDialog(onResult: (timeFormat: String) -> Unit) {
+
+    private fun showTimeFormatSelectorDialog(
+        currenTimeFormat: TimeFormat,
+        onResultPattern: (timePattern: String, timeFormat:Int) -> Unit
+    ) {
         val dialogOptions = arrayOf(
             resources.getString(R.string.system_default),
             resources.getString(R.string.am_pm),
             resources.getString(R.string.normal_hour)
         )
-        val checkedItem = 0
+        val checkedItem = when (currenTimeFormat) {
+            TimeFormat.SYSTEM_DEFAULT -> {
+                0
+            }
+            TimeFormat.AM_PM -> {
+                1
+            }
+            TimeFormat.NORMAL -> {
+                2
+            }
+        }
         var selectedItem = 0
         val sdfPattern24 = "HH:mm"
         val sdfPattern12 = "h:mm a"
@@ -130,32 +155,37 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             .setPositiveButton(resources.getString(R.string.save)) { _, _ ->
                 when (selectedItem) {
                     0 -> {
-                        val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(requireContext())
-                        if (isSystem24Hour) onResult(sdfPattern24) else onResult(sdfPattern12)
+                        val isSystem24Hour =
+                            android.text.format.DateFormat.is24HourFormat(requireContext())
+                        if (isSystem24Hour)
+                            onResultPattern(sdfPattern24, TimeFormat.SYSTEM_DEFAULT.format)
+                        else onResultPattern(
+                            sdfPattern12, TimeFormat.SYSTEM_DEFAULT.format
+                        )
                     }
-                    1 -> onResult(sdfPattern12)
-                    2 -> onResult(sdfPattern24)
+                    1 -> {
+                        onResultPattern(
+                            sdfPattern12,
+                            TimeFormat.AM_PM.format
+                        )
+                    }
+                    2 -> {
+                        onResultPattern(
+                            sdfPattern24,
+                            TimeFormat.NORMAL.format
+                        )
+                    }
                 }
             }.show()
     }
 
 
-    private fun parseCurrentTimeToString(format: DateFormat): String {
+    private fun parseCurrentTimeToString(format: DatePattern): String {
         val pattern = format.pattern
         val sdf = SimpleDateFormat(pattern, Locale.getDefault())
         val calendar = Calendar.getInstance(Locale.getDefault())
         return sdf.format(calendar.time)
     }
 
-    enum class DateFormat(val pattern: String) {
-        YEAR_FIRST(pattern = "yyyy/MM/dd"),
-        MONTH_FIRST(pattern = "MM/dd/yyyy"),
-        DAY_FIRST(pattern = "dd/MM/yyyy"),
-    }
 
-    enum class TimeFormat(val format: Int) {
-        AM_PM(format = CLOCK_12H),
-        NORMAL(format = CLOCK_24H),
-        SYSTEM_DEFAULT(format = 2)
-    }
 }

@@ -63,7 +63,9 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
 
         //changeScheduledTime
         binding.chipScheduledTime.setOnClickListener {
-            showTimePicker { time ->
+            showTimePicker(
+                currentTimeFormat = viewModel.timeFormat.value
+            ) { time ->
                 viewModel.onEvent(
                     BottomSheetAddTaskEvent.ChangeTime(
                         newTime = time
@@ -90,7 +92,10 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
                     binding.chipScheduledDate.text =
                         parseSelectedDateToChipText(state.selectedDate)
                     binding.chipScheduledTime.text =
-                        parseSelectedTimeToChipText(state.selectedTime)
+                        parseSelectedTimeToChipText(
+                            currentTimePattern = viewModel.timePattern.value,
+                            state.selectedTime
+                        )
                 }
             }
         }
@@ -126,7 +131,6 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvents.collect { event ->
                     when (event) {
-                        //TODO
                         is BottomSheetAddTaskUiEvent.NavigateToDateSelector -> {
                             val directions = BottomSheetAddTaskFragmentDirections
                                 .actionBottomSheetAddTaskFragmentToBottomSheetTaskDateSelectorFragment(
@@ -147,12 +151,17 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
     }
 
 
-    private fun showTimePicker(onPositive: (time: Long) -> Unit) {
+    private fun showTimePicker(
+        currentTimeFormat:Int,
+        onPositive: (time: Long) -> Unit
+    ) {
         val calendar = Calendar.getInstance(Locale.getDefault())
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
         val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(activity)
-        val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+        val clockFormat = if (currentTimeFormat != 2) {
+            currentTimeFormat
+        }else if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
 
         val picker = MaterialTimePicker.Builder()
             .setTimeFormat(clockFormat)
@@ -204,8 +213,11 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun parseSelectedTimeToChipText(selectedTimeInMillis: Long?): String {
-        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+    private fun parseSelectedTimeToChipText(
+        currentTimePattern:String,
+        selectedTimeInMillis: Long?
+    ): String {
+        val sdf = SimpleDateFormat(currentTimePattern, Locale.getDefault())
         val selectedTime = Calendar.getInstance(Locale.getDefault())
         selectedTimeInMillis?.let {
             selectedTime.timeInMillis = selectedTimeInMillis

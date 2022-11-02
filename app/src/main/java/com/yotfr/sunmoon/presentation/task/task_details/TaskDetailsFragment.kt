@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.*
 import androidx.core.view.*
 import androidx.core.widget.doOnTextChanged
@@ -171,7 +170,9 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
 
         binding.fragmentTaskDetailsRemindTvSet.setOnClickListener {
-            showReminderDateTimePicker { date, time, remindTime ->
+            showReminderDateTimePicker(
+                currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
+            ) { date, time, remindTime ->
                 viewModel.onEvent(
                     TaskDetailsEvent.SetTaskRemindDateTime(
                         remindDate = date,
@@ -183,7 +184,9 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
 
         binding.fragmentTaskDetailsRemindTvTime.setOnClickListener {
-            showReminderDateTimePicker { date, time, remindTime ->
+            showReminderDateTimePicker(
+                currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
+            ) { date, time, remindTime ->
                 viewModel.onEvent(
                     TaskDetailsEvent.ChangeTaskRemindDateTime(
                         remindDate = date,
@@ -195,7 +198,9 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
 
         binding.fragmentTaskDetailsRemindTvDate.setOnClickListener {
-            showReminderDateTimePicker { date, time, remindTime ->
+            showReminderDateTimePicker(
+                currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
+            ) { date, time, remindTime ->
                 viewModel.onEvent(
                     TaskDetailsEvent.ChangeTaskRemindDateTime(
                         remindDate = date,
@@ -219,7 +224,9 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
 
         binding.fragmentTaskDetailSchedule.setOnClickListener {
-            showDateTimePicker { date, time ->
+            showDateTimePicker(
+                currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
+            ) { date, time ->
                 viewModel.onEvent(
                     TaskDetailsEvent.ChangeTaskScheduledDateTime(
                         date = date,
@@ -236,10 +243,22 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                 viewModel.uiState.collect { state ->
                     binding.apply {
                         fragmentTaskDetailsTaskDescription.setText(state.taskDescription)
-                        fragmentTaskDetailsDateTimeTv.text = dateParser(state.scheduledDate)
-                        fragmentTaskDetailsDateTimeTime.text = timeParser(state.scheduledTime)
-                        fragmentTaskDetailsRemindTvDate.text = dateParser(state.remindDate)
-                        fragmentTaskDetailsRemindTvTime.text = timeParser(state.remindTime)
+                        fragmentTaskDetailsDateTimeTv.text = dateParser(
+                            currentDateFormat = viewModel.dateTimeSettings.value.datePattern,
+                            state.scheduledDate
+                        )
+                        fragmentTaskDetailsDateTimeTime.text = timeParser(
+                            currentTimePattern = viewModel.dateTimeSettings.value.timePattern,
+                            state.scheduledTime
+                        )
+                        fragmentTaskDetailsRemindTvDate.text = dateParser(
+                            currentDateFormat = viewModel.dateTimeSettings.value.datePattern,
+                            state.remindDate
+                        )
+                        fragmentTaskDetailsRemindTvTime.text = timeParser(
+                            currentTimePattern = viewModel.dateTimeSettings.value.timePattern,
+                            state.remindTime
+                        )
                         subTaskAdapter.subTasks = state.subTasks
                         fragmentTaskDetailsLinearProgress.progress = state.completionProgress
 
@@ -308,7 +327,10 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                             }
                         }
                         is TaskDetailsUiEvent.ShowTimePicker -> {
-                            showTimePicker { time ->
+                            showTimePicker(
+                                currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
+
+                            ) { time ->
                                 viewModel.onEvent(
                                     TaskDetailsEvent.ChangeTaskScheduledTime(
                                         time = time
@@ -342,7 +364,6 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                                 taskTitle = uiEvent.taskDescription,
                                 remindTime = uiEvent.alarmTime
                             )
-                            Log.d("TEST","alarmtime -> ${uiEvent.alarmTime}")
                         }
                     }
                 }
@@ -412,12 +433,18 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
 
     //showTimePicker
-    private fun showTimePicker(onPositive: (time: Long) -> Unit) {
+    private fun showTimePicker(
+        currentTimeFormat: Int,
+        onPositive: (time: Long) -> Unit
+    ) {
         val calendar = Calendar.getInstance(Locale.getDefault())
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
         val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
-        val timeFormat = if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+
+        val timeFormat = if (currentTimeFormat != 2) {
+            currentTimeFormat
+        } else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
         val picker = MaterialTimePicker.Builder()
             .setTimeFormat(timeFormat)
@@ -461,7 +488,10 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
     }
 
-    private fun showReminderDateTimePicker(onResult: (date: Long, time: Long, remindTime: Long) -> Unit) {
+    private fun showReminderDateTimePicker(
+        currentTimeFormat: Int,
+        onResult: (date: Long, time: Long, remindTime: Long) -> Unit
+    ) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
         var selectedDate: Long
         var selectedTime: Long
@@ -486,7 +516,10 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             val currentHour = calendarTime.get(Calendar.HOUR_OF_DAY)
             val currentMinute = calendarTime.get(Calendar.MINUTE)
             val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
-            val timeFormat = if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+
+            val timeFormat = if (currentTimeFormat != 2) {
+                currentTimeFormat
+            } else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(timeFormat)
@@ -512,7 +545,10 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
     }
 
     //showDateTimePicker
-    private fun showDateTimePicker(onResult: (date: Long, time: Long?) -> Unit) {
+    private fun showDateTimePicker(
+        currentTimeFormat: Int,
+        onResult: (date: Long, time: Long?) -> Unit
+    ) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
         var selectedDate: Long
         var selectedTime: Long? = null
@@ -537,7 +573,10 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             val currentHour = calendarTime.get(Calendar.HOUR_OF_DAY)
             val currentMinute = calendarTime.get(Calendar.MINUTE)
             val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
-            val timeFormat = if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+
+            val timeFormat = if (currentTimeFormat != 2) {
+                currentTimeFormat
+            } else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(timeFormat)
@@ -600,11 +639,14 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
     }
 
-    private fun dateParser(date: Long?): String {
+    private fun dateParser(
+        currentDateFormat: String,
+        date: Long?
+    ): String {
         var returnDate = getString(R.string.without_date)
 
         val calendar = Calendar.getInstance(Locale.getDefault())
-        val sdfDate = SimpleDateFormat(viewModel.dateFormat.value)
+        val sdfDate = SimpleDateFormat(currentDateFormat)
         date?.let {
             calendar.timeInMillis = it
             returnDate = sdfDate.format(calendar.time)
@@ -613,11 +655,13 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         return returnDate
     }
 
-    private fun timeParser(time: Long?): String? {
+    private fun timeParser(
+        currentTimePattern: String,
+        time: Long?
+    ): String? {
         if (time == null) return null
-        val pattern = viewModel.sdfPattern.value
         val calendar = Calendar.getInstance(Locale.getDefault())
-        val sdfDate = SimpleDateFormat(pattern, Locale.getDefault())
+        val sdfDate = SimpleDateFormat(currentTimePattern, Locale.getDefault())
         calendar.timeInMillis = time
         return sdfDate.format(calendar.time)
     }

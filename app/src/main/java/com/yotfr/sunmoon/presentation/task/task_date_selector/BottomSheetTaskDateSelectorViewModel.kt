@@ -3,6 +3,7 @@ package com.yotfr.sunmoon.presentation.task.task_date_selector
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.add_task.BottomSheetAddTaskFragment
 import com.yotfr.sunmoon.presentation.task.task_date_selector.event.BottomSheetDateSelectorUiEvent
 import com.yotfr.sunmoon.presentation.task.task_date_selector.event.BottomSheetTaskDateSelectorEvent
@@ -15,11 +16,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BottomSheetTaskDateSelectorViewModel @Inject constructor(
-    state: SavedStateHandle
+    state: SavedStateHandle,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val selectedDate = state.get<Long>("selectedDate")
     private val selectedTime = state.get<Long>("selectedTime")
+
+    private val _timePattern = MutableStateFlow("HH:mm")
+    val timePattern = _timePattern.asStateFlow()
+
+    private val _timeFormat = MutableStateFlow(2)
+    val timeFormat = _timeFormat.asStateFlow()
 
     private val _uiState = MutableStateFlow(DateSelectorUiState())
     val uiState = _uiState.asStateFlow()
@@ -28,6 +36,16 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        viewModelScope.launch {
+            dataStoreRepository.getTimePattern().collect {
+                _timePattern.value = it
+            }
+        }
+        viewModelScope.launch {
+            dataStoreRepository.getTimeFormat().collect{
+                _timeFormat.value = it ?: 2
+            }
+        }
         initState()
     }
 

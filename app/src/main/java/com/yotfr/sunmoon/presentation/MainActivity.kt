@@ -1,6 +1,7 @@
 package com.yotfr.sunmoon.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -11,16 +12,16 @@ import androidx.navigation.ui.navigateUp
 import com.google.android.material.appbar.MaterialToolbar
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ActivityMainBinding
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var sharedPreferences: PreferencesHelper
+    @Inject lateinit var dataStoreRepository: DataStoreRepository
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -28,24 +29,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        when (sharedPreferences.getTheme()) {
-            "orange" -> {
-                theme.applyStyle(R.style.OverlayThemeOrange, true)
-            }
-            "pink" -> {
-                theme.applyStyle(R.style.OverlayThemePink, true)
-            }
-            "yellow" -> {
-                theme.applyStyle(R.style.OverlayThemeYellow, true)
-            }
-            "night" -> {
-                theme.applyStyle(R.style.OverlayThemeNight, true)
-            }
-            else -> {
-                theme.applyStyle(R.style.OverlayThemeOrange, true)
-            }
+        runBlocking {
+            Log.d("TESTAC","${dataStoreRepository.getTheme()}")
+                when(dataStoreRepository.getTheme()) {
+                    "orange" -> {
+                        theme.applyStyle(R.style.OverlayThemeOrange, true)
+                    }
+                    "pink" -> {
+                        theme.applyStyle(R.style.OverlayThemePink, true)
+                    }
+                    "yellow" -> {
+                        theme.applyStyle(R.style.OverlayThemeYellow, true)
+                    }
+                    "night" -> {
+                        theme.applyStyle(R.style.OverlayThemeNight, true)
+                    }
+                    else -> {
+                        theme.applyStyle(R.style.OverlayThemeOrange, true)
+                    }
+                }
         }
-
 
         val binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
 

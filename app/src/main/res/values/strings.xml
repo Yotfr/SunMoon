@@ -181,6 +181,9 @@
     <string name="click_add_to_create_note">Click + to create your note</string>
     <string name="click_add_to_create_category">Click + to create your category</string>
 
+    <string name="trash_need_change">This task is outdated do you want to change date and time for this task?</string>
+
+
     <string name="am_pm">12 Hour</string>
     <string name="normal_hour">24 Hour</string>
     <string name="system_default">System default</string>

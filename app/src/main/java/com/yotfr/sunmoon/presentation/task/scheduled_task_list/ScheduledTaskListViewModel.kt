@@ -3,7 +3,7 @@ package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.*
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.event.ScheduledTaskListEvent
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.event.ScheduledTaskListUiEvent
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.mapper.ScheduledTaskListMapper
@@ -11,6 +11,7 @@ import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledCo
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledFooterModel
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledTaskDeleteOption
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledTaskListUiStateModel
+import com.yotfr.sunmoon.presentation.utils.Quadruple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -21,17 +22,16 @@ import javax.inject.Inject
 @HiltViewModel
 class ScheduledTaskListViewModel @Inject constructor(
     private val taskUseCase: TaskUseCase,
-    preferencesHelper: PreferencesHelper
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val scheduledTaskListMapper = ScheduledTaskListMapper()
 
-    //TODO:Change shared prefs to dataStore
-    private val _sdfPattern = MutableStateFlow(preferencesHelper.getTimeFormat())
-    val sdfPattern = _sdfPattern.asStateFlow()
-
     private val _selectedCalendarDate = MutableStateFlow(getCurrentDay())
     val selectedCalendarDate = _selectedCalendarDate.asStateFlow()
+
+    private val _timeFormat = MutableStateFlow(0)
+    val timeFormat = _timeFormat.asStateFlow()
 
     private val completedTasksHeaderState = MutableStateFlow(
         ScheduledCompletedHeaderStateModel()
@@ -52,24 +52,30 @@ class ScheduledTaskListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            dataStoreRepository.getTimeFormat().collect{
+                _timeFormat.value = it ?: 2
+            }
+        }
+        viewModelScope.launch {
             combine(
                 taskUseCase.getScheduledTaskList(
                     selectedDate = _selectedCalendarDate,
                     searchQuery = _searchQuery,
                     currentDate = getCurrentDay()
                 ),
-                completedTasksHeaderState
-            ) { tasks, headerState ->
-                Triple(tasks.first, tasks.second, headerState)
+                completedTasksHeaderState,
+               dataStoreRepository.getTimePattern()
+            ) { tasks, headerState, timeFormat ->
+                Quadruple(tasks.first,tasks.second,headerState,timeFormat)
             }.collect { state ->
                 changeHeaderVisibility(state.second.isNotEmpty())
                 _uiState.value = ScheduledTaskListUiStateModel(
                     uncompletedTasks = scheduledTaskListMapper.fromDomainList(
                         state.first,
-                        _sdfPattern.value
+                        state.fourth
                     ),
                     completedTasks = if (completedTasksHeaderState.value.isExpanded) {
-                        scheduledTaskListMapper.fromDomainList(state.second, _sdfPattern.value)
+                        scheduledTaskListMapper.fromDomainList(state.second, state.fourth)
                     } else emptyList(),
                     headerState = state.third,
                     footerState = scheduledFooterState.value.copy(
@@ -194,4 +200,5 @@ class ScheduledTaskListViewModel @Inject constructor(
         }
         return currentDayCalendar.timeInMillis
     }
+
 }

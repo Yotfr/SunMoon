@@ -4,23 +4,25 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.*
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.event.TrashTaskEvent
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.event.TrashTaskUiEvent
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.mapper.TrashedTaskListMapper
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashTaskFooterModel
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedCompletedHeaderStateModel
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskUiStateModel
+import com.yotfr.sunmoon.presentation.utils.Quadruple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class TrashTaskViewModel @Inject constructor(
     private val taskUseCase: TaskUseCase,
-    preferencesHelper: PreferencesHelper
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val trashedTaskListMapper = TrashedTaskListMapper()
@@ -28,13 +30,12 @@ class TrashTaskViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val _timeFormat = MutableStateFlow(0)
+    val timeFormat = _timeFormat.asStateFlow()
+
     private val completedTasksHeaderState = MutableStateFlow(
         TrashedCompletedHeaderStateModel()
     )
-
-    //TODO:Change shared prefs to dataStore
-    private val _sdfPattern = MutableStateFlow(preferencesHelper.getTimeFormat())
-    val sdfPattern = _sdfPattern.asStateFlow()
 
     private val _uiState = MutableStateFlow<TrashedTaskUiStateModel?>(null)
     val uiState = _uiState.asSharedFlow()
@@ -44,24 +45,30 @@ class TrashTaskViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            dataStoreRepository.getTimeFormat().collect{
+                _timeFormat.value = it ?: 2
+            }
+        }
+        viewModelScope.launch {
             combine(
                 taskUseCase.getTrashedTaskListUseCase(
                     searchQuery = _searchQuery
                 ),
-                completedTasksHeaderState
-            ) { tasks, headerState ->
-                Triple(tasks.first, tasks.second, headerState)
+                completedTasksHeaderState,
+                dataStoreRepository.getTimePattern()
+            ) { tasks, headerState, timePattern ->
+                Quadruple(tasks.first, tasks.second, headerState, timePattern)
             }.collect { state ->
                 changeHeaderVisibility(state.second.isNotEmpty())
                 _uiState.value = TrashedTaskUiStateModel(
                     uncompletedTasks = trashedTaskListMapper.fromDomainList(
                         state.first,
-                        sdfPattern = _sdfPattern.value
+                        sdfPattern = state.fourth
                     ),
                     completedTasks = if (completedTasksHeaderState.value.isExpanded) {
                         trashedTaskListMapper.fromDomainList(
                             state.second,
-                            sdfPattern = _sdfPattern.value
+                            sdfPattern = state.fourth
                         )
                     } else emptyList(),
                     headerState = state.third,
@@ -102,17 +109,24 @@ class TrashTaskViewModel @Inject constructor(
 
             }
             is TrashTaskEvent.RestoreTrashedTask -> {
-                viewModelScope.launch {
-                    taskUseCase.trashUntrashTask(
-                        task = trashedTaskListMapper.toDomain(
-                            event.task
+                if (
+                    event.task.scheduledDate != null && event.task.scheduledDate < getCurrentDay()
+                ) {
+                    sendToUi(TrashTaskUiEvent.ShowDateTimeChangeDialog(
+                        task = event.task
+                    ))
+                }else {
+                    viewModelScope.launch {
+                        taskUseCase.trashUntrashTask(
+                            task = trashedTaskListMapper.toDomain(
+                                event.task
+                            )
                         )
-                    )
+                    }
+                    sendToUi(TrashTaskUiEvent.ShowRestoreSnackbar)
                 }
-                sendToUi(TrashTaskUiEvent.ShowRestoreSnackbar)
             }
             is TrashTaskEvent.UndoDeleteTrashedTask -> {
-                Log.d("UNDO", "${event.task}")
                 viewModelScope.launch {
                     taskUseCase.addTask(
                         task = trashedTaskListMapper.toDomain(
@@ -131,6 +145,18 @@ class TrashTaskViewModel @Inject constructor(
                     taskUseCase.deleteAllTrashedTasksUseCase()
                 }
             }
+            is TrashTaskEvent.RestoreTrashedTaskWithDateTimeChanged -> {
+                viewModelScope.launch {
+                    taskUseCase.trashUntrashTask(
+                        task = trashedTaskListMapper.toDomain(
+                            event.task.copy(
+                                scheduledDate = event.date,
+                                scheduledTime = event.time ?: event.task.scheduledTime
+                            )
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -144,6 +170,17 @@ class TrashTaskViewModel @Inject constructor(
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
+    }
+
+    private fun getCurrentDay(): Long {
+        val currentDayCalendar = Calendar.getInstance(Locale.getDefault())
+        currentDayCalendar.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        return currentDayCalendar.timeInMillis
     }
 
 }

@@ -3,7 +3,7 @@ package com.yotfr.sunmoon.presentation.notes.archive_note
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.note.NoteUseCase
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteUiEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.mapper.ArchiveNoteMapper
@@ -11,24 +11,20 @@ import com.yotfr.sunmoon.presentation.notes.archive_note.model.ArchiveNoteFooter
 import com.yotfr.sunmoon.presentation.notes.archive_note.model.ArchiveNoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ArchiveNoteViewModel @Inject constructor(
     private val noteUseCase: NoteUseCase,
-    preferencesHelper: PreferencesHelper
+   dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val archiveNoteListMapper = ArchiveNoteMapper()
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
-
-    val dateFormat = MutableStateFlow("dd/MM/yyyy")
 
     private val _uiState = MutableStateFlow<ArchiveNoteUiState?>(null)
     val uiState = _uiState.asStateFlow()
@@ -37,19 +33,22 @@ class ArchiveNoteViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        dateFormat.value = preferencesHelper.getDateFormat() ?: "dd/MM/yyyy"
         viewModelScope.launch {
-            noteUseCase.getArchiveNotes(_searchQuery).collect { notes ->
+            combine(
+                dataStoreRepository.getDateFormat(),
+                noteUseCase.getArchiveNotes(_searchQuery)
+            ){ dateFormat, notes ->
+                Pair(dateFormat,notes)
+            }.collect{
                 _uiState.value = ArchiveNoteUiState(
                     notes = archiveNoteListMapper.fromDomainList(
-                        notes,
-                        dateFormat.value
+                        it.second,
+                        it.first  ?: "yyyy/MM/dd"
                     ),
                     footerState = ArchiveNoteFooterModel(
-                        isVisible = notes.isEmpty()
+                        isVisible = it.second.isEmpty()
                     )
                 )
-
             }
         }
     }

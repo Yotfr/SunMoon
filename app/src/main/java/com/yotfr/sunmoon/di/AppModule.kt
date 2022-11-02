@@ -3,8 +3,6 @@ package com.yotfr.sunmoon.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.yotfr.sunmoon.data.AppPreferencesHelper
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
 import com.yotfr.sunmoon.data.data_source.AppDataBase
 import com.yotfr.sunmoon.data.repository.*
 import com.yotfr.sunmoon.domain.interactor.note.*
@@ -12,6 +10,7 @@ import com.yotfr.sunmoon.domain.repository.task.SubTaskRepository
 import com.yotfr.sunmoon.domain.repository.note.NoteRepository
 import com.yotfr.sunmoon.domain.repository.task.TaskRepository
 import com.yotfr.sunmoon.domain.interactor.task.*
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.domain.repository.note.CategoryRepository
 import dagger.Module
 import dagger.Provides
@@ -27,11 +26,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-
     @Singleton
     @Provides
-    fun provideAppPreferencesHelper(@ApplicationContext context: Context): PreferencesHelper {
-        return AppPreferencesHelper(context)
+    fun provideDataStoreRepository(@ApplicationContext context: Context):DataStoreRepository {
+        return DataStoreRepositoryImpl(context)
     }
 
     @Provides

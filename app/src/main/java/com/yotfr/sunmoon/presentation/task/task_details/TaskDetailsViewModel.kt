@@ -1,22 +1,21 @@
 package com.yotfr.sunmoon.presentation.task.task_details
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.task_details.event.TaskDetailsEvent
 import com.yotfr.sunmoon.presentation.task.task_details.event.TaskDetailsUiEvent
 import com.yotfr.sunmoon.presentation.task.task_details.mapper.SubTaskMapper
 import com.yotfr.sunmoon.presentation.task.task_details.mapper.TaskDetailsMapper
+import com.yotfr.sunmoon.presentation.task.task_details.model.DateTimeSettings
 import com.yotfr.sunmoon.presentation.task.task_details.model.State
 import com.yotfr.sunmoon.presentation.task.task_details.model.TaskDetailsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,20 +23,17 @@ import javax.inject.Inject
 class TaskDetailsViewModel @Inject constructor(
     state: SavedStateHandle,
     private val taskUseCase: TaskUseCase,
-    preferencesHelper: PreferencesHelper
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val taskId = state.get<Long>("taskId")
     private val destination = state.get<Int>("destination")
 
+    private val _dateTimeSettings = MutableStateFlow(DateTimeSettings())
+    val dateTimeSettings = _dateTimeSettings.asStateFlow()
+
     private val taskDetailsMapper = TaskDetailsMapper()
     private val subTaskMapper = SubTaskMapper()
-
-    val dateFormat = MutableStateFlow("dd/MM/yyyy")
-
-    //TODO:Change shared prefs to dataStore
-    private val _sdfPattern = MutableStateFlow(preferencesHelper.getTimeFormat())
-    val sdfPattern = _sdfPattern.asStateFlow()
 
     private val _state = MutableStateFlow(State.SCHEDULED)
     val state = _state.asStateFlow()
@@ -54,7 +50,6 @@ class TaskDetailsViewModel @Inject constructor(
     val uiEvents = _uiEvents.receiveAsFlow()
 
     init {
-        dateFormat.value = preferencesHelper.getDateFormat() ?: "dd/MM/yyyy"
         val stateDestination = when (destination) {
             TaskDetailsFragment.FROM_SCHEDULED -> State.SCHEDULED
             TaskDetailsFragment.FROM_UNPLANNED -> State.UNPLANNED
@@ -73,6 +68,17 @@ class TaskDetailsViewModel @Inject constructor(
                         false
                     }else _state.value != State.OUTDATED
                 }
+            }
+        }
+        viewModelScope.launch {
+            Log.d("DETAILS","scoped")
+            dataStoreRepository.getDateTimeSettings().collect{
+                Log.d("DETAILS","collected -> $it")
+                _dateTimeSettings.value = DateTimeSettings(
+                    datePattern = it.first ?: "yyyy/MM/dd" ,
+                    timePattern = it.second,
+                    timeFormat = it.third ?: 2
+                )
             }
         }
     }
@@ -298,6 +304,4 @@ class TaskDetailsViewModel @Inject constructor(
             _uiEvents.send(event)
         }
     }
-
-
 }

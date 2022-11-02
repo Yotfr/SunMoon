@@ -3,6 +3,7 @@ package com.yotfr.sunmoon.presentation.task.unplanned_task_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.event.UnplannedTaskListEvent
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.event.UnplannedTaskListUiEvent
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.mapper.UnplannedTaskListMapper
@@ -12,16 +13,14 @@ import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedFo
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedTaskListUiStateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UnplannedTaskListViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase
+    private val taskUseCase: TaskUseCase,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val unplannedTaskListMapper = UnplannedTaskListMapper()
@@ -32,6 +31,9 @@ class UnplannedTaskListViewModel @Inject constructor(
     private val completedTasksHeaderState = MutableStateFlow(
         UnplannedCompletedHeaderStateModel()
     )
+
+    private val _timeFormat = MutableStateFlow(0)
+    val timeFormat = _timeFormat.asStateFlow()
 
     private val unplannedFooterState = MutableStateFlow(
         UnplannedFooterModel()
@@ -44,6 +46,11 @@ class UnplannedTaskListViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        viewModelScope.launch {
+            dataStoreRepository.getTimeFormat().collect{
+                _timeFormat.value = it ?: 2
+            }
+        }
         viewModelScope.launch {
             combine(
                 taskUseCase.getUnplannedTaskList(

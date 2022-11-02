@@ -16,8 +16,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentTrashTaskBinding
 import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
@@ -27,6 +32,7 @@ import com.yotfr.sunmoon.presentation.trash.trash_task_list.event.TrashTaskUiEve
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -73,7 +79,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
                 return when (menuItem.itemId) {
                     R.id.mi_delete_all_tasks -> {
                         showDeleteAllDialog {
-                            when(it) {
+                            when (it) {
                                 DeleteOption.ALL_TRASHED -> {
                                     viewModel.onEvent(
                                         TrashTaskEvent.DeleteAllTrashedTask
@@ -104,15 +110,15 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }
         })
         completedTrashTaskAdapter = TrashedCompletedTaskAdapter()
-        completedTrashTaskAdapter.attachDelegate(object : TrashedCompletedTaskListDelegate{
+        completedTrashTaskAdapter.attachDelegate(object : TrashedCompletedTaskListDelegate {
             override fun taskItemPressed(taskId: Long) {
                 //TODO
             }
         })
         completedTrashTaskHeaderAdapter = TrashedCompletedHeaderAdapter()
-        completedTrashTaskHeaderAdapter.attachDelegate(object :TrashedCompletedHeaderDelegate{
+        completedTrashTaskHeaderAdapter.attachDelegate(object : TrashedCompletedHeaderDelegate {
             override fun hideCompleted() {
-               viewModel.onEvent(TrashTaskEvent.ChangeCompletedTasksVisibility)
+                viewModel.onEvent(TrashTaskEvent.ChangeCompletedTasksVisibility)
             }
         })
         trashTaskFooterAdapter = TrashTaskFooterAdapter()
@@ -165,8 +171,132 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
                                 )
                             }
                         }
+                        is TrashTaskUiEvent.ShowDateTimeChangeDialog -> {
+                            showDateTimeChangeDialog(
+                                onNeutral = {
+                                    viewModel.onEvent(
+                                        TrashTaskEvent.RestoreTrashedTaskWithDateTimeChanged(
+                                            task = uiEvent.task,
+                                            date = uiEvent.task.scheduledDate,
+                                            time = uiEvent.task.scheduledTime
+                                        )
+                                    )
+                                },
+                                onNegative = {
+                                    viewModel.onEvent(
+                                        TrashTaskEvent.RestoreTrashedTaskWithDateTimeChanged(
+                                            task = uiEvent.task,
+                                            date = null,
+                                            time = null
+                                        )
+                                    )
+                                },
+                                onPositive = {
+                                    showDateTimePicker(
+                                        viewModel.timeFormat.value
+                                    ){ selectedDate, selectedTime ->
+                                       viewModel.onEvent(
+                                           TrashTaskEvent.RestoreTrashedTaskWithDateTimeChanged(
+                                               task = uiEvent.task,
+                                               date = selectedDate,
+                                               time = selectedTime
+                                           )
+                                       )
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
+            }
+        }
+    }
+
+    private fun showDateTimeChangeDialog(
+        onNeutral: () -> Unit,
+        onNegative: () -> Unit,
+        onPositive: () -> Unit
+    ) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.trash_need_change))
+            .setNeutralButton(resources.getString(R.string.NO)) { _, _ ->
+                onNeutral()
+            }
+            .setNegativeButton(resources.getString(R.string.make_unplanned)) { _, _ ->
+                onNegative()
+            }
+            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+                onPositive()
+            }.show()
+    }
+
+    private fun showDateTimePicker(
+        currentTimeFormat: Int,
+        onResult: (
+            selectedDate: Long?, selectedTime: Long?
+        ) -> Unit
+    ) {
+        val calendarDate = Calendar.getInstance(Locale.getDefault())
+        var selectedDate: Long?
+        var selectedTime: Long? = null
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointForward.now())
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(getString(R.string.select_date))
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setCalendarConstraints(constraintsBuilder.build())
+            .build()
+        datePicker.show(parentFragmentManager, "tag")
+        datePicker.addOnPositiveButtonClickListener { date ->
+            calendarDate.timeInMillis = date
+            calendarDate.set(Calendar.HOUR_OF_DAY, 0)
+            calendarDate.set(Calendar.MINUTE, 0)
+            calendarDate.set(Calendar.SECOND, 0)
+            calendarDate.set(Calendar.MILLISECOND, 0)
+
+            selectedDate = calendarDate.timeInMillis
+            val calendarTime = Calendar.getInstance(Locale.getDefault())
+            val currentHour = calendarTime.get(Calendar.HOUR_OF_DAY)
+            val currentMinute = calendarTime.get(Calendar.MINUTE)
+            val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(activity)
+
+            val timeFormat = if (currentTimeFormat != 0) {
+                currentTimeFormat
+            } else if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+
+            val picker = MaterialTimePicker.Builder()
+                .setTimeFormat(timeFormat)
+                .setHour(currentHour)
+                .setMinute(currentMinute)
+                .setTitleText(getString(R.string.select_time))
+                .build()
+            picker.show(parentFragmentManager, "tag")
+            picker.addOnPositiveButtonClickListener {
+                calendarTime.set(0, 0, 0, picker.hour, picker.minute)
+                calendarTime.set(Calendar.MILLISECOND, 0)
+                selectedTime = calendarTime.timeInMillis
+                onResult(
+                    selectedDate,
+                    selectedTime
+                )
+            }
+            picker.addOnNegativeButtonClickListener {
+                onResult(
+                    selectedDate,
+                    selectedTime
+                )
+            }
+            picker.addOnCancelListener {
+                onResult(
+                    selectedDate,
+                    selectedTime
+                )
+            }
+            picker.addOnDismissListener {
+                onResult(
+                    selectedDate,
+                    selectedTime
+                )
             }
         }
     }
@@ -193,7 +323,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }.show()
     }
 
-    private fun showUndoDeleteSnackBar(onAction: () -> Unit){
+    private fun showUndoDeleteSnackBar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.task_deleted),
@@ -204,7 +334,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }.show()
     }
 
-    private fun showRestoreSnackbar(){
+    private fun showRestoreSnackbar() {
         Snackbar.make(
             requireView(),
             getString(R.string.task_restored),
@@ -215,27 +345,35 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
     private fun initSwipeToDelete() {
         val onUncompletedItemRemoved = { positionToRemove: Int ->
             val task = uncompletedTrashTaskAdapter.deletedTasks[positionToRemove]
-            viewModel.onEvent(TrashTaskEvent.DeleteTrashedTask(
-                task = task
-            ))
+            viewModel.onEvent(
+                TrashTaskEvent.DeleteTrashedTask(
+                    task = task
+                )
+            )
         }
         val onCompletedItemRemoved = { positionToRemove: Int ->
             val task = completedTrashTaskAdapter.tasks[positionToRemove]
-            viewModel.onEvent(TrashTaskEvent.DeleteTrashedTask(
-                task = task
-            ))
+            viewModel.onEvent(
+                TrashTaskEvent.DeleteTrashedTask(
+                    task = task
+                )
+            )
         }
         val onUncompletedItemRestored = { positionToRemove: Int ->
             val task = uncompletedTrashTaskAdapter.deletedTasks[positionToRemove]
-            viewModel.onEvent(TrashTaskEvent.RestoreTrashedTask(
-                task = task
-            ))
+            viewModel.onEvent(
+                TrashTaskEvent.RestoreTrashedTask(
+                    task = task
+                )
+            )
         }
         val onCompletedItemRestored = { positionToRemove: Int ->
             val task = completedTrashTaskAdapter.tasks[positionToRemove]
-            viewModel.onEvent(TrashTaskEvent.RestoreTrashedTask(
-                task = task
-            ))
+            viewModel.onEvent(
+                TrashTaskEvent.RestoreTrashedTask(
+                    task = task
+                )
+            )
         }
         val trashedTaskListItemCallback = TrashedTaskListItemCallback(
             onUncompletedItemDelete = onUncompletedItemRemoved,

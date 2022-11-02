@@ -1,8 +1,9 @@
 package com.yotfr.sunmoon.presentation.settings.settings_theme
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
+import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import com.yotfr.sunmoon.presentation.settings.settings_theme.event.SettingsThemeEvent
 import com.yotfr.sunmoon.presentation.settings.settings_theme.event.SettingsThemeUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsThemeViewModel @Inject constructor(
-    private val preferencesHelper: PreferencesHelper
+    private val dataStoreRepository: DataStoreRepository
 ):ViewModel() {
 
     private val _uiEvent = Channel<SettingsThemeUiEvent>()
@@ -24,11 +25,12 @@ class SettingsThemeViewModel @Inject constructor(
         when (event) {
             is SettingsThemeEvent.ChangeTheme -> {
                 viewModelScope.launch {
-                    preferencesHelper.updateTheme(
+                    dataStoreRepository.updateTheme(
                         theme = event.newTheme
                     )
+                    sendToUi(SettingsThemeUiEvent.RestartActivity)
                 }
-                sendToUi(SettingsThemeUiEvent.RestartActivity)
+
             }
         }
     }
