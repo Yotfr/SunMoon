@@ -6,12 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemNoteBinding
+import com.yotfr.sunmoon.databinding.ItemNoteListFooterBinding
 import com.yotfr.sunmoon.presentation.notes.note_list.model.NoteListModel
+import java.lang.IllegalArgumentException
 
 
 interface NoteListDelegate {
     fun noteDetailsClicked(noteId: Long)
-    fun pinPressed(note:NoteListModel)
+    fun pinPressed(note: NoteListModel)
 }
 
 class NoteListDiffCallBack(
@@ -78,7 +80,7 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
                 itemPinNote.isChecked = note.isPinned
                 linearLayoutItemNote.setOnClickListener {
                     delegate?.noteDetailsClicked(
-                       noteId =  note.id
+                        noteId =  note.id
                     )
                 }
                 itemPinNote.setOnClickListener {

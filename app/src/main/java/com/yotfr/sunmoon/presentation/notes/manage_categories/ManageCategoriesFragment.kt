@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yotfr.sunmoon.R
@@ -15,6 +16,7 @@ import com.yotfr.sunmoon.databinding.FragmentManageCategoriesBinding
 import com.yotfr.sunmoon.presentation.notes.NoteRootFragmentDirections
 import com.yotfr.sunmoon.presentation.notes.manage_categories.adapter.CategoriesDelegate
 import com.yotfr.sunmoon.presentation.notes.manage_categories.adapter.ManageCategoriesAdapter
+import com.yotfr.sunmoon.presentation.notes.manage_categories.adapter.ManageCategoriesFooterAdapter
 import com.yotfr.sunmoon.presentation.notes.manage_categories.event.ManageCategoriesEvent
 import com.yotfr.sunmoon.presentation.notes.manage_categories.model.ManageCategoriesModel
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
@@ -26,6 +28,7 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
 
     private lateinit var binding: FragmentManageCategoriesBinding
     private lateinit var adapter: ManageCategoriesAdapter
+    private lateinit var footerAdapter: ManageCategoriesFooterAdapter
     private val viewModel by viewModels<ManageCategoriesViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +64,18 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
                 )
             }
         })
-        binding.rvCategoryListManage.adapter = adapter
+
+        footerAdapter = ManageCategoriesFooterAdapter()
+
+        val concatAdapter = ConcatAdapter(
+            ConcatAdapter.Config.Builder()
+                .setIsolateViewTypes(false)
+                .build(),
+            adapter,
+            footerAdapter
+        )
+
+        binding.rvCategoryListManage.adapter = concatAdapter
         binding.rvCategoryListManage.layoutManager = layoutManager
         binding.rvCategoryListManage.addItemDecoration(
             MarginItemDecoration(
@@ -74,7 +88,8 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { categories ->
                     categories?.let {
-                        adapter.categories = it
+                        adapter.categories = it.categories
+                        footerAdapter.footerState = it.footerState
                     }
                 }
             }

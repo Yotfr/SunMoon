@@ -84,11 +84,9 @@
             android:id="@+id/fragment_task_root_fl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        app:layout_behavior="com.yotfr.sunmoon.presentation.utils.FabHideOnScrollBehaviour"
         android:id="@+id/fragment_task_root_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

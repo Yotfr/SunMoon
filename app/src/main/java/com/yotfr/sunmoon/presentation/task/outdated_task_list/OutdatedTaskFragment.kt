@@ -53,6 +53,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     private lateinit var outdatedUncompletedTaskAdapter: OutdatedUncompletedTaskAdapter
     private lateinit var outdatedCompletedTaskAdapter: OutdatedCompletedTaskAdapter
     private lateinit var outdatedCompletedHeaderAdapter: OutdatedCompletedHeaderAdapter
+    private lateinit var outdatedFooterAdapter: OutdatedFooterAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -156,13 +157,15 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             override fun hideCompleted() {
             }
         })
+        outdatedFooterAdapter = OutdatedFooterAdapter()
         val concatAdapter = ConcatAdapter(
             ConcatAdapter.Config.Builder()
                 .setIsolateViewTypes(false)
                 .build(),
             outdatedUncompletedTaskAdapter,
             outdatedCompletedHeaderAdapter,
-            outdatedCompletedTaskAdapter
+            outdatedCompletedTaskAdapter,
+            outdatedFooterAdapter
         )
         binding.rvOutdatedTask.adapter = concatAdapter
         binding.rvOutdatedTask.layoutManager = layoutManager
@@ -183,6 +186,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
                         outdatedCompletedTaskAdapter.tasks = uiModel.completedTasks
                         outdatedUncompletedTaskAdapter.outdatedTasks = uiModel.uncompletedTasks
                         outdatedCompletedHeaderAdapter.headerState = uiModel.headerState
+                        outdatedFooterAdapter.footerState = uiModel.footerState
                     }
                 }
             }

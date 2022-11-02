@@ -53,6 +53,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
     private lateinit var unplannedUncompletedTaskListAdapter: UnplannedUncompletedTaskListAdapter
     private lateinit var unplannedCompletedTaskListAdapter: UnplannedCompletedTaskListAdapter
     private lateinit var unplannedCompletedTaskHeaderAdapter: UnplannedCompletedTaskHeaderAdapter
+    private lateinit var unplannedFooterAdapter: UnplannedFooterAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -167,6 +168,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 viewModel.onEvent(UnplannedTaskListEvent.ChangeCompletedTasksVisibility)
             }
         })
+        unplannedFooterAdapter = UnplannedFooterAdapter()
         val concatAdapter =
             ConcatAdapter(
                 ConcatAdapter.Config.Builder()
@@ -174,7 +176,8 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                     .build(),
                 unplannedUncompletedTaskListAdapter,
                 unplannedCompletedTaskHeaderAdapter,
-                unplannedCompletedTaskListAdapter
+                unplannedCompletedTaskListAdapter,
+                unplannedFooterAdapter
             )
         binding.fragmentUnplannedTaskRvTaskList.layoutManager = layoutManager
         binding.fragmentUnplannedTaskRvTaskList.adapter = concatAdapter
@@ -195,6 +198,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                         unplannedUncompletedTaskListAdapter.tasks = it.uncompletedTasks
                         unplannedCompletedTaskListAdapter.tasks = it.completedTasks
                         unplannedCompletedTaskHeaderAdapter.headerState = it.headerState
+                        unplannedFooterAdapter.footerState = it.footerState
                     }
                 }
             }

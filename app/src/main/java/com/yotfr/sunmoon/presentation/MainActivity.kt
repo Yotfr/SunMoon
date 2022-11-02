@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity: AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var sharedPreferences: PreferencesHelper
@@ -28,7 +28,7 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        when(sharedPreferences.getTheme()) {
+        when (sharedPreferences.getTheme()) {
             "orange" -> {
                 theme.applyStyle(R.style.OverlayThemeOrange, true)
             }
@@ -49,23 +49,25 @@ class MainActivity: AppCompatActivity() {
 
         val binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
 
-        val topLevelDestinations = setOf(R.id.noteRootFragment, R.id.taskRootFragment, R.id.trashRootFragment,
-           R.id.settingsFragment)
+        val topLevelDestinations = setOf(
+            R.id.noteRootFragment, R.id.taskRootFragment, R.id.trashRootFragment,
+            R.id.settingsFragment
+        )
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(
                 R.id.activity_main_fragment_container
             ) as NavHostFragment
         navController = navHostFragment.findNavController()
-        appBarConfiguration = AppBarConfiguration(topLevelDestinations,binding.activityMainDrawer)
-        NavigationUI.setupWithNavController(binding.activityMainNavView,navController)
+        appBarConfiguration = AppBarConfiguration(topLevelDestinations, binding.activityMainDrawer)
+        NavigationUI.setupWithNavController(binding.activityMainNavView, navController)
 
 
     }
 
-    fun setUpActionBar(actionBar: MaterialToolbar){
+    fun setUpActionBar(actionBar: MaterialToolbar) {
         setSupportActionBar(actionBar)
-        NavigationUI.setupActionBarWithNavController(this,navController, appBarConfiguration)
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {

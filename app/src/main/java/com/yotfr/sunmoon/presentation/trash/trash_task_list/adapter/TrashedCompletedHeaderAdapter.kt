@@ -29,7 +29,7 @@ class TrashedCompletedHeaderAdapter : RecyclerView.Adapter<TrashedCompletedHeade
     override fun getItemCount(): Int = 1
 
     override fun getItemViewType(position: Int): Int {
-        return R.layout.item_scheduled_completed_task_header
+        return R.layout.item_trashed_completed_task_header
     }
 
 

@@ -46,7 +46,10 @@ class OutdatedTaskListItemCallback(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        return if (viewHolder.itemViewType == R.layout.item_outdated_completed_task_header) {
+        return if (
+            viewHolder.itemViewType == R.layout.item_outdated_completed_task_header ||
+                    viewHolder.itemViewType == R.layout.item_outdated_task_footer
+        ) {
             ItemTouchHelper.ACTION_STATE_IDLE
         } else {
             super.getSwipeDirs(recyclerView, viewHolder)

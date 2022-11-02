@@ -8,6 +8,7 @@ import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.event.TrashTaskEvent
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.event.TrashTaskUiEvent
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.mapper.TrashedTaskListMapper
+import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashTaskFooterModel
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedCompletedHeaderStateModel
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskUiStateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,7 +64,10 @@ class TrashTaskViewModel @Inject constructor(
                             sdfPattern = _sdfPattern.value
                         )
                     } else emptyList(),
-                    headerState = state.third
+                    headerState = state.third,
+                    footerState = TrashTaskFooterModel(
+                        isVisible = (state.first.isEmpty() && state.second.isEmpty())
+                    )
                 )
             }
         }

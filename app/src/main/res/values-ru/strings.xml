@@ -172,6 +172,15 @@
     <string name="no_task_in_outdated">Вы не просрочили ни одной задачи</string>
     <string name="click_add_to_create">Нажмите + чтобы добавить задачу</string>
 
+    <string name="no_note_in_note">Не вижу ни одной заметки</string>
+    <string name="no_note_in_archive">Не вижу ни одной архивной заметки</string>
+    <string name="no_note_in_trash">Вы еще не удалили ни одну заметку</string>
+    <string name="no_task_in_trash">Вы еще не удалили ни одну задачу</string>
+    <string name="no_category_in_categories">Не вижу ни одной категории</string>
+
+    <string name="click_add_to_create_note">Нажмите + чтобы добавить заметку</string>
+    <string name="click_add_to_create_category">Нажмите + чтобы добавить категорию</string>
+
     <string name="restart_required">Чтобы изменения вступили в силу, необходимо перезагрузить приложение</string>
 
     <string name="am_pm">12-часовой</string>

@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation.notes.note_list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -44,6 +44,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     private lateinit var searchView: SearchView
     private lateinit var binding: FragmentNoteListBinding
     private lateinit var noteListAdapter: NoteListAdapter
+    private lateinit var noteListFooterAdapter: NoteListFooterAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,7 +106,17 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
                 )
             }
         })
-        binding.rvNoteList.adapter = noteListAdapter
+        noteListFooterAdapter = NoteListFooterAdapter()
+
+        val concatAdapter = ConcatAdapter(
+            ConcatAdapter.Config.Builder()
+                .setIsolateViewTypes(false)
+                .build(),
+            noteListAdapter,
+            noteListFooterAdapter
+        )
+
+        binding.rvNoteList.adapter = concatAdapter
         binding.rvNoteList.layoutManager = noteLayoutManager
         binding.rvNoteList.addItemDecoration(
             MarginItemDecoration(
@@ -116,7 +127,6 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
         binding.fragmentNoteListCategoriesGroup.setOnCheckedStateChangeListener { group, _ ->
              val chipId = group.findViewById<Chip>(group.checkedChipId).tag as Long
-            Log.d("TEST","checkedId -> $chipId")
             viewModel.onEvent(NoteListEvent.ChangeSelectedCategory(
                 selectedCategoryId = chipId
             ))
@@ -127,7 +137,8 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.noteListUiState.collect { noteState ->
                     noteState?.let { notes ->
-                        noteListAdapter.notes = notes
+                        noteListAdapter.notes = notes.notes
+                        noteListFooterAdapter.footerState = notes.footerState
                     }
                 }
             }

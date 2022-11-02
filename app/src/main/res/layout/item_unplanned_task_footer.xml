@@ -16,7 +16,7 @@
         android:textColor="?attr/colorSecondary"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
-        android:text="@string/no_task_in_scheduled"
+        android:text="@string/no_task_in_unplanned"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <TextView

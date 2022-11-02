@@ -4,6 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_task_root.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_archive_note_list_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_manage_categories_footer.xml" value="0.17883211678832117" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_note_list_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_outdated_task_footer.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_scheduled_task_footer.xml" value="0.1" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trash_note_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trash_task_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_unplanned_completed_task.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_unplanned_task.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_unplanned_task_footer.xml" value="0.253125" />
       </map>
     </option>
   </component>

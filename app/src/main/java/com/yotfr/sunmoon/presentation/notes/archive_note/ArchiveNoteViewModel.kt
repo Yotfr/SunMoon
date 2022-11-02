@@ -7,7 +7,8 @@ import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteUiEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.mapper.ArchiveNoteMapper
-import com.yotfr.sunmoon.presentation.notes.archive_note.model.ArchiveNoteModel
+import com.yotfr.sunmoon.presentation.notes.archive_note.model.ArchiveNoteFooterModel
+import com.yotfr.sunmoon.presentation.notes.archive_note.model.ArchiveNoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,7 @@ class ArchiveNoteViewModel @Inject constructor(
 
     val dateFormat = MutableStateFlow("dd/MM/yyyy")
 
-    private val _uiState = MutableStateFlow<List<ArchiveNoteModel>?>(null)
+    private val _uiState = MutableStateFlow<ArchiveNoteUiState?>(null)
     val uiState = _uiState.asStateFlow()
 
     private val _uiEvent = Channel<ArchiveNoteUiEvent>()
@@ -39,10 +40,16 @@ class ArchiveNoteViewModel @Inject constructor(
         dateFormat.value = preferencesHelper.getDateFormat() ?: "dd/MM/yyyy"
         viewModelScope.launch {
             noteUseCase.getArchiveNotes(_searchQuery).collect { notes ->
-                _uiState.value = archiveNoteListMapper.fromDomainList(
-                    notes,
-                    dateFormat.value
+                _uiState.value = ArchiveNoteUiState(
+                    notes = archiveNoteListMapper.fromDomainList(
+                        notes,
+                        dateFormat.value
+                    ),
+                    footerState = ArchiveNoteFooterModel(
+                        isVisible = notes.isEmpty()
+                    )
                 )
+
             }
         }
     }

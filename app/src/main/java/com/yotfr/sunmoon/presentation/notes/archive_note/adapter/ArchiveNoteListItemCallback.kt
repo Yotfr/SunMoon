@@ -43,6 +43,19 @@ class ArchiveNoteListItemCallback(
         }
     }
 
+    override fun getSwipeDirs(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
+        return if (
+            viewHolder.itemViewType == R.layout.item_archive_note_list_footer
+        ) {
+            ItemTouchHelper.ACTION_STATE_IDLE
+        } else {
+            super.getSwipeDirs(recyclerView, viewHolder)
+        }
+    }
+
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float = 0.4f
 
     override fun onChildDraw(

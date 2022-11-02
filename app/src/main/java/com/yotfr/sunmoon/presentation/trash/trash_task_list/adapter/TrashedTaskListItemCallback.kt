@@ -56,7 +56,10 @@ class TrashedTaskListItemCallback(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        return if (viewHolder.itemViewType == R.layout.item_trashed_completed_task_header) {
+        return if (
+            viewHolder.itemViewType == R.layout.item_trashed_completed_task_header ||
+                    viewHolder.itemViewType == R.layout.item_trash_task_footer
+        ) {
             ItemTouchHelper.ACTION_STATE_IDLE
         } else {
             super.getSwipeDirs(recyclerView, viewHolder)

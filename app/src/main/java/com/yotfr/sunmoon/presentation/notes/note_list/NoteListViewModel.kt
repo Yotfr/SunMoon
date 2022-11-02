@@ -10,7 +10,8 @@ import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListUiEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.mapper.CategoryNoteListMapper
 import com.yotfr.sunmoon.presentation.notes.note_list.mapper.NoteListMapper
 import com.yotfr.sunmoon.presentation.notes.note_list.model.CategoryNoteListModel
-import com.yotfr.sunmoon.presentation.notes.note_list.model.NoteListModel
+import com.yotfr.sunmoon.presentation.notes.note_list.model.NoteListFooterModel
+import com.yotfr.sunmoon.presentation.notes.note_list.model.NoteListUiStateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -32,7 +33,7 @@ class NoteListViewModel @Inject constructor(
 
     val dateFormat = MutableStateFlow("dd/MM/yyyy")
 
-    private val _noteListUiState = MutableStateFlow<List<NoteListModel>?>(null)
+    private val _noteListUiState = MutableStateFlow<NoteListUiStateModel?>(null)
     val noteListUiState = _noteListUiState.asStateFlow()
 
     private val _categoryListUiState = MutableStateFlow<List<CategoryNoteListModel>?>(null)
@@ -48,15 +49,18 @@ class NoteListViewModel @Inject constructor(
         dateFormat.value = preferencesHelper.getDateFormat() ?: "dd/MM/yyyy"
         viewModelScope.launch {
             selectedCategoryId.collectLatest { selectedId ->
-                Log.d("TEST","collectedids -> $selectedId")
                 if (selectedId == -1L) {
                     noteUseCase.getAllNotes(
                         searchQuery = _searchQuery
                     ).collect { notes ->
-                        Log.d("TEST","collectedAllNotes -> $notes")
-                        _noteListUiState.value = noteListMapper.fromDomainList(
-                            notes,
-                            dateFormat.value
+                        _noteListUiState.value = NoteListUiStateModel(
+                            notes = noteListMapper.fromDomainList(
+                                notes,
+                                dateFormat.value
+                            ),
+                            footerState = NoteListFooterModel(
+                                isVisible = notes.isEmpty()
+                            )
                         )
                     }
                 } else {
@@ -64,14 +68,17 @@ class NoteListViewModel @Inject constructor(
                         selectedCategoryId,
                         _searchQuery
                     ).collect { catWithNotes ->
-                        Log.d("TEST","collectedCategoryNotes -> $catWithNotes")
-                        _noteListUiState.value = categoryNoteListMapper.fromDomain(
-                            catWithNotes ?: throw IllegalArgumentException(
-                                "Not found category for selected chip"
-                            ),
-                            dateFormat.value
-                        ).notes
-
+                        _noteListUiState.value = NoteListUiStateModel(
+                            notes = categoryNoteListMapper.fromDomain(
+                                catWithNotes ?: throw IllegalArgumentException(
+                                    "Not found category for selected chip"
+                                ),
+                                dateFormat.value
+                            ).notes,
+                            footerState = NoteListFooterModel(
+                                isVisible = catWithNotes.notes.isEmpty()
+                            )
+                        )
                     }
                 }
             }

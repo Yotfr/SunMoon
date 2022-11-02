@@ -20,7 +20,7 @@ class NoteListItemCallback(
     ItemTouchHelper.ACTION_STATE_IDLE,
     ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT,
 
-) {
+    ) {
     private val iconBounds = Rect()
     private val backgroundRect = RectF()
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -47,7 +47,9 @@ class NoteListItemCallback(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        return if (viewHolder.itemViewType == R.layout.item_scheduled_completed_task_header) {
+        return if (
+            viewHolder.itemViewType == R.layout.item_note_list_footer
+        ) {
             ItemTouchHelper.ACTION_STATE_IDLE
         } else {
             super.getSwipeDirs(recyclerView, viewHolder)
@@ -102,20 +104,20 @@ class NoteListItemCallback(
         val activeColorArchive = typedValueActiveArchive.data
 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            if (abs(dX) > layoutMargin && dX > 0 ){
-                if (abs(dX) < (itemView.width*0.4f) ) {
+            if (abs(dX) > layoutMargin && dX > 0) {
+                if (abs(dX) < (itemView.width * 0.4f)) {
                     drawDeleteBackground(c, itemView, inactiveColor)
                     drawDeleteIcon(c, itemView)
-                }else {
-                    drawDeleteBackground(c,itemView,activeColor)
+                } else {
+                    drawDeleteBackground(c, itemView, activeColor)
                     drawDeleteIcon(c, itemView)
                 }
-            }else if (abs(dX) > layoutMargin && dX < 0 ) {
-                if (abs(dX) > (itemView.width*0.4f) ) {
+            } else if (abs(dX) > layoutMargin && dX < 0) {
+                if (abs(dX) > (itemView.width * 0.4f)) {
                     drawArchiveBackground(c, itemView, inactiveColorArchive)
                     drawArchiveIcon(c, itemView)
-                }else {
-                    drawArchiveBackground(c,itemView,activeColorArchive)
+                } else {
+                    drawArchiveBackground(c, itemView, activeColorArchive)
                     drawArchiveIcon(c, itemView)
                 }
             }
@@ -123,16 +125,18 @@ class NoteListItemCallback(
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    private fun drawDeleteIcon(canvas: Canvas, itemView: View){
+    private fun drawDeleteIcon(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
-        val icon =  ResourcesCompat.getDrawable(itemView.resources,R.drawable.ic_delete_large,
-            itemView.context.theme) ?: throw
+        val icon = ResourcesCompat.getDrawable(
+            itemView.resources, R.drawable.ic_delete_large,
+            itemView.context.theme
+        ) ?: throw
         IllegalArgumentException("Not found icon")
         val iconTint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
         icon.setTint(iconTint)
-        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight)/2
+        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 
-        with(iconBounds){
+        with(iconBounds) {
             left = itemView.left + layoutMargin
             top = itemView.top + margin
             right = itemView.left + icon.intrinsicWidth + layoutMargin
@@ -142,19 +146,21 @@ class NoteListItemCallback(
         icon.draw(canvas)
     }
 
-    private fun drawArchiveIcon(canvas: Canvas, itemView: View){
+    private fun drawArchiveIcon(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
-        val icon = ResourcesCompat.getDrawable(itemView.resources,R.drawable.ic_archive_gesture,
-        itemView.context.theme) ?: throw
+        val icon = ResourcesCompat.getDrawable(
+            itemView.resources, R.drawable.ic_archive_gesture,
+            itemView.context.theme
+        ) ?: throw
         IllegalArgumentException("Not found icon")
         val iconTint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
         icon.setTint(iconTint)
-        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight)/2
+        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 
-        with(iconBounds){
+        with(iconBounds) {
             left = itemView.right - icon.intrinsicWidth - layoutMargin
             top = itemView.top + margin
-            right = itemView.right  - layoutMargin
+            right = itemView.right - layoutMargin
             bottom = itemView.bottom - margin
         }
         icon.bounds = iconBounds

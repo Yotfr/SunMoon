@@ -7,7 +7,9 @@ import com.yotfr.sunmoon.domain.repository.sharedpreference.PreferencesHelper
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.event.TrashNoteEvent
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.event.TrashNoteUiEvent
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.mapper.TrashNoteMapper
+import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteFooterModel
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteModel
+import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -27,7 +29,7 @@ class TrashNoteViewModel @Inject constructor(
 
     val dateFormat = MutableStateFlow("dd/MM/yyyy")
 
-    private val _uiState = MutableStateFlow<List<TrashNoteModel>?>(null)
+    private val _uiState = MutableStateFlow<TrashNoteUiState?>(null)
     val uiState = _uiState.asStateFlow()
 
     private val _uiEvent = Channel<TrashNoteUiEvent>()
@@ -39,9 +41,14 @@ class TrashNoteViewModel @Inject constructor(
             noteUseCase.getTrashedNoteList(
                 searchQuery = _searchQuery
             ).collect { notes ->
-                _uiState.value = notes.map {
-                    trashNoteMapper.fromDomain(it, dateFormat.value)
-                }
+                _uiState.value = TrashNoteUiState(
+                    notes = notes.map {
+                        trashNoteMapper.fromDomain(it, dateFormat.value)
+                    },
+                    footerState = TrashNoteFooterModel(
+                        isVisible = notes.isEmpty()
+                    )
+                )
             }
         }
     }

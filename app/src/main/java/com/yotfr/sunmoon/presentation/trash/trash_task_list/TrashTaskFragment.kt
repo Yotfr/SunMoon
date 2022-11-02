@@ -36,6 +36,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
     private lateinit var uncompletedTrashTaskAdapter: TrashedUncompletedTaskListAdapter
     private lateinit var completedTrashTaskAdapter: TrashedCompletedTaskAdapter
     private lateinit var completedTrashTaskHeaderAdapter: TrashedCompletedHeaderAdapter
+    private lateinit var trashTaskFooterAdapter: TrashTaskFooterAdapter
     private lateinit var searchView: SearchView
 
     private val viewModel by viewModels<TrashTaskViewModel>()
@@ -114,13 +115,16 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
                viewModel.onEvent(TrashTaskEvent.ChangeCompletedTasksVisibility)
             }
         })
+        trashTaskFooterAdapter = TrashTaskFooterAdapter()
+
         val concatAdapter = ConcatAdapter(
             ConcatAdapter.Config.Builder()
                 .setIsolateViewTypes(false)
                 .build(),
             uncompletedTrashTaskAdapter,
             completedTrashTaskHeaderAdapter,
-            completedTrashTaskAdapter
+            completedTrashTaskAdapter,
+            trashTaskFooterAdapter
         )
         binding.fragmentTrashTaskRv.adapter = concatAdapter
         binding.fragmentTrashTaskRv.layoutManager = linearLayoutManager
@@ -139,6 +143,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
                         completedTrashTaskAdapter.tasks = uiModel.completedTasks
                         uncompletedTrashTaskAdapter.deletedTasks = uiModel.uncompletedTasks
                         completedTrashTaskHeaderAdapter.headerState = uiModel.headerState
+                        trashTaskFooterAdapter.footerState = uiModel.footerState
                     }
                 }
             }

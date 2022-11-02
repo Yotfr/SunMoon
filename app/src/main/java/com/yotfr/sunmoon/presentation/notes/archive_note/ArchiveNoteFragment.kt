@@ -14,6 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -25,6 +26,7 @@ import com.yotfr.sunmoon.presentation.notes.NoteRootFragmentDirections
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.BottomSheetAddEditNoteFragment
 import com.yotfr.sunmoon.presentation.notes.archive_note.adapter.ArchiveNoteAdapter
 import com.yotfr.sunmoon.presentation.notes.archive_note.adapter.ArchiveNoteListDelegate
+import com.yotfr.sunmoon.presentation.notes.archive_note.adapter.ArchiveNoteListFooterAdapter
 import com.yotfr.sunmoon.presentation.notes.archive_note.adapter.ArchiveNoteListItemCallback
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteUiEvent
@@ -40,6 +42,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
     private lateinit var searchView: SearchView
     private lateinit var binding: FragmentArchiveNoteBinding
     private lateinit var archiveNoteListAdapter: ArchiveNoteAdapter
+    private lateinit var archiveNoteListFooterAdapter: ArchiveNoteListFooterAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,7 +96,17 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
                 )
             }
         })
-        binding.rvArchiveNote.adapter = archiveNoteListAdapter
+        archiveNoteListFooterAdapter = ArchiveNoteListFooterAdapter()
+
+        val concatAdapter = ConcatAdapter(
+            ConcatAdapter.Config.Builder()
+                .setIsolateViewTypes(false)
+                .build(),
+            archiveNoteListAdapter,
+            archiveNoteListFooterAdapter
+        )
+
+        binding.rvArchiveNote.adapter = concatAdapter
         binding.rvArchiveNote.layoutManager = archiveNoteLayoutManager
         binding.rvArchiveNote.addItemDecoration(
             MarginItemDecoration(
@@ -107,7 +120,8 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     uiState?.let { notes ->
-                        archiveNoteListAdapter.notes = notes
+                        archiveNoteListAdapter.notes = notes.notes
+                        archiveNoteListFooterAdapter.footerState = notes.footerState
                     }
                 }
             }

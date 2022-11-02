@@ -9,7 +9,9 @@ import com.yotfr.sunmoon.presentation.task.outdated_task_list.event.OutdatedTask
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.mapper.OutdatedTaskListMapper
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedCompletedHeaderStateModel
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedDeleteOption
+import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedFooterModel
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTaskListUiStateModel
+import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledFooterModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +42,10 @@ class OutdatedTaskViewModel @Inject constructor(
         OutdatedCompletedHeaderStateModel()
     )
 
+    private val outdatedFooterState = MutableStateFlow(
+        OutdatedFooterModel()
+    )
+
     private val currentDate = getCurrentDate()
 
     private val _uiState = MutableStateFlow<OutdatedTaskListUiStateModel?>(null)
@@ -67,7 +73,10 @@ class OutdatedTaskViewModel @Inject constructor(
                         outdatedTaskListMapper.fromDomainList(state.second, _sdfPattern.value,
                         currentDate)
                     } else emptyList(),
-                    headerState = state.third
+                    headerState = state.third,
+                    footerState  = outdatedFooterState.value.copy(
+                        isVisible = (state.first.isEmpty() && state.second.isEmpty())
+                    )
                 )
             }
         }

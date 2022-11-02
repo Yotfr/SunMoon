@@ -2,6 +2,7 @@ package com.yotfr.sunmoon.presentation.notes
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavDirections
@@ -88,6 +89,17 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
         tabListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 selectFragment(tab?.position!!)
+                when(tab.position) {
+                    0 -> {
+                        binding.fragmentNoteRootFab.show()
+                    }
+                    1 -> {
+                        binding.fragmentNoteRootFab.hide()
+                    }
+                    2 -> {
+                        binding.fragmentNoteRootFab.show()
+                    }
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -96,6 +108,22 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         }
+
+        binding.fragmentNoteRootScrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                if (scrollY > oldScrollY && binding.fragmentNoteRootFab.isShown) {
+                    binding.fragmentNoteRootFab.hide()
+                }
+
+                if (scrollY < oldScrollY && !binding.fragmentNoteRootFab.isShown) {
+                    binding.fragmentNoteRootFab.show()
+                }
+
+                if (scrollY == 0) {
+                    binding.fragmentNoteRootFab.show()
+                }
+            }
+        )
 
         binding.fragmentNoteRootFab.setOnClickListener {
             when (selectedIndex) {

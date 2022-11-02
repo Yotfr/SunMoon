@@ -172,7 +172,14 @@
     <string name="no_task_in_scheduled">No scheduled tasks</string>
     <string name="no_task_in_unplanned">No unplanned tasks</string>
     <string name="no_task_in_outdated">You have not missed any tasks</string>
+    <string name="no_note_in_note">No notes</string>
+    <string name="no_note_in_archive">No archive notes</string>
+    <string name="no_note_in_trash">You have not delete any notes</string>
+    <string name="no_task_in_trash">You have not delete any tasks</string>
+    <string name="no_category_in_categories">No categories</string>
     <string name="click_add_to_create">Click + to create your task</string>
+    <string name="click_add_to_create_note">Click + to create your note</string>
+    <string name="click_add_to_create_category">Click + to create your category</string>
 
     <string name="am_pm">12 Hour</string>
     <string name="normal_hour">24 Hour</string>

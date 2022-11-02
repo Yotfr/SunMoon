@@ -29,7 +29,6 @@
             tools:text="Do your stuff" />
 
         <CheckBox
-            android:enabled="false"
             android:id="@+id/item_unplanned_completed_task_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

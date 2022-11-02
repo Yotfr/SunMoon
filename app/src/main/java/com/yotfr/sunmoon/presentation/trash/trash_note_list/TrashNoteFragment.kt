@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -21,6 +22,7 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentTrashNoteBinding
 import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNoteDelegate
+import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNoteFooterAdapter
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNoteListItemCallback
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNotesAdapter
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.event.TrashNoteEvent
@@ -36,6 +38,7 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
     private lateinit var searchView: SearchView
     private lateinit var binding: FragmentTrashNoteBinding
     private lateinit var trashNotesAdapter: TrashNotesAdapter
+    private lateinit var trashNotesFooterAdapter: TrashNoteFooterAdapter
 
     private val viewModel by viewModels<TrashNoteViewModel>()
 
@@ -86,7 +89,7 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
 
 
 
-        //initRvAdapter
+        //initRvAdapters
         val linearLayoutManager = LinearLayoutManager(requireContext())
         trashNotesAdapter = TrashNotesAdapter()
         trashNotesAdapter.attachDelegate(object : TrashNoteDelegate {
@@ -94,7 +97,18 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
                 //TODO
             }
         })
-        binding.fragmentTrashNoteRv.adapter = trashNotesAdapter
+
+        trashNotesFooterAdapter = TrashNoteFooterAdapter()
+
+        val concatAdapter = ConcatAdapter(
+            ConcatAdapter.Config.Builder()
+                .setIsolateViewTypes(false)
+                .build(),
+            trashNotesAdapter,
+            trashNotesFooterAdapter
+        )
+
+        binding.fragmentTrashNoteRv.adapter = concatAdapter
         binding.fragmentTrashNoteRv.layoutManager = linearLayoutManager
         binding.fragmentTrashNoteRv.addItemDecoration(
             MarginItemDecoration(
@@ -108,7 +122,8 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { noteState ->
                     noteState?.let { notes ->
-                        trashNotesAdapter.deletedNotes = notes
+                        trashNotesAdapter.deletedNotes = notes.notes
+                        trashNotesFooterAdapter.footerState = notes.footerState
                     }
                 }
             }

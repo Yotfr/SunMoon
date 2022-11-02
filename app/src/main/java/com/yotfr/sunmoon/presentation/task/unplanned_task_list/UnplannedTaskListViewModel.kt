@@ -8,6 +8,7 @@ import com.yotfr.sunmoon.presentation.task.unplanned_task_list.event.UnplannedTa
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.mapper.UnplannedTaskListMapper
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedCompletedHeaderStateModel
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedDeleteOption
+import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedFooterModel
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedTaskListUiStateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -32,6 +33,10 @@ class UnplannedTaskListViewModel @Inject constructor(
         UnplannedCompletedHeaderStateModel()
     )
 
+    private val unplannedFooterState = MutableStateFlow(
+        UnplannedFooterModel()
+    )
+
     private val _uiState = MutableStateFlow<UnplannedTaskListUiStateModel?>(null)
     val uiState = _uiState.asStateFlow()
 
@@ -54,7 +59,10 @@ class UnplannedTaskListViewModel @Inject constructor(
                     completedTasks = if (completedTasksHeaderState.value.isExpanded) {
                         unplannedTaskListMapper.fromDomainList(state.second)
                     } else emptyList(),
-                    headerState = state.third
+                    headerState = state.third,
+                    footerState = unplannedFooterState.value.copy(
+                        isVisible = (state.first.isEmpty() && state.second.isEmpty())
+                    )
                 )
             }
         }

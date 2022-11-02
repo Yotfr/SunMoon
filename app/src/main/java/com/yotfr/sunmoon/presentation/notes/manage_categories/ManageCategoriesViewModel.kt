@@ -6,7 +6,8 @@ import com.yotfr.sunmoon.domain.interactor.note.NoteUseCase
 import com.yotfr.sunmoon.presentation.notes.manage_categories.event.ManageCategoriesEvent
 import com.yotfr.sunmoon.presentation.notes.manage_categories.event.ManageCategoriesUiEvent
 import com.yotfr.sunmoon.presentation.notes.manage_categories.mapper.ManageCategoriesMapper
-import com.yotfr.sunmoon.presentation.notes.manage_categories.model.ManageCategoriesModel
+import com.yotfr.sunmoon.presentation.notes.manage_categories.model.ManageCategoriesFooterModel
+import com.yotfr.sunmoon.presentation.notes.manage_categories.model.ManageCategoriesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -20,7 +21,7 @@ class ManageCategoriesViewModel @Inject constructor(
 
     private val manageCategoriesMapper = ManageCategoriesMapper()
 
-    private val _uiState = MutableStateFlow<List<ManageCategoriesModel>?>(null)
+    private val _uiState = MutableStateFlow<ManageCategoriesUiState?>(null)
     val uiState = _uiState.asStateFlow()
 
     private val _uiEvent = Channel<ManageCategoriesUiEvent>()
@@ -29,8 +30,13 @@ class ManageCategoriesViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             noteUseCase.getCategoryList().collect { categories ->
-                _uiState.value = manageCategoriesMapper.fromDomainList(
-                    categories
+                _uiState.value = ManageCategoriesUiState(
+                    categories = manageCategoriesMapper.fromDomainList(
+                        categories
+                    ),
+                    footerState = ManageCategoriesFooterModel(
+                        isVisible = categories.isEmpty()
+                    )
                 )
             }
         }

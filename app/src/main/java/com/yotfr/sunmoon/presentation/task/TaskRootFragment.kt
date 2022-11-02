@@ -2,6 +2,7 @@ package com.yotfr.sunmoon.presentation.task
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
@@ -89,6 +90,17 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
         tabListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 selectFragment(tab?.position!!)
+                when (tab.position) {
+                    0 -> {
+                        binding.fragmentTaskRootFab.show()
+                    }
+                    1 -> {
+                        binding.fragmentTaskRootFab.show()
+                    }
+                    2 -> {
+                        binding.fragmentTaskRootFab.hide()
+                    }
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -97,6 +109,22 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         }
+
+        binding.fragmentTaskRootScrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                if (scrollY > oldScrollY && binding.fragmentTaskRootFab.isShown) {
+                    binding.fragmentTaskRootFab.hide()
+                }
+
+                if (scrollY < oldScrollY && !binding.fragmentTaskRootFab.isShown) {
+                    binding.fragmentTaskRootFab.show()
+                }
+
+                if (scrollY == 0) {
+                    binding.fragmentTaskRootFab.show()
+                }
+            }
+        )
 
         binding.fragmentTaskRootFab.setOnClickListener {
             when (selectedIndex) {
