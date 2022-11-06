@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    style="@style/ThemeOverlay.SimpleToDo.BottomSheetDialog"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -43,7 +42,7 @@
 
     <Button
         android:id="@+id/fragment_add_edit_note_btn_add_category"
-        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        style="@style/Widget.SunMoon.Button.OutlinedButton"
         tools:text="Without category"
         app:layout_constraintTop_toBottomOf="@id/etNoteDescription"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +68,7 @@
         android:layout_marginTop="@dimen/small_margin"
         app:layout_constraintTop_toBottomOf="@id/etNoteDescription"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.SimpleToDo.Button.ContainedButton.IconOnly" />
+        style="@style/Widget.SunMoon.Button.IconButton.Filled"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

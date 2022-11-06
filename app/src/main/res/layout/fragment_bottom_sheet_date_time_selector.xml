@@ -11,16 +11,15 @@
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
-        android:dateTextAppearance="@style/CalenderViewDateCustomText"
+        android:layout_height="300dp"
+        android:theme="@style/Theme.Custom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnSelectedTime"
-        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        style="@style/Widget.SunMoon.Button.OutlinedButton.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:icon="@drawable/ic_clock"
@@ -31,7 +30,7 @@
 
     <Button
         android:id="@+id/btnReminder"
-        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        style="@style/Widget.SunMoon.Button.OutlinedButton.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:icon="@drawable/ic_ring"
@@ -54,7 +53,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipToday"
-            style="@style/Widget.SimpleToDo.Chip.Choice"
+            style="@style/Widget.SunMoon.Chip.Suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="today"
@@ -62,7 +61,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipTomorrow"
-            style="@style/Widget.SimpleToDo.Chip.Choice"
+            style="@style/Widget.SunMoon.Chip.Suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="tomorrow"
@@ -70,7 +69,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipInTwoDays"
-            style="@style/Widget.SimpleToDo.Chip.Choice"
+            style="@style/Widget.SunMoon.Chip.Suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="intwodays"
@@ -78,7 +77,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipNextWeek"
-            style="@style/Widget.SimpleToDo.Chip.Choice"
+            style="@style/Widget.SunMoon.Chip.Suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="nextweek"
@@ -86,7 +85,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipOnWeekend"
-            style="@style/Widget.SimpleToDo.Chip.Choice"
+            style="@style/Widget.SunMoon.Chip.Suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="onweekend"
@@ -94,7 +93,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipWithoutDate"
-            style="@style/Widget.SimpleToDo.Chip.Choice"
+            style="@style/Widget.SunMoon.Chip.Suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="withoutdate"
@@ -104,7 +103,7 @@
 
     <Button
         android:id="@+id/btnCancel"
-        style="@style/Widget.SimpleToDo.Button.TextButton"
+        style="@style/Widget.SunMoon.Button.TextButton"
         android:textColor="?attr/colorSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -114,7 +113,7 @@
 
     <Button
         android:id="@+id/btnWithoutDate"
-        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        style="@style/Widget.SunMoon.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -125,7 +124,7 @@
 
     <Button
         android:id="@+id/btnReschedule"
-        style="@style/Widget.SimpleToDo.Button.TextButton"
+        style="@style/Widget.SunMoon.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reschedule"

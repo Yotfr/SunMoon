@@ -33,19 +33,19 @@ class MainActivity : AppCompatActivity() {
             Log.d("TESTAC","${dataStoreRepository.getTheme()}")
                 when(dataStoreRepository.getTheme()) {
                     "orange" -> {
-                        theme.applyStyle(R.style.OverlayThemeOrange, true)
+                        theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
                     "pink" -> {
-                        theme.applyStyle(R.style.OverlayThemePink, true)
+                        theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
                     "yellow" -> {
-                        theme.applyStyle(R.style.OverlayThemeYellow, true)
+                        theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
                     "night" -> {
-                        theme.applyStyle(R.style.OverlayThemeNight, true)
+                        theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
                     else -> {
-                        theme.applyStyle(R.style.OverlayThemeOrange, true)
+                        theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
                 }
         }

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background ="?attr/colorSurface"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/default_padding"
@@ -16,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:textColor="?attr/colorSecondary"
+            tools:text ="My new task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -28,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_margin"
         app:icon = "@drawable/ic_empty_calendar"
-        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        style="@style/Widget.SunMoon.Button.OutlinedButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textFieldTaskDescription"
         tools:text="Today" />
@@ -39,14 +40,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/small_margin"
         app:icon ="@drawable/ic_clock"
-        style="@style/Widget.SimpleToDo.Button.OutlinedButton"
+        style="@style/Widget.SunMoon.Button.OutlinedButton"
         app:layout_constraintStart_toEndOf="@+id/chipScheduledDate"
         app:layout_constraintTop_toTopOf="@+id/chipScheduledDate"
         tools:text="16:35" />
 
     <Button
         android:id="@+id/btnAddTask"
-        style="@style/Widget.SimpleToDo.Button.ContainedButton.IconOnly"
+        style="@style/Widget.SunMoon.Button.IconButton.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"

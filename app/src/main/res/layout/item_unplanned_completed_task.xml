@@ -4,12 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_unplanned_completed_task_card"
+    style="@style/Widget.SunMoon.CardView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:strokeWidth="@dimen/default_stroke_width"
-    app:strokeColor="?attr/colorSecondary"
-    app:cardCornerRadius="@dimen/default_corner_radius"
-    android:elevation="0dp">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,12 +17,12 @@
             android:id="@+id/item_unplanned_completed_task_tv_task_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
+            android:textColor="?attr/colorSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toTopOf="parent"
-            android:textColor="?attr/colorSecondary"
-            android:layout_marginEnd="@dimen/default_margin"
-            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
             tools:text="Do your stuff" />
 
         <CheckBox
@@ -33,25 +30,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/selector_checkbox"
-            app:useMaterialThemeColors ="false"
             app:layout_constraintBottom_toBottomOf="@+id/item_unplanned_completed_task_tv_task_description"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/item_unplanned_completed_task_tv_task_description" />
+            app:layout_constraintTop_toTopOf="@+id/item_unplanned_completed_task_tv_task_description"
+            app:useMaterialThemeColors="false" />
 
         <TextView
             android:id="@+id/item_unplanned_completed_task_set_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
-            android:textColor="?attr/colorSecondary"
+            android:alpha="0.5"
+            app:drawableRightCompat="@drawable/ic_empty_calendar"
+            app:drawableTint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_unplanned_completed_task_cb"
-            app:drawableRightCompat="@drawable/ic_empty_calendar"
-            app:drawableTint="?attr/colorPrimary"
-            android:alpha="0.5"/>
+            app:layout_constraintTop_toBottomOf="@+id/item_unplanned_completed_task_cb" />
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/item_unplanned_completed_task_task_progress"

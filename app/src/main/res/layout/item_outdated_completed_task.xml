@@ -11,10 +11,7 @@
         android:id="@+id/item_outdated_completed_task_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeWidth="3dp"
-        app:strokeColor="?attr/colorSecondaryVariant"
-        app:cardCornerRadius="16dp"
-        android:elevation="0dp">
+        style="@style/Widget.SunMoon.CardView">
 
         <LinearLayout
             android:orientation="vertical"
@@ -36,7 +33,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:textColor="?attr/colorSecondary"
                     android:layout_marginEnd="@dimen/default_margin"
-                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+                    android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
                     tools:text="Do your stuff" />
 
                 <CheckBox
@@ -58,7 +55,7 @@
                     android:id="@+id/item_outdated_completed_task_tv_scheduled_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+                    android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
                     android:textColor="?attr/colorSecondary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -71,8 +68,6 @@
                     android:alpha="0.5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
-                    android:textColor="?attr/colorSecondary"
                     app:drawableRightCompat="@drawable/ic_clock"
                     app:drawableTint="?attr/colorSecondary"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -114,13 +109,13 @@
                     tools:text ="Task overdue on 2 days"
                     android:layout_marginStart="@dimen/default_margin"
                     android:layout_marginEnd="@dimen/default_margin"
-                    android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+                    android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
                     android:textColor="?attr/colorSecondary"
                     android:alpha="0.5"/>
 
                 <Button
                     android:id="@+id/item_outdated_completed_task_reschedule"
-                    style="@style/Widget.SimpleToDo.Button.TextButton"
+                    style="@style/Widget.SunMoon.Button.TextButton"
                     android:text="@string/reschedule"
                     android:layout_width="0dp"
                     android:layout_weight="1"

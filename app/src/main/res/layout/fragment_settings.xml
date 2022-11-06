@@ -32,7 +32,7 @@
 
             <TextView
                 android:text="@string/customize"
-                android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+                android:textAppearance="@style/TextAppearance.SunMoon.TitleMedium"
                 android:textColor="?attr/colorSecondary"
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_width="match_parent"
@@ -40,9 +40,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                app:cardCornerRadius="@dimen/default_corner_radius"
-                app:strokeColor="?attr/colorSecondary"
-                app:strokeWidth="@dimen/default_stroke_width"
+                style="@style/Widget.SunMoon.CardView"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginEnd="@dimen/default_margin"
@@ -51,7 +49,7 @@
 
                 <Button
                     android:id="@+id/btnChangeTheme"
-                    style="@style/Widget.SimpleToDo.Button.TextButton"
+                    style="@style/Widget.SunMoon.Button.TextButton"
                     app:icon = "@drawable/ic_theme"
                     android:text="@string/theme"
                     android:textAlignment="textStart"
@@ -62,7 +60,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+                android:textAppearance="@style/TextAppearance.SunMoon.TitleMedium"
                 android:textColor="?attr/colorSecondary"
                 android:layout_marginStart="@dimen/default_margin"
                 android:text="@string/date_time"
@@ -71,9 +69,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                app:cardCornerRadius="@dimen/default_corner_radius"
-                app:strokeColor="?attr/colorSecondary"
-                app:strokeWidth="@dimen/default_stroke_width"
+                style="@style/Widget.SunMoon.CardView"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginEnd="@dimen/default_margin"
@@ -87,7 +83,7 @@
 
                     <Button
                         android:id="@+id/btnTimeFormat"
-                        style="@style/Widget.SimpleToDo.Button.TextButton"
+                        style="@style/Widget.SunMoon.Button.TextButton"
                         app:icon = "@drawable/ic_time"
                         android:text="@string/time_format"
                         android:textAlignment="textStart"
@@ -97,7 +93,7 @@
 
                     <Button
                         android:id="@+id/btnDateFormat"
-                        style="@style/Widget.SimpleToDo.Button.TextButton"
+                        style="@style/Widget.SunMoon.Button.TextButton"
                         app:icon = "@drawable/ic_calendar"
                         android:text="@string/date_format"
                         android:textAlignment="textStart"
@@ -116,16 +112,14 @@
             <TextView
                 android:textColor="?attr/colorSecondary"
                 android:layout_marginStart="@dimen/default_margin"
-                android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+                android:textAppearance="@style/TextAppearance.SunMoon.TitleMedium"
                 android:text="@string/general"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                app:cardCornerRadius="@dimen/default_corner_radius"
-                app:strokeColor="?attr/colorSecondary"
-                app:strokeWidth="@dimen/default_stroke_width"
+                style="@style/Widget.SunMoon.CardView"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginEnd="@dimen/default_margin"
@@ -133,7 +127,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    style="@style/Widget.SimpleToDo.Button.TextButton"
+                    style="@style/Widget.SunMoon.Button.TextButton"
                     app:icon = "@drawable/ic_language"
                     android:text="@string/language"
                     android:textAlignment="textStart"

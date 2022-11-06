@@ -207,7 +207,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     private fun createHeaderChip():Chip{
         val chip = Chip(requireContext())
         val drawable = ChipDrawable.createFromAttributes(requireContext(),null,0,
-        R.style.Widget_SimpleToDo_Chip_Choice_Primary)
+        R.style.Widget_SunMoon_Chip_Suggestion)
         chip.apply {
             setChipDrawable(drawable)
             text = getString(R.string.all)
@@ -219,7 +219,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     private fun createCategoryChip(text:String, categoryId:Long):Chip{
         val chip = Chip(requireContext())
         val drawable = ChipDrawable.createFromAttributes(requireContext(),null,0,
-            R.style.Widget_SimpleToDo_Chip_Choice_Primary)
+            R.style.Widget_SunMoon_Chip_Suggestion)
         chip.apply {
             setChipDrawable(drawable)
             setText(text)

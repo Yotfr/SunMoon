@@ -10,18 +10,20 @@
 
     <TextView
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.SimpleToDo.Body2"
+        android:layout_width="0dp"
+        android:layout_weight="5"
+        android:gravity="start|center"
+        android:textAppearance="@style/TextAppearance.SunMoon.BodySmall"
         android:textColor="?attr/colorPrimary"
         android:text="@string/add_category"
         android:layout_height="match_parent"/>
 
     <Button
         android:id="@+id/btnAddCategoryPopUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Widget.SimpleToDo.Button.TextButton.IconOnly"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        style="@style/Widget.SunMoon.Button.IconButton"
         app:icon ="@drawable/ic_add"/>
 
 </LinearLayout>

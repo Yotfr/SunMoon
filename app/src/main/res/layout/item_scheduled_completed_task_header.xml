@@ -14,7 +14,7 @@
         android:layout_marginStart="@dimen/default_margin"
         android:gravity="center"
         android:text="@string/completed_tasks"
-        android:textAppearance="@style/TextAppearance.SimpleToDo.Body1" />
+        android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"/>
 
     <Space
         android:layout_width="0dp"

@@ -10,24 +10,24 @@
         android:layout_marginTop="@dimen/default_margin"
         android:maxLines="1"
         android:layout_weight="15"
-        android:textAppearance="@style/TextAppearance.SimpleToDo.Body2"
+        android:textAppearance="@style/TextAppearance.SunMoon.BodySmall"
         android:textColor="?attr/colorSecondary"
         tools:text="Personal"
         android:layout_marginStart="@dimen/default_margin"
         android:id="@+id/tv_pop_up_menu_item"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
     <TextView
         android:layout_marginTop="@dimen/default_margin"
-        android:textAppearance="@style/TextAppearance.SimpleToDo.Body2"
+        android:textAppearance="@style/TextAppearance.SunMoon.BodySmall"
         android:textColor="?attr/colorSecondary"
         android:layout_marginStart="@dimen/small_margin"
         tools:text="4"
         android:layout_weight="1"
         android:id="@+id/tv_pop_up_menu_note_count"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
 
 </LinearLayout>

@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
     <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.SunMoon.CardView"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:background="?attr/colorSurface"
         android:id="@+id/item_scheduled_task_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:strokeWidth="@dimen/default_stroke_width"
-        app:strokeColor="?attr/colorSecondary"
-        app:cardCornerRadius="@dimen/default_corner_radius"
-        android:elevation="0dp">
+        android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,8 +18,8 @@
             android:id="@+id/item_scheduled_task_tv_task_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
             android:textColor="?attr/colorSecondary"
             app:layout_constraintEnd_toStartOf="@id/item_importance_task_cb"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -45,7 +41,7 @@
             android:id="@+id/item_scheduled_task_tv_scheduled_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+            android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
             android:textColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -57,8 +53,6 @@
             android:id="@+id/item_scheduled_task_tv_set_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
-            android:textColor="?attr/colorSecondary"
             app:drawableRightCompat="@drawable/ic_add_time"
             app:drawableTint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +65,7 @@
             android:id="@+id/item_scheduled_task_task_progress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/default_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"

@@ -13,7 +13,7 @@
         android:layout_marginEnd="@dimen/small_margin"
         android:layout_marginStart="@dimen/small_margin"
         android:textColor="?attr/colorSecondary"
-        android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+        android:textAppearance="@style/TextAppearance.SunMoon.TitleMedium"
         android:text="@string/add_sub_task"/>
 
     <com.google.android.material.textfield.TextInputLayout

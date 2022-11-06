@@ -43,6 +43,19 @@
     <color name="error_transparent_night">#59a00037</color>
 
 
+    //orangeThemeSunMoon
+    <color name="background_color_sunMoon">#FFF2EDE6</color>
+    <color name="on_background_color_sunMoon">#211c00</color>
+    <color name="surface_color_sunMoon">#fffbff</color>
+    <color name="on_surface_color_sunMoon">#211c00</color>
+    <color name="primary_color_sunMoon">#a33d27</color>
+    <color name="on_primary_color_sunMoon">#ffffff</color>
+    <color name="primary_container_color_sunMoon">#ffdad3</color>
+    <color name="on_primary_container_color_sunMoon">#3d0500</color>
+    <color name="secondary_color_sunMoon">#3d5aa9</color>
+    <color name="on_secondary_color_sunMoon">#ffffff</color>
+    <color name="secondary_container_color_sunMoon">#dbe1ff</color>
+    <color name="on_secondary_container_color_sunMoon">#00174a</color>
 
 
 </resources>

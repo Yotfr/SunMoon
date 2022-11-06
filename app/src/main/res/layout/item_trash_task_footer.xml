@@ -15,7 +15,7 @@
     <TextView
         android:textColor="?attr/colorSecondary"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.SimpleToDo.Subtitle1"
+        android:textAppearance="@style/TextAppearance.SunMoon.TitleMedium"
         android:text="@string/no_task_in_trash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

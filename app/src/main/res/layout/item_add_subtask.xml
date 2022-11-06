@@ -10,7 +10,7 @@
         android:id="@+id/btnAddSubTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.SimpleToDo.Button.TextButton.IconOnly"
+        style="@style/Widget.SunMoon.Button.IconButton"
         app:icon ="@drawable/ic_add"/>
 
     <TextView
@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:text="@string/add_sub_task"
         android:textColor="?attr/colorPrimary"
-        android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+        android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
         android:gravity="center"/>
 
 

@@ -1,26 +1,31 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SimpleToDo" parent="Theme.MaterialComponents.Light.NoActionBar">
 
-        <item name="android:windowLightStatusBar">true</item>
+    <style name="Theme.SunMoon" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/primary_color_sunMoon</item>
+        <item name="colorOnPrimary">@color/on_primary_color_sunMoon</item>
+        <item name="colorPrimaryContainer">@color/primary_container_color_sunMoon</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container_color_sunMoon</item>
+        <item name="colorSecondary">@color/secondary_color_sunMoon</item>
+        <item name="colorOnSecondary">@color/on_secondary_color_sunMoon</item>
+        <item name="colorSecondaryContainer">@color/secondary_container_color_sunMoon</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container_color_sunMoon</item>
+        <item name="colorSurface">@color/surface_color_sunMoon</item>
+        <item name="colorOnSurface">@color/on_surface_color_sunMoon</item>
+        <item name="backgroundColor">@color/background_color_sunMoon</item>
+        <item name="colorOnBackground">@color/on_background_color_sunMoon</item>
+
+
+        <item name="toolbarStyle">@style/Widget.SunMoon.Toolbar</item>
+        <item name="floatingActionButtonStyle">@style/Widget.SunMoon.FloatingActionButton</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.SunMoon.BottomSheetDialog</item>
+        <item name="tabStyle">@style/Widget.SunMoon.TabLayout</item>
+        <item name="textInputStyle">@style/Widget.SunMoon.TextInputLayout</item>
+
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="colorControlNormal">?attr/colorOnSurface</item>
-
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.SimpleToDo.BottomSheetDialog</item>
-
-        <item name="toolbarStyle">@style/Widget.SimpleToDo.Toolbar</item>
-        <item name="materialDividerStyle">@style/Widget.SimpleToDo.MaterialDivider</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.SimpleToDo.LinearProgressIndicator</item>
-
-        <item name="floatingActionButtonStyle">@style/Widget.SimpleToDo.FloatingActionButton</item>
-        <item name="extendedFloatingActionButtonStyle">@style/Widget.SimpleToDo.ExtendedFloatingActionButton</item>
-        <item name="materialButtonOutlinedStyle">@style/Widget.SimpleToDo.Button.OutlinedButton</item>
-        <item name="textInputStyle">@style/Widget.SimpleToDo.TextInputLayout</item>
-
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.SimpleToDo.MaterialAlertDialog</item>
-
-        <item name="android:textColorPrimary">?attr/colorPrimary</item>
-
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorControlNormal">?attr/colorPrimary</item>
     </style>
 
 </resources>

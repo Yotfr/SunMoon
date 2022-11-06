@@ -6,10 +6,7 @@
     android:id="@+id/item_trashed_completed_task_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:strokeWidth="@dimen/default_stroke_width"
-    app:strokeColor="?attr/colorSecondaryVariant"
-    app:cardCornerRadius="@dimen/default_corner_radius"
-    android:elevation="0dp">
+    style="@style/Widget.SunMoon.CardView">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:textColor="?attr/colorSecondary"
             android:layout_marginEnd="@dimen/default_margin"
-            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+            android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
             tools:text="Do your stuff" />
 
         <CheckBox
@@ -57,7 +54,7 @@
             android:id="@+id/item_trashed_completed_task_tv_scheduled_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.SimpleToDo.Body1"
+            android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
             android:textColor="?attr/colorPrimary"
             android:alpha="0.5"
             app:layout_constraintBottom_toBottomOf="parent"

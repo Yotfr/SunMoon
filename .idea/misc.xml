@@ -3,18 +3,59 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/drawable/ic_checkbox_checked.xml" value="0.128" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/drawable/ic_checkbox_unchecked.xml" value="0.128" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/drawable/selector_checkbox.xml" value="0.128" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_task_root.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/dialog_fragment_add_category.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/dialog_fragment_add_subtask.xml" value="0.264" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_archive_note.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_bottom_sheet_add_edit_note.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_bottom_sheet_add_task.xml" value="0.264" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_bottom_sheet_date_time_selector.xml" value="0.264" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_drawer_header.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_manage_categories.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_note_list.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_note_root.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_outdated_task_list.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_scheduled_task_list.xml" value="0.264" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_settings.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_task_details.xml" value="0.264" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_task_root.xml" value="0.1" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_theme_picker.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_trash_note.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_trash_root.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/fragment_trash_task.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_add_subtask.xml" value="0.2" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_archive_note.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_archive_note_list_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_calendar.xml" value="0.4" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_category_manage.xml" value="0.264" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_manage_categories_footer.xml" value="0.17883211678832117" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_note.xml" value="0.264" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_note_list_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_outdated_completed_task.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_outdated_completed_task_header.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_outdated_task.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_outdated_task_footer.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_scheduled_task_footer.xml" value="0.1" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_pop_up_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_pop_up_menu_footer.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_scheduled_completed_task.xml" value="0.264" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_scheduled_completed_task_header.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_scheduled_task.xml" value="0.264" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_scheduled_task_footer.xml" value="0.4" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_subtask.xml" value="0.264" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trash_note_footer.xml" value="0.253125" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trash_task_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trashed_completed_task.xml" value="0.2" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trashed_completed_task_header.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trashed_note.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_trashed_task.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_unplanned_completed_task.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_unplanned_completed_task_header.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_unplanned_task.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/layout/item_unplanned_task_footer.xml" value="0.253125" />
+        <entry key="..\:/Users/nexus/AndroidStudioProjects/SunMoon/app/src/main/res/menu/app_bar_menu_list.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>
