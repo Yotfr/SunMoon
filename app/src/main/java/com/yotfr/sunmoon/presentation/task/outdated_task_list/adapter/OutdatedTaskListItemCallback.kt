@@ -23,6 +23,7 @@ class OutdatedTaskListItemCallback(
     private val iconBounds = Rect()
     private val backgroundRect = RectF()
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -70,7 +71,7 @@ class OutdatedTaskListItemCallback(
         val itemView: View = viewHolder.itemView
         val typedValueInactive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorPrimaryVariant,
+            com.google.android.material.R.attr.colorPrimaryContainer,
             typedValueInactive,
             true
         )
@@ -90,23 +91,32 @@ class OutdatedTaskListItemCallback(
             if (abs(dX) > layoutMargin ){
                 if (abs(dX) < (itemView.width*0.4f) ) {
                     drawBackground(c, itemView, inactiveColor)
-                    drawIcon(c, itemView)
+                    drawIconWithText(c, itemView)
                 }else {
                     drawBackground(c,itemView,activeColor)
-                    drawIcon(c, itemView)
+                    drawIconWithText(c, itemView)
                 }
             }
         }
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    private fun drawIcon(canvas: Canvas, itemView: View) {
+    private fun drawIconWithText(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
-        val icon = ContextCompat.getDrawable(itemView.context,R.drawable.ic_delete_large) ?: throw
+        val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
+
+        val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
-        val iconTint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
-        icon.setTint(iconTint)
+
+        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        icon.setTint(tint)
+
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
+
+        val text = itemView.resources.getString(R.string.delete)
+
+
+
 
         with(iconBounds) {
             left = itemView.left + layoutMargin
@@ -115,9 +125,20 @@ class OutdatedTaskListItemCallback(
             bottom = itemView.bottom - margin
         }
 
+        with(textPaint) {
+            color = tint
+            textSize = 40F
+            textAlign = android.graphics.Paint.Align.CENTER
+        }
+
+        val textY =
+            (itemView.top + itemView.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+        val textX = itemView.left + icon.intrinsicWidth + layoutTextMargin
+
+
+        canvas.drawText(text, textX.toFloat(), textY, textPaint)
         icon.bounds = iconBounds
         icon.draw(canvas)
-
     }
 
     private fun drawBackground(canvas: Canvas, itemView: View, bgColor: Int) {
@@ -131,7 +152,7 @@ class OutdatedTaskListItemCallback(
         with(backgroundPaint) {
             color = bgColor
         }
-        canvas.drawRect(backgroundRect, backgroundPaint)
+        canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
 
 }

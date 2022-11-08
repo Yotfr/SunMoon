@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:button="@drawable/selector_pin"
             android:buttonTint="?attr/colorPrimary"
+            app:buttonTint="@null"
             app:layout_constraintBottom_toBottomOf="@id/tv_note_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

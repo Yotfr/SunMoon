@@ -1,10 +1,8 @@
 package com.yotfr.sunmoon.presentation.task.unplanned_task_list
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -26,6 +24,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
+import com.google.android.material.transition.SlideDistanceProvider
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentUnplannedTaskListBinding
 import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
@@ -37,6 +38,7 @@ import com.yotfr.sunmoon.presentation.task.unplanned_task_list.event.UnplannedTa
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedDeleteOption
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedTaskListModel
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -55,6 +57,14 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
     private lateinit var unplannedCompletedTaskHeaderAdapter: UnplannedCompletedTaskHeaderAdapter
     private lateinit var unplannedFooterAdapter: UnplannedFooterAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUnplannedTaskListBinding.bind(view)
@@ -68,6 +78,10 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
 
                 val searchItem = menu.findItem(R.id.mi_action_search)
                 searchView = searchItem.actionView as SearchView
+
+                val etSearch =
+                    searchView?.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+                etSearch?.setTextColor(requireContext().getColorFromAttr(androidx.appcompat.R.attr.colorPrimary))
 
                 val pendingQuery = viewModel.searchQuery.value
                 if (pendingQuery.isNotEmpty()) {

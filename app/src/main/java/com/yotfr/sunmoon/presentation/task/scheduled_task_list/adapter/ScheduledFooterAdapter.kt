@@ -8,7 +8,6 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemScheduledTaskFooterBinding
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledFooterModel
 
-
 class ScheduledFooterAdapter :
     RecyclerView.Adapter<ScheduledFooterAdapter.ScheduledFooterViewHolder>() {
 

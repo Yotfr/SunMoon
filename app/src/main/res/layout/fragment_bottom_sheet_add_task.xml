@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background ="?attr/colorSurface"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
     android:padding="@dimen/default_padding"
+    android:transitionName="fabToSheet"
     tools:context=".presentation.task.add_task.BottomSheetAddTaskFragment">
+
+    <View
+        app:layout_constraintTop_toTopOf="parent"
+        android:transitionName="fabToSheet"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textFieldTaskDescription"
@@ -17,30 +23,30 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            tools:text ="My new task"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:text="My new task" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/chipScheduledDate"
+        style="@style/Widget.SunMoon.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_margin"
-        app:icon = "@drawable/ic_empty_calendar"
-        style="@style/Widget.SunMoon.Button.OutlinedButton"
+        app:icon="@drawable/ic_empty_calendar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textFieldTaskDescription"
         tools:text="Today" />
 
     <Button
         android:id="@+id/chipScheduledTime"
+        style="@style/Widget.SunMoon.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/small_margin"
-        app:icon ="@drawable/ic_clock"
-        style="@style/Widget.SunMoon.Button.OutlinedButton"
+        app:icon="@drawable/ic_clock"
         app:layout_constraintStart_toEndOf="@+id/chipScheduledDate"
         app:layout_constraintTop_toTopOf="@+id/chipScheduledDate"
         tools:text="16:35" />
@@ -50,8 +56,8 @@
         style="@style/Widget.SunMoon.Button.IconButton.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
         app:icon="@drawable/ic_send"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="@+id/chipScheduledDate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/chipScheduledDate" />

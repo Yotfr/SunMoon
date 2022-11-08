@@ -48,14 +48,43 @@
     <color name="on_background_color_sunMoon">#211c00</color>
     <color name="surface_color_sunMoon">#fffbff</color>
     <color name="on_surface_color_sunMoon">#211c00</color>
-    <color name="primary_color_sunMoon">#a33d27</color>
-    <color name="on_primary_color_sunMoon">#ffffff</color>
-    <color name="primary_container_color_sunMoon">#ffdad3</color>
-    <color name="on_primary_container_color_sunMoon">#3d0500</color>
-    <color name="secondary_color_sunMoon">#3d5aa9</color>
-    <color name="on_secondary_color_sunMoon">#ffffff</color>
-    <color name="secondary_container_color_sunMoon">#dbe1ff</color>
-    <color name="on_secondary_container_color_sunMoon">#00174a</color>
+    <color name="primary_color_sunMoon">#FFF2775C</color>
+    <color name="on_primary_color_sunMoon">#FFF2EDE6</color>
+    <color name="primary_container_color_sunMoon">#75F2775C</color>
+    <color name="on_primary_container_color_sunMoon">#75F2EDE6</color>
+    <color name="secondary_color_sunMoon">#FF7689C4</color>
+    <color name="on_secondary_color_sunMoon">#FFF2EDE6</color>
+    <color name="secondary_container_color_sunMoon">#757689C4</color>
+    <color name="on_secondary_container_color_sunMoon">#75F2EDE6</color>
+
+
+    //greenThemeSunMoon
+    <color name="background_color_sunMoon_green">#FFF2EDE6</color>
+    <color name="on_background_color_sunMoon_green">#211c00</color>
+    <color name="surface_color_sunMoon_green">#fffbff</color>
+    <color name="on_surface_color_sunMoon_green">#211c00</color>
+    <color name="primary_color_sunMoon_green">#FF6EAA91</color>
+    <color name="on_primary_color_sunMoon_green">#FFF2EDE6</color>
+    <color name="primary_container_color_sunMoon_green">#756EAA91</color>
+    <color name="on_primary_container_color_sunMoon_green">#75F2EDE6</color>
+    <color name="secondary_color_sunMoon_green">#FFE57CB5</color>
+    <color name="on_secondary_color_sunMoon_green">#FFF2EDE6</color>
+    <color name="secondary_container_color_sunMoon_green">#75E57CB5</color>
+    <color name="on_secondary_container_color_sunMoon_green">#75F2EDE6</color>
+
+    //nightThemeSunMoon
+    <color name="background_color_sunMoon_night">#FF3A3A3A</color>
+    <color name="on_background_color_sunMoon_night">#211c00</color>
+    <color name="surface_color_sunMoon_night">#FF3A3A3A</color>
+    <color name="on_surface_color_sunMoon_night">#211c00</color>
+    <color name="primary_color_sunMoon_night">#FFF8C922</color>
+    <color name="on_primary_color_sunMoon_night">#FF3A3A3A</color>
+    <color name="primary_container_color_sunMoon_night">#75F8C922</color>
+    <color name="on_primary_container_color_sunMoon_night">#753A3A3A</color>
+    <color name="secondary_color_sunMoon_night">#FFFFFFFF</color>
+    <color name="on_secondary_color_sunMoon_night">#FF3A3A3A</color>
+    <color name="secondary_container_color_sunMoon_night">#75FFFFFF</color>
+    <color name="on_secondary_container_color_sunMoon_night">#753A3A3A</color>
 
 
 </resources>

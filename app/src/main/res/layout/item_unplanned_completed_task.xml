@@ -30,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/selector_checkbox"
+            app:buttonTint="@null"
             app:layout_constraintBottom_toBottomOf="@+id/item_unplanned_completed_task_tv_task_description"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,11 +49,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_unplanned_completed_task_cb" />
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <ProgressBar
             android:id="@+id/item_unplanned_completed_task_task_progress"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="14dp"
             android:layout_marginEnd="@dimen/default_margin"
+            android:progressDrawable="@drawable/progress_bar_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"

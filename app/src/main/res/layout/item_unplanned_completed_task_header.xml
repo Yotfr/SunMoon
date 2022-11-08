@@ -3,6 +3,7 @@
     android:id="@+id/ll_unplanned_completed_header"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -22,6 +23,7 @@
         android:layout_weight="15"/>
 
     <CheckBox
+        app:buttonTint="@null"
         android:id="@+id/btn_unplanned_completed_header_expand"
         android:button="@drawable/selector_drop_down"
         android:buttonTint="?attr/colorPrimary"

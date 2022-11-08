@@ -4,8 +4,10 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.*
 import androidx.core.view.*
 import androidx.core.widget.doOnTextChanged
@@ -15,6 +17,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +29,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialContainerTransform
 import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentTaskDetailsBinding
@@ -38,6 +43,7 @@ import com.yotfr.sunmoon.presentation.task.task_details.event.TaskDetailsUiEvent
 import com.yotfr.sunmoon.presentation.task.task_details.model.State
 import com.yotfr.sunmoon.presentation.task.task_details.model.SubTaskModel
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -47,9 +53,24 @@ import java.util.*
 class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
     private val viewModel by viewModels<TaskDetailsViewModel>()
+    private val args:TaskDetailsFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentTaskDetailsBinding
     private lateinit var subTaskAdapter: SubTaskAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.activity_main_fragment_container
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(
+                requireContext().getColorFromAttr(
+                    com.google.android.material.R.attr.colorSurface
+                )
+            )
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,6 +99,10 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }
         }, viewLifecycleOwner)
 
+
+        //setTransitionName
+        ViewCompat.setTransitionName(binding.root, "task${args.taskId}")
+        Log.d("TRANSITION","set - > ${binding.root.transitionName}")
 
         //initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
@@ -120,11 +145,6 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                     return !viewModel.rvClickAllowed.value
                 }
             }
-        )
-        binding.fragmentTaskDetailsRecyclerview.addItemDecoration(
-            MarginItemDecoration(
-                spaceSize = resources.getDimensionPixelSize(R.dimen.small_margin)
-            )
         )
         initSwipeToDelete()
 

@@ -1,5 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.add_task
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.android.material.transition.MaterialContainerTransform
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentBottomSheetAddTaskBinding
 import com.yotfr.sunmoon.presentation.task.add_task.event.BottomSheetAddTaskEvent
@@ -33,6 +35,12 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentBottomSheetAddTaskBinding
     private val viewModel by viewModels<BottomSheetAddTaskViewModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition =  MaterialContainerTransform()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

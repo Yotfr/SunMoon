@@ -23,6 +23,7 @@
         android:textAppearance="@style/TextAppearance.SunMoon.BodySmall"
         android:textColor="?attr/colorSecondary"
         android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/default_margin"
         tools:text="4"
         android:layout_weight="1"
         android:id="@+id/tv_pop_up_menu_note_count"

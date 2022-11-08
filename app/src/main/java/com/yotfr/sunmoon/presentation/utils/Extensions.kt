@@ -1,5 +1,9 @@
 package com.yotfr.sunmoon.presentation.utils
 
+import android.content.Context
+import android.util.TypedValue
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.SearchView
 
 inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
@@ -13,4 +17,14 @@ inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit)
             return true
         }
     })
+}
+
+@ColorInt
+fun Context.getColorFromAttr(
+    @AttrRes attrColor: Int,
+    typedValue: TypedValue = TypedValue(),
+    resolveRefs: Boolean = true
+): Int {
+    theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+    return typedValue.data
 }

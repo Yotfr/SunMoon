@@ -14,8 +14,7 @@
             app:destination="@id/bottomSheetAddTaskFragment" />
         <action
             android:id="@+id/action_taskRootFragment_to_taskDetailsFragment"
-            app:destination="@id/taskDetailsFragment"
-            app:enterAnim="@anim/transition_scale_enter_animation" />
+            app:destination="@id/taskDetailsFragment" />
     </fragment>
     <dialog
         android:id="@+id/bottomSheetAddTaskFragment"

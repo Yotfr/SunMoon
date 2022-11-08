@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/small_corner_radius"/>
+            <solid android:color="?attr/colorSurface"/>
+            <stroke android:width="2dp" android:color="?attr/colorSecondary"/>
+        </shape>
+    </item>
+
+    <item android:id="@+id/progress" android:drawable="@drawable/progress_bar_indicator_background"
+        android:top="5dp" android:bottom="5dp" android:start="6dp" android:end="6dp">
+    </item>
+
+</layer-list>

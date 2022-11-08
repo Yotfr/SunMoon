@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -212,6 +213,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             setChipDrawable(drawable)
             text = getString(R.string.all)
             tag = CHIP_HEADER_TAG
+            setTextColor(ContextCompat.getColor(requireContext(),R.color.chip_text_color))
         }
         return chip
     }
@@ -223,6 +225,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         chip.apply {
             setChipDrawable(drawable)
             setText(text)
+            setTextColor(ContextCompat.getColor(requireContext(),R.color.chip_text_color))
             tag = categoryId
         }
         return chip

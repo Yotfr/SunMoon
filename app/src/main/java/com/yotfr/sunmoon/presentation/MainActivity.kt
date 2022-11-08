@@ -30,19 +30,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         runBlocking {
-            Log.d("TESTAC","${dataStoreRepository.getTheme()}")
                 when(dataStoreRepository.getTheme()) {
                     "orange" -> {
                         theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
                     "pink" -> {
-                        theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
+                        theme.applyStyle(R.style.OverlayThemeGreenSunMoon, true)
                     }
                     "yellow" -> {
                         theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
                     "night" -> {
-                        theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
+                        theme.applyStyle(R.style.OverlayThemeNightSunMoon, true)
                     }
                     else -> {
                         theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)

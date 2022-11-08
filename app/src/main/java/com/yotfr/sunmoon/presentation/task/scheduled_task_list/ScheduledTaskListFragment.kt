@@ -1,18 +1,28 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
+import android.animation.LayoutTransition
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -21,10 +31,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialFadeThrough
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentScheduledTaskListBinding
-import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
-import com.yotfr.sunmoon.presentation.task.scheduled_task_list.adapter.TaskListItemCallback
 import com.yotfr.sunmoon.presentation.task.TaskRootFragmentDirections
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.adapter.*
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.event.ScheduledTaskListEvent
@@ -33,11 +43,13 @@ import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledTa
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledTaskListModel
 import com.yotfr.sunmoon.presentation.task.task_details.TaskDetailsFragment
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
+import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 @AndroidEntryPoint
 class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list) {
@@ -51,7 +63,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     private lateinit var uncompletedTaskListAdapter: ScheduledUncompletedTaskListAdapter
     private lateinit var completedTaskListAdapter: ScheduledCompletedTaskAdapter
     private lateinit var completedTaskHeaderAdapter: ScheduledCompletedHeaderAdapter
-    private lateinit var scheduledFooterAdapter: ScheduledFooterAdapter
+    private lateinit var footerAdapter: ScheduledFooterAdapter
 
     //Calendar
     private val lastDayInCalendar = Calendar.getInstance(Locale.getDefault())
@@ -68,8 +80,16 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     private val dates = ArrayList<Date>()
     //Calendar
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postponeEnterTransition()
+
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentScheduledTaskListBinding.bind(view)
 
@@ -88,6 +108,10 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
                 val searchItem = menu.findItem(R.id.mi_action_search)
                 searchView = searchItem.actionView as SearchView
+
+                val etSearch =
+                    searchView?.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+                etSearch?.setTextColor(requireContext().getColorFromAttr(androidx.appcompat.R.attr.colorPrimary))
 
                 val pendingQuery = viewModel.searchQuery.value
                 if (pendingQuery.isNotEmpty()) {
@@ -172,13 +196,23 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         val layoutManager = LinearLayoutManager(requireContext())
         uncompletedTaskListAdapter = ScheduledUncompletedTaskListAdapter()
         uncompletedTaskListAdapter.attachDelegate(object : ScheduledUncompletedTaskListDelegate {
-            override fun taskPressed(taskId: Long) {
+            override fun taskPressed(taskId: Long, transitionView: View) {
                 val direction =
                     TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
                         taskId = taskId,
                         destination = TaskDetailsFragment.FROM_SCHEDULED
                     )
-                navigateToDestination(direction = direction)
+                val extras = FragmentNavigatorExtras(
+                    transitionView to
+                            transitionView.transitionName
+                )
+                exitTransition = MaterialElevationScale(false)
+                reenterTransition = MaterialElevationScale(true)
+                Log.d("TRANSITION", "exited - > ${extras.sharedElements}")
+                navigateToDestination(
+                    direction = direction,
+                    extras = extras
+                )
             }
 
             override fun taskCheckBoxPressed(task: ScheduledTaskListModel) {
@@ -220,7 +254,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                         destination = TaskDetailsFragment.FROM_SCHEDULED
                     )
                 //TODO:Rename destination
-                navigateToDestination(direction = direction)
+                val extras = FragmentNavigatorExtras()
+                navigateToDestination(direction = direction, extras)
             }
 
             override fun taskCheckBoxPressed(task: ScheduledTaskListModel) {
@@ -239,7 +274,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 viewModel.onEvent(ScheduledTaskListEvent.ChangeCompletedTasksVisibility)
             }
         })
-        scheduledFooterAdapter = ScheduledFooterAdapter()
+
+        footerAdapter = ScheduledFooterAdapter()
 
         val concatAdapter = ConcatAdapter(
             ConcatAdapter.Config.Builder()
@@ -248,8 +284,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             uncompletedTaskListAdapter,
             completedTaskHeaderAdapter,
             completedTaskListAdapter,
-            scheduledFooterAdapter
-            )
+            footerAdapter
+        )
 
 
         binding.scheduledTaskListFragmentRvTasks.adapter = concatAdapter
@@ -260,7 +296,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
             )
         )
-
         initSwipeToDelete()
 
 
@@ -272,7 +307,11 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                         completedTaskListAdapter.tasks = uiModel.completedTasks
                         uncompletedTaskListAdapter.tasks = uiModel.uncompletedTasks
                         completedTaskHeaderAdapter.headerState = uiModel.headerState
-                        scheduledFooterAdapter.footerState = uiModel.footerState
+                        footerAdapter.footerState = uiModel.footerState
+
+                        (view.parent as? ViewGroup)?.doOnPreDraw {
+                            startPostponedEnterTransition()
+                        }
                     }
                 }
             }
@@ -442,7 +481,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     }
 
     private fun showTimePicker(
-        timeFormat:Int,
+        timeFormat: Int,
         onPositive: (date: Long) -> Unit
     ) {
         val calendar = Calendar.getInstance(Locale.getDefault())
@@ -451,7 +490,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(requireContext())
         val format = if (timeFormat != 2) {
             timeFormat
-        }else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+        } else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
         val picker = MaterialTimePicker.Builder()
             .setTimeFormat(format)
@@ -468,11 +507,14 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         }
     }
 
-    private fun navigateToDestination(direction: NavDirections?) {
+    private fun navigateToDestination(
+        direction: NavDirections?,
+        extras: FragmentNavigator.Extras
+    ) {
         if (direction == null) {
             findNavController().popBackStack()
         } else {
-            findNavController().navigate(direction)
+            findNavController().navigate(direction, extras)
         }
     }
 

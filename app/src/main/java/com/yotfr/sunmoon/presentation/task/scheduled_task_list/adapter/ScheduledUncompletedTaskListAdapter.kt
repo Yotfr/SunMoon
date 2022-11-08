@@ -1,7 +1,9 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +13,7 @@ import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledTa
 import kotlin.IllegalArgumentException
 
 interface ScheduledUncompletedTaskListDelegate {
-    fun taskPressed(taskId: Long)
+    fun taskPressed(taskId: Long, transitionView:View)
     fun taskCheckBoxPressed(task: ScheduledTaskListModel)
     fun taskTimePressed(task: ScheduledTaskListModel)
     fun taskStarPressed(task: ScheduledTaskListModel)
@@ -95,6 +97,7 @@ class ScheduledUncompletedTaskListAdapter : RecyclerView.Adapter<RecyclerView.Vi
                 itemScheduledTaskCb.isChecked = task.isCompleted
                 itemScheduledTaskTvSetTime.isVisible = task.isAddTimeButtonVisible
                 itemImportanceTaskCb.isChecked = task.importance
+                ViewCompat.setTransitionName(itemScheduledTaskCard, "task${task.taskId}")
 
                 itemScheduledTaskTvScheduledTime.setOnClickListener {
                     delegate?.taskTimePressed(
@@ -115,13 +118,18 @@ class ScheduledUncompletedTaskListAdapter : RecyclerView.Adapter<RecyclerView.Vi
                 }
 
                 itemScheduledTaskTvTaskDescription.setOnClickListener {
-                    delegate?.taskPressed(taskId = task.taskId)
+                    delegate?.taskPressed(
+                        taskId = task.taskId,
+                        transitionView = itemScheduledTaskCard
+                    )
                 }
                 itemScheduledTaskTvSetTime.setOnClickListener {
                     delegate?.taskTimePressed(
                         task = task
                     )
                 }
+
+
             }
         }
     }

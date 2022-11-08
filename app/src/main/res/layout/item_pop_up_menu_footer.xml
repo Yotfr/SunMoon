@@ -10,8 +10,7 @@
 
     <TextView
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_width="0dp"
-        android:layout_weight="5"
+        android:layout_width="wrap_content"
         android:gravity="start|center"
         android:textAppearance="@style/TextAppearance.SunMoon.BodySmall"
         android:textColor="?attr/colorPrimary"
@@ -20,9 +19,9 @@
 
     <Button
         android:id="@+id/btnAddCategoryPopUp"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/default_margin"
         style="@style/Widget.SunMoon.Button.IconButton"
         app:icon ="@drawable/ic_add"/>
 

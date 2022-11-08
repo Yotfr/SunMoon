@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:strokeColor="?attr/colorSecondaryContainer"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_trashed_completed_task_card"
     android:layout_width="match_parent"
@@ -28,10 +29,12 @@
 
         <CheckBox
             android:alpha="0.5"
+            android:enabled="false"
             android:id="@+id/item_trashed_completed_task_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/selector_checkbox"
+            app:buttonTint = "@null"
             app:useMaterialThemeColors ="false"
             app:layout_constraintBottom_toBottomOf="@+id/item_trashed_completed_task_tv_task_description"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -39,6 +42,7 @@
             app:layout_constraintTop_toTopOf="@+id/item_trashed_completed_task_tv_task_description" />
 
         <TextView
+            android:alpha="0.5"
             android:id="@+id/item_trashed_completed_task_tv_set_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,28 +51,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_trashed_completed_task_cb"
             app:drawableRightCompat="@drawable/ic_clock"
-            app:drawableTint="?attr/colorPrimary"
-            android:alpha="0.5"/>
+            app:drawableTint="?attr/colorPrimary" />
 
         <TextView
+            android:alpha="0.5"
             android:id="@+id/item_trashed_completed_task_tv_scheduled_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
             android:textColor="?attr/colorPrimary"
-            android:alpha="0.5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_trashed_completed_task_cb"
             tools:text="14:40" />
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <ProgressBar
             android:alpha="0.5"
             android:id="@+id/item_trashed_completed_task_task_progress"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="14dp"
             android:layout_marginEnd="@dimen/default_margin"
+            android:progress="40"
+            android:progressDrawable="@drawable/progress_bar_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline3"

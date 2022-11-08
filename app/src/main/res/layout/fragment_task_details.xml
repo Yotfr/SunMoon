@@ -10,6 +10,7 @@
     tools:context=".presentation.task.task_details.TaskDetailsFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
+        app:titleTextColor="?attr/colorPrimary"
         android:id="@+id/fragment_task_details_material_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -21,7 +22,7 @@
         android:layout_height="0dp"
         style="@style/Widget.SunMoon.CardView"
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginTop="@dimen/large_margin"
+        android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/default_margin"
         android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintBottom_toTopOf="@id/fragment_task_details_date_time_card"
@@ -32,11 +33,15 @@
             android:layout_height="match_parent">
 
             <EditText
+                android:gravity="center"
+                android:textColor="?attr/colorPrimary"
+                android:textColorHint="?attr/colorPrimary"
+                android:textCursorDrawable="?attr/colorPrimary"
                 android:id="@+id/fragment_task_details_task_description"
                 style="@style/Theme.SunMoon.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="@dimen/default_margin"
                 android:layout_marginEnd="@dimen/large_margin"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -47,15 +52,19 @@
                 android:id="@+id/fragment_task_details_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginBottom="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/large_margin"
                 app:layout_constraintBottom_toTopOf="@+id/fragment_task_details_linear_progress"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_task_details_task_description" />
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
+            <ProgressBar
                 android:id="@+id/fragment_task_details_linear_progress"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="14dp"
+                android:progressDrawable="@drawable/progress_bar_background"
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginEnd="@dimen/large_margin"
                 android:layout_marginBottom="@dimen/default_margin"
@@ -121,6 +130,7 @@
 
             <TextView
                 android:id="@+id/fragment_task_details_date_time_tv_set_time"
+                android:layout_marginEnd="@dimen/small_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:drawablePadding="@dimen/small_padding"

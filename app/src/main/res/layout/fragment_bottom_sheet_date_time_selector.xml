@@ -12,7 +12,9 @@
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:theme="@style/Theme.Custom"
+        android:dateTextAppearance="@style/CalenderViewDateCustomText"
+        android:theme="@style/CalenderViewCustom"
+        android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +41,10 @@
         tools:text="Remind"
         android:layout_marginEnd="@dimen/default_margin"/>
 
+
     <com.google.android.material.chip.ChipGroup
+        app:chipSpacingHorizontal="16dp"
+        app:chipSpacingVertical="0dp"
         android:id="@+id/chipDateHelpers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,6 +57,7 @@
         app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
+            android:checked="true"
             android:id="@+id/chipToday"
             style="@style/Widget.SunMoon.Chip.Suggestion"
             android:layout_width="wrap_content"
@@ -108,12 +114,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
+        android:layout_marginStart="@dimen/default_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chipDateHelpers" />
 
     <Button
         android:id="@+id/btnWithoutDate"
-        style="@style/Widget.SunMoon.Button.OutlinedButton"
+        style="@style/Widget.SunMoon.Button.OutlinedButton.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -128,6 +135,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reschedule"
+        android:layout_marginEnd="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chipDateHelpers" />
 

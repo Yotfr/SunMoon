@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ class NoteListItemCallback(
     private val iconBounds = Rect()
     private val backgroundRect = RectF()
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -73,7 +75,7 @@ class NoteListItemCallback(
 
         val typedValueInactive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorPrimaryVariant,
+            com.google.android.material.R.attr.colorPrimaryContainer,
             typedValueInactive,
             true
         )
@@ -97,7 +99,7 @@ class NoteListItemCallback(
 
         val typedValueActiveArchive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorSecondaryVariant,
+            com.google.android.material.R.attr.colorSecondaryContainer,
             typedValueActiveArchive,
             true
         )
@@ -107,10 +109,10 @@ class NoteListItemCallback(
             if (abs(dX) > layoutMargin && dX > 0) {
                 if (abs(dX) < (itemView.width * 0.4f)) {
                     drawDeleteBackground(c, itemView, inactiveColor)
-                    drawDeleteIcon(c, itemView)
+                    drawDeleteIconWithText(c, itemView)
                 } else {
                     drawDeleteBackground(c, itemView, activeColor)
-                    drawDeleteIcon(c, itemView)
+                    drawDeleteIconWithText(c, itemView)
                 }
             } else if (abs(dX) > layoutMargin && dX < 0) {
                 if (abs(dX) > (itemView.width * 0.4f)) {
@@ -125,16 +127,19 @@ class NoteListItemCallback(
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    private fun drawDeleteIcon(canvas: Canvas, itemView: View) {
+    private fun drawDeleteIconWithText(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
-        val icon = ResourcesCompat.getDrawable(
-            itemView.resources, R.drawable.ic_delete_large,
-            itemView.context.theme
-        ) ?: throw
+        val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
+
+        val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
-        val iconTint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
-        icon.setTint(iconTint)
+
+        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        icon.setTint(tint)
+
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
+
+        val text = itemView.resources.getString(R.string.delete)
 
         with(iconBounds) {
             left = itemView.left + layoutMargin
@@ -142,20 +147,38 @@ class NoteListItemCallback(
             right = itemView.left + icon.intrinsicWidth + layoutMargin
             bottom = itemView.bottom - margin
         }
+
+        with(textPaint) {
+            color = tint
+            textSize = 40F
+            textAlign = Paint.Align.CENTER
+        }
+
+        val textY =
+            (itemView.top + itemView.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+        val textX = itemView.left + icon.intrinsicWidth + layoutTextMargin
+
+        canvas.drawText(text, textX.toFloat(), textY, textPaint)
         icon.bounds = iconBounds
         icon.draw(canvas)
     }
 
     private fun drawArchiveIcon(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
+        val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
+
         val icon = ResourcesCompat.getDrawable(
             itemView.resources, R.drawable.ic_archive_gesture,
             itemView.context.theme
         ) ?: throw
         IllegalArgumentException("Not found icon")
-        val iconTint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
-        icon.setTint(iconTint)
+
+        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        icon.setTint(tint)
+
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
+
+        val text = itemView.resources.getString(R.string.archive)
 
         with(iconBounds) {
             left = itemView.right - icon.intrinsicWidth - layoutMargin
@@ -163,6 +186,18 @@ class NoteListItemCallback(
             right = itemView.right - layoutMargin
             bottom = itemView.bottom - margin
         }
+
+        with(textPaint) {
+            color = tint
+            textSize = 40F
+            textAlign = Paint.Align.CENTER
+        }
+
+        val textY =
+            (itemView.top + itemView.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+        val textX = itemView.right - icon.intrinsicWidth - layoutTextMargin
+
+        canvas.drawText(text, textX.toFloat(), textY, textPaint)
         icon.bounds = iconBounds
         icon.draw(canvas)
     }
@@ -178,7 +213,7 @@ class NoteListItemCallback(
         with(backgroundPaint) {
             color = bgColor
         }
-        canvas.drawRect(backgroundRect, backgroundPaint)
+        canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
 
     private fun drawArchiveBackground(canvas: Canvas, itemView: View, bgColor: Int) {
@@ -192,7 +227,7 @@ class NoteListItemCallback(
         with(backgroundPaint) {
             color = bgColor
         }
-        canvas.drawRect(backgroundRect, backgroundPaint)
+        canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
 
 }

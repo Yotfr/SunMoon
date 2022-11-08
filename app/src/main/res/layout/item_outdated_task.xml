@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
+        app:strokeColor="?attr/colorSecondaryContainer"
         android:id="@+id/item_outdated_task_card"
         style="@style/Widget.SunMoon.CardView"
         android:layout_width="match_parent"
@@ -30,7 +31,7 @@
                     android:layout_marginEnd="@dimen/default_margin"
                     android:alpha="0.5"
                     android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?attr/colorSecondary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guideline3"
                     app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:alpha="0.5"
                     android:button="@drawable/selector_checkbox"
-                    android:buttonTint="?attr/colorPrimary"
+                    app:buttonTint="@null"
                     android:enabled="false"
                     app:layout_constraintBottom_toBottomOf="@+id/item_outdated_task_tv_task_description"
                     app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -75,13 +76,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/item_outdated_task_cb" />
 
-                <com.google.android.material.progressindicator.LinearProgressIndicator
+                <ProgressBar
                     android:id="@+id/item_outdated_task_task_progress"
+                    style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="14dp"
                     android:layout_marginEnd="@dimen/default_margin"
+                    android:progressDrawable="@drawable/progress_bar_background"
                     android:alpha="0.5"
-                    app:indicatorColor="?attr/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -111,7 +113,7 @@
                     android:layout_weight="1"
                     android:alpha="0.5"
                     android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?attr/colorSecondary"
                     tools:text="Task overdue on 2 days" />
 
                 <Button

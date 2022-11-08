@@ -30,7 +30,9 @@
                 android:id="@+id/item_scheduled_completed_task_cb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/selector_checkbox"
+                android:button = "@drawable/selector_checkbox"
+                app:backgroundTint="@null"
+                app:buttonTint="@null"
                 app:useMaterialThemeColors ="false"
                 app:layout_constraintBottom_toBottomOf="@+id/item_scheduled_completed_task_tv_task_description"
                 app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -62,10 +64,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/item_scheduled_completed_task_cb"
                 tools:text="14:40" />
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
+            <ProgressBar
                 android:id="@+id/item_scheduled_completed_task_task_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/progress_bar_background"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="14dp"
                 android:layout_marginEnd="@dimen/default_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

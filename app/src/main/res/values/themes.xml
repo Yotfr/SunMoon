@@ -22,10 +22,18 @@
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.SunMoon.BottomSheetDialog</item>
         <item name="tabStyle">@style/Widget.SunMoon.TabLayout</item>
         <item name="textInputStyle">@style/Widget.SunMoon.TextInputLayout</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.SunMoon.MaterialAlertDialog</item>
+        <item name="materialCalendarTheme">@style/ThemeOverlay.SunMoon.DatePicker</item>
+        <item name="snackbarStyle">@style/Widget.SunMoon.Snackbar</item>
+        <item name="snackbarButtonStyle">@style/Widget.SunMoon.SnackbarButton</item>
+
+        <item name="navigationViewStyle">@style/Widget.SunMoon.NavigationView</item>
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="colorControlNormal">?attr/colorPrimary</item>
+
     </style>
+
 
 </resources>

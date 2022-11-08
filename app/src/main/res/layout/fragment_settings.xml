@@ -13,6 +13,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
+            app:titleTextColor="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             android:id="@+id/fragment_settings_toolbar"
             android:layout_width="match_parent"

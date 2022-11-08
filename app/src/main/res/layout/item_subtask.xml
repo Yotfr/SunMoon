@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
     android:background="?attr/colorSurface"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,15 +12,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:button="@drawable/selector_checkbox"
+        app:buttonTint = "@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:useMaterialThemeColors="false" />
 
     <EditText
+        tools:text="My subtask"
         android:inputType="textNoSuggestions"
+        android:maxLines="1"
         android:id="@+id/item_nested_title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         style="@style/Theme.SunMoon.EditText"
+        android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
         android:layout_height="match_parent"
         android:hint="@string/add_sub_task"
         android:textAlignment="textStart"
@@ -29,4 +34,4 @@
         app:layout_constraintStart_toEndOf="@id/fragment_item_subtask_cb"
         app:layout_constraintTop_toTopOf="@id/fragment_item_subtask_cb" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

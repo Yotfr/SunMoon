@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -26,6 +27,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentOutdatedTaskListBinding
 import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
@@ -37,6 +40,7 @@ import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedDele
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTaskListModel
 import com.yotfr.sunmoon.presentation.task.task_details.TaskDetailsFragment
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -56,6 +60,14 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     private lateinit var outdatedFooterAdapter: OutdatedFooterAdapter
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentOutdatedTaskListBinding.bind(view)
@@ -69,6 +81,10 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
 
                 val searchItem = menu.findItem(R.id.mi_action_search)
                 searchView = searchItem.actionView as SearchView
+
+                val etSearch =
+                    searchView?.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+                etSearch?.setTextColor(requireContext().getColorFromAttr(androidx.appcompat.R.attr.colorPrimary))
 
                 val pendingQuery = viewModel.searchQuery.value
                 if (pendingQuery.isNotEmpty()) {

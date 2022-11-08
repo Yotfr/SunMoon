@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
@@ -24,6 +25,7 @@ class ArchiveNoteListItemCallback(
     private val iconBounds = Rect()
     private val backgroundRect = RectF()
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -125,36 +127,75 @@ class ArchiveNoteListItemCallback(
 
     private fun drawDeleteIcon(canvas: Canvas, itemView: View, dX: Float){
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
-        val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete_large) ?: throw
-        IllegalArgumentException("Not found icon")
-        val iconTint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
-        icon.setTint(iconTint)
-        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight)/2
+        val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
 
-        with(iconBounds){
+        val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
+        IllegalArgumentException("Not found icon")
+
+        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        icon.setTint(tint)
+
+        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
+
+        val text = itemView.resources.getString(R.string.delete)
+
+        with(iconBounds) {
             left = itemView.left + layoutMargin
             top = itemView.top + margin
             right = itemView.left + icon.intrinsicWidth + layoutMargin
             bottom = itemView.bottom - margin
         }
+
+        with(textPaint) {
+            color = tint
+            textSize = 40F
+            textAlign = Paint.Align.CENTER
+        }
+
+        val textY =
+            (itemView.top + itemView.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+        val textX = itemView.left + icon.intrinsicWidth + layoutTextMargin
+
+        canvas.drawText(text, textX.toFloat(), textY, textPaint)
         icon.bounds = iconBounds
         icon.draw(canvas)
     }
 
     private fun drawUnarchiveIcon(canvas: Canvas, itemView: View){
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
-        val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_unarchive_gesture) ?: throw
-        IllegalArgumentException("Not found icon")
-        val iconTint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
-        icon.setTint(iconTint)
-        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight)/2
+        val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
 
-        with(iconBounds){
+        val icon = ResourcesCompat.getDrawable(
+            itemView.resources, R.drawable.ic_archive_gesture,
+            itemView.context.theme
+        ) ?: throw
+        IllegalArgumentException("Not found icon")
+
+        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        icon.setTint(tint)
+
+        val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
+
+        val text = itemView.resources.getString(R.string.unarchive)
+
+        with(iconBounds) {
             left = itemView.right - icon.intrinsicWidth - layoutMargin
             top = itemView.top + margin
-            right = itemView.right  - layoutMargin
+            right = itemView.right - layoutMargin
             bottom = itemView.bottom - margin
         }
+
+        with(textPaint) {
+            color = tint
+            textSize = 40F
+            textAlign = Paint.Align.CENTER
+        }
+
+        val textY =
+            (itemView.top + itemView.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+        val textX = itemView.right - icon.intrinsicWidth - layoutTextMargin
+
+        canvas.drawText(text, textX.toFloat(), textY, textPaint)
         icon.bounds = iconBounds
         icon.draw(canvas)
     }
@@ -170,7 +211,7 @@ class ArchiveNoteListItemCallback(
         with(backgroundPaint) {
             color = bgColor
         }
-        canvas.drawRect(backgroundRect, backgroundPaint)
+        canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
 
     private fun drawUnarchiveBackground(canvas: Canvas, itemView: View, bgColor: Int) {
@@ -184,7 +225,7 @@ class ArchiveNoteListItemCallback(
         with(backgroundPaint) {
             color = bgColor
         }
-        canvas.drawRect(backgroundRect, backgroundPaint)
+        canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
 
 }

@@ -5,8 +5,11 @@ import android.view.View
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialElevationScale
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentTaskRootBinding
 import com.yotfr.sunmoon.presentation.MainActivity
@@ -173,7 +176,9 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
             TaskRootFragmentDirections.actionTaskRootFragmentToBottomSheetAddTaskFragment(
                 selectedDate = selectedDate ?: BottomSheetAddTaskFragment.WITHOUT_SELECTED_DATE
             )
-        findNavController().navigate(direction)
+        val extras = FragmentNavigatorExtras(binding.fragmentTaskRootFab to
+        binding.fragmentTaskRootFab.transitionName)
+        findNavController().navigate(direction,extras)
     }
 
     override fun onDestroyView() {
