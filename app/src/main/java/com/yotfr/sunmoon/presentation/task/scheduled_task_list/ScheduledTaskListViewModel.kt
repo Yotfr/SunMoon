@@ -1,5 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.*
@@ -150,17 +151,22 @@ class ScheduledTaskListViewModel @Inject constructor(
             is ScheduledTaskListEvent.DeleteTasks -> {
                 viewModelScope.launch {
                     when (event.deleteOption) {
+
                         ScheduledTaskDeleteOption.ALL_SCHEDULED -> {
-                            taskUseCase.deleteScheduledTasks
+                            taskUseCase.deleteScheduledTasks()
                         }
                         ScheduledTaskDeleteOption.ALL_SCHEDULED_FOR_SELECTED_DAY -> {
-                            taskUseCase.deleteScheduledTasksForSelectedDate
+                            taskUseCase.deleteScheduledTasksForSelectedDate(
+                                selectedDate = getCurrentDay()
+                            )
                         }
                         ScheduledTaskDeleteOption.ALL_COMPLETED_SCHEDULED -> {
-                            taskUseCase.deleteAllScheduledCompletedTasks
+                            taskUseCase.deleteAllScheduledCompletedTasks()
                         }
                         ScheduledTaskDeleteOption.ALL_SCHEDULED_COMPLETED_FOR_SELECTED_DAY -> {
-                            taskUseCase.deleteScheduledCompletedTasksForSelectedDateUseCase
+                            taskUseCase.deleteScheduledCompletedTasksForSelectedDateUseCase(
+                                selectedDate = getCurrentDay()
+                            )
                         }
                     }
                 }

@@ -33,6 +33,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="colorControlNormal">?attr/colorPrimary</item>
 
+        <item name="PrimaryChipStyle">@style/Widget.SunMoon.Chip.Suggestion.Primary</item>
+
     </style>
 
 

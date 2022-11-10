@@ -23,6 +23,15 @@
     <string name="title">Title</string>
     <string name="apply">APPLY</string>
 
+    <string name="green">Зеленая</string>
+
+    <string name="select_theme">Выберите тему</string>
+
+
+    <string name="note_title_hint">Введите заголовок заметки</string>
+
+    <string name="note_description_hint">Введите текст заметки</string>
+
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="username">Username</string>

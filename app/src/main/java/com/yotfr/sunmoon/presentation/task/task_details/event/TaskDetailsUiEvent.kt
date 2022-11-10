@@ -16,6 +16,7 @@ sealed interface TaskDetailsUiEvent {
         val alarmTime: Long,
         val taskId: Long,
         val taskDescription: String,
+        val destination:Int,
         val isNewAlarm: Boolean
     ) : TaskDetailsUiEvent
 

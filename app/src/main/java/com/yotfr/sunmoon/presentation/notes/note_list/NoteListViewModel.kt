@@ -37,12 +37,24 @@ class NoteListViewModel @Inject constructor(
     private val _categoryListUiState = MutableStateFlow<List<CategoryNoteListModel>?>(null)
     val categoryListUiState = _categoryListUiState.asSharedFlow()
 
-    private val selectedCategoryId = MutableStateFlow(-1L)
+    private val selectedCategoryId = MutableStateFlow<Long?>(-1L)
 
     private val _uiEvent = Channel<NoteListUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        viewModelScope.launch {
+            noteUseCase.getVisibleCategoryList().collect { categories ->
+                if (categories.indexOfFirst { it.categoryId == selectedCategoryId.value } == -1) {
+                    selectedCategoryId.value = -1L
+                }
+                _categoryListUiState.value =
+                    categoryNoteListMapper.fromDomainList(
+                        categories,
+                        dataStoreRepository.getDateFormat().first() ?: "yyyy/MM/dd"
+                    )
+            }
+        }
         viewModelScope.launch {
             combine(
                 dataStoreRepository.getDateFormat(),
@@ -50,7 +62,7 @@ class NoteListViewModel @Inject constructor(
             ) { dateFormat, selectedCategoryId ->
                 Pair(dateFormat, selectedCategoryId)
             }.collectLatest {
-                if (it.second == -1L) {
+                if (it.second == -1L)
                     noteUseCase.getAllNotes(
                         searchQuery = _searchQuery
                     ).collect { notes ->
@@ -63,8 +75,7 @@ class NoteListViewModel @Inject constructor(
                                 isVisible = notes.isEmpty()
                             )
                         )
-                    }
-                } else {
+                    } else {
                     noteUseCase.getCategoryWithNotes(
                         selectedCategoryId,
                         _searchQuery
@@ -84,15 +95,7 @@ class NoteListViewModel @Inject constructor(
                 }
             }
         }
-        viewModelScope.launch {
-            noteUseCase.getVisibleCategoryList().collect { categories ->
-                _categoryListUiState.value =
-                    categoryNoteListMapper.fromDomainList(
-                        categories,
-                        dataStoreRepository.getDateFormat().first() ?: "yyyy/MM/dd"
-                    )
-            }
-        }
+
     }
 
 

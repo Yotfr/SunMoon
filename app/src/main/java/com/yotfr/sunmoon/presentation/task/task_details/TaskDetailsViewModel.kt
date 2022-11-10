@@ -256,6 +256,9 @@ class TaskDetailsViewModel @Inject constructor(
                     alarmTime = event.remindInMillis,
                     taskId = _uiState.value.taskId!!,
                     taskDescription = _uiState.value.taskDescription,
+                    destination = destination ?: throw IllegalArgumentException(
+                        "not found destination"
+                    ),
                     isNewAlarm = true
                 ))
             }
@@ -276,6 +279,9 @@ class TaskDetailsViewModel @Inject constructor(
                     alarmTime = event.remindInMillis,
                     taskId = _uiState.value.taskId!!,
                     taskDescription = _uiState.value.taskDescription,
+                    destination = destination ?: throw IllegalArgumentException(
+                        "not found destination"
+                    ),
                     isNewAlarm = false
                 ))
             }

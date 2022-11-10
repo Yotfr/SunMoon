@@ -21,6 +21,7 @@ import com.yotfr.sunmoon.presentation.notes.add_edit_note.adapter.PopUpMenuAdapt
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.event.AddEditNoteEvent
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.event.AddEditNoteUiEvent
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.model.AddEditNoteCategoryModel
+import com.yotfr.sunmoon.presentation.utils.placeCursorToEnd
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -31,6 +32,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
     private val viewModel by viewModels<BottomSheetAddEditNoteViewModel>()
     private lateinit var popUpMenuAdapter: PopUpMenuAdapter
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,9 +42,18 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (binding.etNoteTitle.editText?.text?.isEmpty() == true) {
+            binding.etNoteTitle.editText?.isFocusableInTouchMode = true
+            binding.etNoteTitle.editText?.requestFocus()
+        }else {
+            binding.etNoteDescription.editText?.isFocusableInTouchMode = true
+            binding.etNoteTitle.editText?.clearFocus()
+            binding.etNoteDescription.editText?.requestFocus()
+        }
 
         //initPopUpAdapter
         popUpMenuAdapter = PopUpMenuAdapter()
@@ -69,7 +80,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
                             .tag as AddEditNoteCategoryModel
                         if (category.id == WITHOUT_CATEGORY_POP_UP_ID) {
                             viewModel.onEvent(AddEditNoteEvent.ClearSelectedCategory)
-                        }else {
+                        } else {
                             viewModel.onEvent(
                                 AddEditNoteEvent.ChangeSelectedCategory(
                                     newSelectedCategory = category
@@ -84,6 +95,21 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
         }
 
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addEditNoteUiState.collect { state ->
+                    state.let {
+                        binding.apply {
+                            etNoteTitle.editText?.setText(it.title)
+                            etNoteTitle.editText?.placeCursorToEnd()
+                            etNoteDescription.editText?.setText(it.text)
+                            etNoteDescription.editText?.placeCursorToEnd()
+                        }
+                    }
+                }
+            }
+        }
+
         binding.btnAddNote.setOnClickListener {
             viewModel.onEvent(
                 AddEditNoteEvent.SaveNotePressed(
@@ -93,23 +119,18 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             )
         }
 
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addEditNoteUiState.collect { state ->
-                    state.let {
-                        binding.apply {
-                            etNoteTitle.editText?.setText(it.title)
-                            etNoteDescription.editText?.setText(it.text)
-                        }
-                    }
-                }
-            }
-        }
-
         //enable/disable add button
         binding.etNoteTitle.editText?.doOnTextChanged { text, _, _, _ ->
             binding.btnAddNote.isEnabled = !text.isNullOrEmpty()
+            viewModel.onEvent(AddEditNoteEvent.SaveNewNoteTitle(
+                newTitle = text.toString()
+            ))
+        }
+
+       binding.etNoteDescription.editText?.doOnTextChanged { text, _, _, _ ->
+            viewModel.onEvent(AddEditNoteEvent.SaveNewNoteText(
+                newText = text.toString()
+            ))
         }
 
 
@@ -124,8 +145,8 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
                             isVisible = true,
                             notesCount = null
                         )
-                        if (!categories.contains(headerCategory)){
-                            categories.add(0,headerCategory)
+                        if (!categories.contains(headerCategory)) {
+                            categories.add(0, headerCategory)
                         }
                         popUpMenuAdapter.categories = categories
                     }
@@ -158,10 +179,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
                 }
             }
         }
-
-
     }
-
 
     private fun navigateToAddCategoryDialog() {
         val direction = NoteRootFragmentDirections.actionGlobalAddCategoryDialogFragment(

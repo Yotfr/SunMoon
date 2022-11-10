@@ -50,7 +50,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         binding.calendarView.setOnDateChangeListener { _, year, month, date ->
             binding.btnWithoutDate.visibility = View.GONE
             binding.btnSelectedTime.isEnabled = true
-            binding.btnReminder.visibility = View.VISIBLE
             val calendar = Calendar.getInstance(Locale.getDefault())
             calendar.set(year, month, date, 0, 0, 0)
             calendar.set(Calendar.MILLISECOND, 0)
@@ -113,10 +112,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
             }
         }
 
-
-        binding.btnReminder.setOnClickListener {
-            //TODO
-        }
 
         //Done
         binding.btnReschedule.setOnClickListener {
@@ -215,11 +210,9 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         if (isVisble) {
             binding.btnWithoutDate.visibility = View.VISIBLE
             binding.btnSelectedTime.isEnabled = false
-            binding.btnReminder.visibility = View.GONE
         } else {
             binding.btnWithoutDate.visibility = View.GONE
             binding.btnSelectedTime.isEnabled = true
-            binding.btnReminder.visibility = View.VISIBLE
         }
     }
 

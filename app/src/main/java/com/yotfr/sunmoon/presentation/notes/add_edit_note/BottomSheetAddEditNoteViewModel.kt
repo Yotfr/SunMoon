@@ -93,8 +93,19 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
             AddEditNoteEvent.ClearSelectedCategory -> {
                 _uiStateSelectedCategory.value = null
             }
+            is AddEditNoteEvent.SaveNewNoteText -> {
+                _addEditNoteUiState.value = _addEditNoteUiState.value.copy(
+                    text = event.newText
+                )
+            }
+            is AddEditNoteEvent.SaveNewNoteTitle -> {
+                _addEditNoteUiState.value = _addEditNoteUiState.value.copy(
+                    title = event.newTitle
+                )
+            }
         }
     }
+
 
     private fun sendToUi(event: AddEditNoteUiEvent) {
         viewModelScope.launch {

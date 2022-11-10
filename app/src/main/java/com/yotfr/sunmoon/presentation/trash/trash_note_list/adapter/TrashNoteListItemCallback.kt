@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
@@ -164,8 +165,7 @@ class TrashNoteListItemCallback(
         ) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
-        icon.setTint(tint)
+        val tint  = itemView.context.getColorFromAttr(androidx.appcompat.R.attr.colorPrimary)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 

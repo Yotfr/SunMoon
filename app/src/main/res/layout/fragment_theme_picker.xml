@@ -1,60 +1,89 @@
-<LinearLayout
-    android:orientation="vertical"
-    android:background="?attr/colorSurface"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:fitsSystemWindows="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.yotfr.sunmoon.presentation.settings.settings_theme.SettingsThemeFragment">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/fragment_theme_toolbar"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
+        android:layout_height="match_parent"
+        tools:context="com.yotfr.sunmoon.presentation.settings.settings_theme.SettingsThemeFragment">
 
-    <Button
-        android:id="@+id/btnThemeOrange"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        app:icon ="@drawable/ic_theme"
-        app:iconTint = "@color/primary_color"
-        android:text="@string/orange"
-        android:textColor="@color/primary_color"
-        android:textAlignment="textStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            app:titleTextColor="?attr/colorPrimary"
+            android:id="@+id/fragment_theme_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
 
-    <Button
-        android:id="@+id/btnThemePink"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        app:icon ="@drawable/ic_theme"
-        app:iconTint = "@color/primary_color_pink"
-        android:text="@string/pink"
-        android:textColor="@color/primary_color_pink"
-        android:textAlignment="textStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <Button
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/default_margin"
+            android:id="@+id/btnThemeOrange"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon ="@drawable/ic_theme"
+            app:iconTint = "@color/primary_color"
+            android:text="@string/orange"
+            android:textColor="@color/primary_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-    <Button
-        android:id="@+id/btnThemeYellow"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        app:icon ="@drawable/ic_theme"
-        app:iconTint = "@color/primary_color_yellow"
-        android:text="@string/yellow"
-        android:textColor="@color/primary_color_yellow"
-        android:textAlignment="textStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <Button
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/default_margin"
+            android:id="@+id/btnThemePink"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon ="@drawable/ic_theme"
+            app:iconTint = "@color/primary_color_sunMoon_green"
+            android:text="@string/green"
+            android:textColor="@color/primary_color_sunMoon_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-    <Button
-        android:id="@+id/btnThemeNight"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        app:icon ="@drawable/ic_theme"
-        app:iconTint = "@color/primary_color_night"
-        android:text="@string/night"
-        android:textColor="@color/primary_color_night"
-        android:textAlignment="textStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <Button
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/default_margin"
+            android:id="@+id/btnThemeYellow"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon ="@drawable/ic_theme"
+            app:iconTint = "@color/primary_color_yellow"
+            android:text="@string/yellow"
+            android:textColor="@color/primary_color_yellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-</LinearLayout>
+        <Button
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/default_margin"
+            android:id="@+id/btnThemeNight"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon ="@drawable/ic_theme"
+            app:iconTint = "@color/primary_color_night"
+            android:text="@string/night"
+            android:textColor="@color/primary_color_night"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:layout_marginTop="@dimen/large_margin"
+            app:tint = "?attr/colorPrimary"
+            android:src="@drawable/sun"
+            android:scaleType="fitCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"/>
+
+        <TextView
+            android:gravity="center"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginTop="@dimen/small_margin"
+            android:textAppearance="@style/TextAppearance.SunMoon.TitleLarge"
+            android:text="@string/select_theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

@@ -63,4 +63,6 @@ interface TaskRepository {
     suspend fun deleteAllUnplannedTasks()
 
     suspend fun deleteAllUnplannedCompletedTasks()
+
+    suspend fun getAllremindedTasks():List<TaskEntity>
 }

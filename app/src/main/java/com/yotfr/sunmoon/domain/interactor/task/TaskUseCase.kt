@@ -28,5 +28,6 @@ data class TaskUseCase(
     val deleteAllUnplannedCompletedTasks: DeleteAllUnplannedCompletedTasks,
     val deleteAllOutdatedCompletedTasks: DeleteAllOutdatedCompletedTasks,
     val changeTaskRemindDateTime: ChangeTaskRemindDateTime,
-    val changeTaskImportanceState: ChangeTaskImportanceState
+    val changeTaskImportanceState: ChangeTaskImportanceState,
+    val getAllRemindedTasks: GetAllRemindedTasks
 )

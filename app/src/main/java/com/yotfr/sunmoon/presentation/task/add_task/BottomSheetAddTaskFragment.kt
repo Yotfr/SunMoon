@@ -58,6 +58,9 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.textFieldTaskDescription.editText?.isFocusableInTouchMode = true
+        binding.textFieldTaskDescription.editText?.requestFocus()
+
         //enable-disable save btn
         binding.textFieldTaskDescription.editText?.doOnTextChanged { charSequence, _, _, _ ->
             binding.btnAddTask.isEnabled = !charSequence.isNullOrBlank()

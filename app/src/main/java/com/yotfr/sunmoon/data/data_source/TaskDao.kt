@@ -97,4 +97,7 @@ interface TaskDao {
     @Query("DELETE FROM task WHERE isTrashed = 0 AND scheduledDate = :scheduledDate AND isCompleted = 1")
     suspend fun deleteScheduledCompletedTasksOfSelectedDay(scheduledDate:Long)
 
+    @Query("SELECT * FROM task WHERE remindDate != null")
+    suspend fun getAllremindedTasks():List<TaskEntity>
+
 }

@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -56,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             R.id.settingsFragment
         )
 
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(
                 R.id.activity_main_fragment_container
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
         appBarConfiguration = AppBarConfiguration(topLevelDestinations, binding.activityMainDrawer)
         NavigationUI.setupWithNavController(binding.activityMainNavView, navController)
+
 
 
     }

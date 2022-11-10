@@ -97,6 +97,12 @@
 
     <string name="set_time">Set time</string>
 
+    <string name="green">Green</string>
+    <string name="select_theme">Select theme</string>
+
+    <string name="note_title_hint">Enter your note title</string>
+    <string name="note_description_hint">Enter your note description</string>
+
     <string name="category">Category</string>
 
     <string name="deleteSelectedDay">For selected day</string>

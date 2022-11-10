@@ -44,7 +44,7 @@
         android:id="@+id/taskDetailsFragment"
         android:name="com.yotfr.sunmoon.presentation.task.task_details.TaskDetailsFragment"
         android:label="@string/menu_task_details_title"
-        tools:layout="@layout/fragment_task_details" >
+        tools:layout="@layout/fragment_task_details">
         <argument
             android:name="taskId"
             app:argType="long" />
@@ -54,6 +54,10 @@
         <action
             android:id="@+id/action_taskDetailsFragment_to_addSubTaskDialogFragment"
             app:destination="@id/addSubTaskDialogFragment" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:action="ACTION_VIEW"
+            app:uri="https://taskDetails/taskId/{taskId}/destination/{destination}" />
     </fragment>
     <dialog
         android:id="@+id/addSubTaskDialogFragment"

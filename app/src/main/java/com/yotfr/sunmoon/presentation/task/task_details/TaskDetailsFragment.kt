@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.core.view.*
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -29,10 +30,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
-import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialContainerTransform
 import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
 import com.yotfr.sunmoon.databinding.FragmentTaskDetailsBinding
 import com.yotfr.sunmoon.presentation.MainActivity
 import com.yotfr.sunmoon.presentation.task.task_details.adapter.SubTaskAdapter
@@ -218,16 +222,32 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
 
         binding.fragmentTaskDetailsRemindTvDate.setOnClickListener {
-            showReminderDateTimePicker(
-                currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
-            ) { date, time, remindTime ->
-                viewModel.onEvent(
-                    TaskDetailsEvent.ChangeTaskRemindDateTime(
-                        remindDate = date,
-                        remindTime = time,
-                        remindInMillis = remindTime
+            var hasNotificationPermission  = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED)
+            }else true
+            val permissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ){ isGranted:Boolean ->
+                hasNotificationPermission = isGranted
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            if (hasNotificationPermission) {
+                showReminderDateTimePicker(
+                    currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
+                ) { date, time, remindTime ->
+                    viewModel.onEvent(
+                        TaskDetailsEvent.ChangeTaskRemindDateTime(
+                            remindDate = date,
+                            remindTime = time,
+                            remindInMillis = remindTime
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -382,7 +402,8 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                             setAlarm(
                                 taskId = uiEvent.taskId,
                                 taskTitle = uiEvent.taskDescription,
-                                remindTime = uiEvent.alarmTime
+                                remindTime = uiEvent.alarmTime,
+                                destination = uiEvent.destination
                             )
                         }
                     }
@@ -391,10 +412,13 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
     }
 
-    private fun setAlarm(taskTitle: String, taskId: Long, remindTime: Long) {
+    private fun setAlarm(taskTitle: String, taskId: Long, remindTime: Long,
+    destination:Int) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra("taskTitle", taskTitle)
+        intent.putExtra("taskId",taskId)
+        intent.putExtra("destination",destination)
         val pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
             taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT

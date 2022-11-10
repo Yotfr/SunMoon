@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_deleted_note_card"
-    android:alpha="0.5"
     app:strokeColor="?attr/colorSecondaryContainer"
     style="@style/Widget.SunMoon.CardView"
     android:layout_width="match_parent"
@@ -15,6 +14,7 @@
         android:padding="@dimen/small_padding">
 
         <TextView
+            android:alpha="0.5"
             android:id="@+id/tv_deleted_note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,6 +26,7 @@
             tools:text="My note title" />
 
         <TextView
+            android:alpha="0.5"
             android:id="@+id/tvDeletedNoteDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
             tools:text="Something in my note description" />
 
         <TextView
+            android:alpha="0.5"
             android:id="@+id/tv_deleted_note_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

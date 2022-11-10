@@ -14,6 +14,14 @@ sealed interface AddEditNoteEvent {
         val newSelectedCategory:AddEditNoteCategoryModel
     ): AddEditNoteEvent
 
+    data class SaveNewNoteTitle(
+        val newTitle:String
+    ): AddEditNoteEvent
+
+    data class SaveNewNoteText(
+        val newText:String
+    ): AddEditNoteEvent
+
     object ClearSelectedCategory: AddEditNoteEvent
 
 }

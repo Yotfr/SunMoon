@@ -132,10 +132,10 @@ class UnplannedTaskListViewModel @Inject constructor(
                 viewModelScope.launch {
                     when (event.deleteOption) {
                         UnplannedDeleteOption.ALL_UNPLANNED -> {
-                            taskUseCase.deleteUnplanned
+                            taskUseCase.deleteUnplanned()
                         }
                         UnplannedDeleteOption.ALL_UNPLANNED_COMPLETED -> {
-                            taskUseCase.deleteAllUnplannedCompletedTasks
+                            taskUseCase.deleteAllUnplannedCompletedTasks()
                         }
                     }
                 }

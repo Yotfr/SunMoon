@@ -10,10 +10,14 @@ class AlarmReceiver:BroadcastReceiver() {
         if ((Intent.ACTION_BOOT_COMPLETED) == intent.action){
 
         }else {
-            intent.getStringExtra("taskTitle")?.let {
+            val taskTitle = intent.getStringExtra("taskTitle")
+            val taskId = intent.getLongExtra("taskId", 0)
+            val destination = intent.getIntExtra("destination",0)
+            taskTitle?.let {
                 NotificationHelper(context).createNotification(
                     title = it,
-                    message = "me"
+                    taskId = taskId,
+                    destination = destination
                 )
             }
         }

@@ -13,7 +13,7 @@ class GetCategoryWithNotes(
     private val categoryMapper = CategoryMapper()
 
     suspend operator fun invoke(
-        selectedCategory: MutableStateFlow<Long>,
+        selectedCategory: MutableStateFlow<Long?>,
         searchQuery: MutableStateFlow<String>
     ): Flow<Category?> =
         withContext(Dispatchers.IO) {
@@ -23,7 +23,7 @@ class GetCategoryWithNotes(
             ) { selectedCategory, searchQuery ->
                 Pair(selectedCategory, searchQuery)
             }.flatMapLatest { (selectedCategory, searchQuery) ->
-                categoryRepository.getCategoryWithNotes(selectedCategory).map { catWithNotes ->
+                categoryRepository.getCategoryWithNotes(selectedCategory?: -1L).map { catWithNotes ->
                     val filteredNotes = catWithNotes.notes.filter { note ->
                         (note.title.contains(searchQuery) || note.text.contains(searchQuery))
                                 &&!note.archived &&!note.trashed

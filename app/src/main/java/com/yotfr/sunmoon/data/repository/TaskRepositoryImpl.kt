@@ -18,6 +18,10 @@ class TaskRepositoryImpl(
         return taskDao.getTaskById(taskId)
     }
 
+    override suspend fun getAllremindedTasks(): List<TaskEntity> {
+        return taskDao.getAllremindedTasks()
+    }
+
     override suspend fun deleteTask(taskEntity: TaskEntity) {
         taskDao.deleteTask(taskEntity)
     }

@@ -1,6 +1,7 @@
 package com.yotfr.sunmoon.presentation.notes.note_list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -50,6 +51,16 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentNoteListBinding.bind(view)
+
+        binding.fragmentNoteListCategoriesGroup.addView(
+            createHeaderChip()
+        )
+        val chipHeader =  binding.fragmentNoteListCategoriesGroup.findViewWithTag<Chip>(
+            CHIP_HEADER_TAG
+        )
+        chipHeader.performClick()
+
+
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -128,6 +139,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
         binding.fragmentNoteListCategoriesGroup.setOnCheckedStateChangeListener { group, _ ->
              val chipId = group.findViewById<Chip>(group.checkedChipId).tag as Long
+            Log.d("CHIP","$chipId")
             viewModel.onEvent(NoteListEvent.ChangeSelectedCategory(
                 selectedCategoryId = chipId
             ))
@@ -157,8 +169,8 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
                                 categoryId = it.id
                             ))
                         }
-                        binding.fragmentNoteListCategoriesGroup.removeAllViews()
-                        binding.fragmentNoteListCategoriesGroup.addView(headerChip,0)
+                        binding.fragmentNoteListCategoriesGroup.removeViews(1,
+                        binding.fragmentNoteListCategoriesGroup.childCount - 1)
                         chips.forEach {
                             binding.fragmentNoteListCategoriesGroup.addView(
                                 it
@@ -197,35 +209,22 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val chipHeader =  binding.fragmentNoteListCategoriesGroup.findViewWithTag<Chip>(
-            CHIP_HEADER_TAG
-        )
-        chipHeader.performClick()
-    }
-
     private fun createHeaderChip():Chip{
-        val chip = Chip(requireContext())
-        val drawable = ChipDrawable.createFromAttributes(requireContext(),null,0,
-        R.style.Widget_SunMoon_Chip_Suggestion)
+        val chip = Chip(requireContext(),
+        null,R.attr.PrimaryChipStyle)
         chip.apply {
-            setChipDrawable(drawable)
             text = getString(R.string.all)
             tag = CHIP_HEADER_TAG
-            setTextColor(ContextCompat.getColor(requireContext(),R.color.chip_text_color))
+            isChecked = true
         }
         return chip
     }
 
     private fun createCategoryChip(text:String, categoryId:Long):Chip{
-        val chip = Chip(requireContext())
-        val drawable = ChipDrawable.createFromAttributes(requireContext(),null,0,
-            R.style.Widget_SunMoon_Chip_Suggestion)
+        val chip = Chip(requireContext(),
+            null,R.attr.PrimaryChipStyle)
         chip.apply {
-            setChipDrawable(drawable)
             setText(text)
-            setTextColor(ContextCompat.getColor(requireContext(),R.color.chip_text_color))
             tag = categoryId
         }
         return chip

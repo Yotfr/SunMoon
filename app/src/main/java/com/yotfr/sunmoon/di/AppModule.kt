@@ -130,7 +130,8 @@ object AppModule {
             ),
             changeTaskImportanceState = ChangeTaskImportanceState(
                 taskRepository
-            )
+            ),
+            getAllRemindedTasks = GetAllRemindedTasks(taskRepository)
         )
     }
 
