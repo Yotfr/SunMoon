@@ -7,6 +7,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -18,7 +19,7 @@ import javax.inject.Inject
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "DATA_STORE")
 
 class DataStoreRepositoryImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : DataStoreRepository {
 
     override suspend fun updateTheme(theme: String) {

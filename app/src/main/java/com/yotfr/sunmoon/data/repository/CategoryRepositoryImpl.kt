@@ -5,8 +5,11 @@ import com.yotfr.sunmoon.data.data_source.model.note.CategoryEntity
 import com.yotfr.sunmoon.data.data_source.model.relations.CategoriesWithNotesRelation
 import com.yotfr.sunmoon.domain.repository.note.CategoryRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CategoryRepositoryImpl(
+@Singleton
+class CategoryRepositoryImpl @Inject constructor(
     private val categoryDao: CategoryDao
 ):CategoryRepository {
     override suspend fun insertCategory(categoryEntity: CategoryEntity) {

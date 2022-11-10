@@ -5,8 +5,11 @@ import com.yotfr.sunmoon.data.data_source.model.relations.TaskWithSubTasksRelati
 import com.yotfr.sunmoon.data.data_source.model.task.TaskEntity
 import com.yotfr.sunmoon.domain.repository.task.TaskRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TaskRepositoryImpl(
+@Singleton
+class TaskRepositoryImpl @Inject constructor(
     private val taskDao: TaskDao
 ) : TaskRepository {
 

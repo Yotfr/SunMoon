@@ -4,8 +4,11 @@ import com.yotfr.sunmoon.data.data_source.NoteDao
 import com.yotfr.sunmoon.data.data_source.model.note.NoteEntity
 import com.yotfr.sunmoon.domain.repository.note.NoteRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NoteRepositoryImpl(
+@Singleton
+class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao
 ) : NoteRepository {
     override suspend fun insertNote(noteEntity: NoteEntity): Long {
