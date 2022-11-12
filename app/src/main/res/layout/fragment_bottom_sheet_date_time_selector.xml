@@ -12,7 +12,6 @@
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:dateTextAppearance="@style/CalenderViewDateCustomText"
         android:theme="@style/CalenderViewCustom"
         android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
         app:layout_constraintEnd_toEndOf="parent"

@@ -29,6 +29,8 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
     private val _timeFormat = MutableStateFlow(2)
     val timeFormat = _timeFormat.asStateFlow()
 
+    private val isClearNeeded = MutableStateFlow(true)
+
     private val _uiState = MutableStateFlow(DateSelectorUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -54,15 +56,20 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
     fun onEvent(event: BottomSheetTaskDateSelectorEvent) {
         when(event){
             is BottomSheetTaskDateSelectorEvent.DateTimeChanged -> {
+                _uiState.value
                 event.date?.let {
-                    _uiState.value = _uiState.value.copy(
-                        selectedDate = event.date
-                    )
+                    _uiState.update {
+                        it.copy(
+                            selectedDate = event.date
+                        )
+                    }
                 }
                 event.time?.let {
-                    _uiState.value = _uiState.value.copy(
-                        selectedTime = event.time
-                    )
+                    _uiState.update {
+                        it.copy(
+                            selectedTime = event.time
+                        )
+                    }
                 }
             }
             is BottomSheetTaskDateSelectorEvent.SaveDateTimePressed -> {
@@ -73,10 +80,16 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
                 ))
             }
             is BottomSheetTaskDateSelectorEvent.ClearDateTime -> {
-                _uiState.value = DateSelectorUiState(
-                    selectedDate = null,
-                    selectedTime = null
-                )
+                if (isClearNeeded.value) {
+                    _uiState.value = DateSelectorUiState(
+                        selectedDate = null,
+                        selectedTime = null
+                    )
+                }
+                isClearNeeded.value = true
+            }
+            is BottomSheetTaskDateSelectorEvent.ChangeClearNeeded -> {
+                isClearNeeded.value = event.isNeeded
             }
         }
     }
@@ -91,7 +104,7 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
         val date =  if (selectedDate == BottomSheetTaskDateSelectorFragment.WITHOUT_DATE) null
         else selectedDate
         val time =  if (selectedTime == BottomSheetTaskDateSelectorFragment.WITHOUT_TIME) null
-        else selectedDate
+        else selectedTime
         _uiState.value = _uiState.value.copy(
             selectedDate = date,
             selectedTime = time

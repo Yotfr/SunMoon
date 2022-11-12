@@ -144,7 +144,7 @@
     //CalendarView
     <style name="CalenderViewCustom" parent="Theme.AppCompat">
         <item name="colorAccent">?attr/colorPrimaryContainer</item>
-        <item name="colorPrimary">?attr/colorSurface</item>
+        <item name="colorPrimary">?attr/colorSecondaryContainer</item>
         <item name="android:textColorPrimary">?attr/colorSecondary</item>
     </style>
 

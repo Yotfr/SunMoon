@@ -4,5 +4,6 @@ data class SubTaskModel(
     val subTaskId:Long? = null,
     val subTaskDescription:String,
     val completionStatus:Boolean ?= false,
-    val taskId:Long
+    val taskId:Long,
+    val isEnabled:Boolean
 )

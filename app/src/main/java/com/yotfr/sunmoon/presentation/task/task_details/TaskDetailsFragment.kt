@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.*
@@ -39,6 +38,7 @@ import android.os.Build
 import androidx.activity.result.contract.ActivityResultContracts
 import com.yotfr.sunmoon.databinding.FragmentTaskDetailsBinding
 import com.yotfr.sunmoon.presentation.MainActivity
+import com.yotfr.sunmoon.presentation.task.TaskRootFragment
 import com.yotfr.sunmoon.presentation.task.task_details.adapter.SubTaskAdapter
 import com.yotfr.sunmoon.presentation.task.task_details.adapter.SubTaskDelegate
 import com.yotfr.sunmoon.presentation.task.task_details.adapter.SubTaskListItemCallback
@@ -46,7 +46,6 @@ import com.yotfr.sunmoon.presentation.task.task_details.event.TaskDetailsEvent
 import com.yotfr.sunmoon.presentation.task.task_details.event.TaskDetailsUiEvent
 import com.yotfr.sunmoon.presentation.task.task_details.model.State
 import com.yotfr.sunmoon.presentation.task.task_details.model.SubTaskModel
-import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
 import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -57,6 +56,7 @@ import java.util.*
 class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
     private val viewModel by viewModels<TaskDetailsViewModel>()
+
     private val args:TaskDetailsFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentTaskDetailsBinding
@@ -98,6 +98,13 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                         }
                         true
                     }
+                    android.R.id.home -> {
+                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                            TaskRootFragment.SELECTED_TASK_DATE, viewModel.uiState.value.scheduledDate
+                        )
+                        findNavController().popBackStack()
+                        true
+                    }
                     else -> false
                 }
             }
@@ -106,7 +113,6 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
         //setTransitionName
         ViewCompat.setTransitionName(binding.root, "task${args.taskId}")
-        Log.d("TRANSITION","set - > ${binding.root.transitionName}")
 
         //initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
@@ -143,13 +149,6 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                 )
             }
         })
-        binding.fragmentTaskDetailsRecyclerview.addOnItemTouchListener(
-            object : RecyclerView.SimpleOnItemTouchListener() {
-                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    return !viewModel.rvClickAllowed.value
-                }
-            }
-        )
         initSwipeToDelete()
 
 
@@ -190,7 +189,6 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
         binding.fragmentTaskDetailsDateTimeDateClearBtn.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.ClearDateTime)
-
         }
 
         binding.fragmentTaskDetailsRemindTvSet.setOnClickListener {
@@ -682,6 +680,8 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }
         }
     }
+
+
 
     private fun dateParser(
         currentDateFormat: String,

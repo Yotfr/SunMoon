@@ -15,7 +15,7 @@ class TaskDetailsMapper {
             isTrashed = domainModel.isTrashed,
             scheduledDate = domainModel.scheduledDate,
             scheduledTime = domainModel.scheduledTime,
-            subTasks = subTaskMapper.fromDomainList(domainModel.subTasks),
+            subTasks = subTaskMapper.fromDomainList(domainModel.subTasks, !domainModel.isCompleted),
             completionProgress = calculateProgress(domainModel),
             remindDate = domainModel.remindDate,
             remindTime = domainModel.remindTime,

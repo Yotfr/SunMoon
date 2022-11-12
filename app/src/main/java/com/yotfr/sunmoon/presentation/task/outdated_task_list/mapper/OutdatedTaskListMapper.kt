@@ -20,13 +20,12 @@ class OutdatedTaskListMapper {
             scheduledDate = domainModel.scheduledDate,
             scheduledTime = domainModel.scheduledTime,
             scheduledFormattedTime = formatTime(domainModel.scheduledTime, sdfPattern),
-            formattedOverDueTime = formatOverDueTime(
-                domainModel.scheduledTime,
-                currentTime,
-                sdfPattern
+            formattedOverDueTime = formatOverDueDate(
+                domainModel.scheduledDate,
+                currentTime
             ),
             completionProgress = calculateProgress(domainModel),
-            isAddTimeButtonVisible = domainModel.scheduledTime == null,
+            isAddTimeButtonVisible = domainModel.scheduledTime != null,
             remindDate = domainModel.remindDate,
             remindTime = domainModel.remindTime,
             remindDelayTime = domainModel.remindDelayTime,
@@ -50,7 +49,11 @@ class OutdatedTaskListMapper {
         )
     }
 
-    fun fromDomainList(initial: List<Task>, sdfPattern: String, currentTime: Long): List<OutdatedTaskListModel> {
+    fun fromDomainList(
+        initial: List<Task>,
+        sdfPattern: String,
+        currentTime: Long
+    ): List<OutdatedTaskListModel> {
         return initial.map { fromDomain(it, sdfPattern, currentTime) }
     }
 
@@ -66,14 +69,13 @@ class OutdatedTaskListMapper {
         return sdf.format(time)
     }
 
-    private fun formatOverDueTime(
-        scheduledTime: Long?,
-        currentTime: Long,
-        sdfPattern: String
+    private fun formatOverDueDate(
+        scheduledDate: Long?,
+        currentDate: Long
     ): String {
-        val sdf = SimpleDateFormat(sdfPattern, Locale.getDefault())
-        if (scheduledTime == null) return ""
-        val overDueTime = currentTime - scheduledTime
+        val sdf = SimpleDateFormat("d", Locale.getDefault())
+        if (scheduledDate == null) return ""
+        val overDueTime = currentDate - scheduledDate
         return sdf.format(overDueTime)
     }
 

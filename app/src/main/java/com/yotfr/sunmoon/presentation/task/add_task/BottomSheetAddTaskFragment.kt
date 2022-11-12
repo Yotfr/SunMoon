@@ -1,10 +1,10 @@
 package com.yotfr.sunmoon.presentation.task.add_task
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +17,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.google.android.material.transition.MaterialContainerTransform
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentBottomSheetAddTaskBinding
+import com.yotfr.sunmoon.presentation.task.TaskRootFragment
 import com.yotfr.sunmoon.presentation.task.add_task.event.BottomSheetAddTaskEvent
 import com.yotfr.sunmoon.presentation.task.add_task.event.BottomSheetAddTaskUiEvent
 import com.yotfr.sunmoon.presentation.task.task_date_selector.BottomSheetTaskDateSelectorFragment
@@ -29,6 +30,7 @@ import java.util.*
 class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
 
     companion object {
+        const val REQUEST_CODE = "REQUEST_CODE_ADD_TASK"
         const val WITHOUT_SELECTED_DATE = -1L
         const val WITHOUT_SELECTED_TIME = -1L
     }
@@ -75,7 +77,8 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         //changeScheduledTime
         binding.chipScheduledTime.setOnClickListener {
             showTimePicker(
-                currentTimeFormat = viewModel.timeFormat.value
+                currentTimeFormat = viewModel.timeFormat.value,
+                currentSelectedTime = viewModel.uiState.value.selectedTime
             ) { time ->
                 viewModel.onEvent(
                     BottomSheetAddTaskEvent.ChangeTime(
@@ -140,19 +143,25 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiEvents.collect { event ->
-                    when (event) {
+                viewModel.uiEvents.collect { uiEvent ->
+                    when (uiEvent) {
                         is BottomSheetAddTaskUiEvent.NavigateToDateSelector -> {
                             val directions = BottomSheetAddTaskFragmentDirections
                                 .actionBottomSheetAddTaskFragmentToBottomSheetTaskDateSelectorFragment(
-                                    event.date ?: BottomSheetTaskDateSelectorFragment
+                                    uiEvent.date ?: BottomSheetTaskDateSelectorFragment
                                         .WITHOUT_DATE,
-                                    event.time ?: BottomSheetTaskDateSelectorFragment
+                                    uiEvent.time ?: BottomSheetTaskDateSelectorFragment
                                         .WITHOUT_TIME
                                 )
                             findNavController().navigate(directions)
                         }
                         is BottomSheetAddTaskUiEvent.PopBackStack -> {
+                            parentFragmentManager.setFragmentResult(
+                                REQUEST_CODE,
+                                bundleOf(
+                                    TaskRootFragment.SELECTED_TASK_DATE to uiEvent.date
+                                )
+                            )
                             findNavController().popBackStack()
                         }
                     }
@@ -164,9 +173,13 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
 
     private fun showTimePicker(
         currentTimeFormat:Int,
+        currentSelectedTime:Long?,
         onPositive: (time: Long) -> Unit
     ) {
         val calendar = Calendar.getInstance(Locale.getDefault())
+        currentSelectedTime?.let { time ->
+            calendar.timeInMillis = time
+        }
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
         val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(activity)
@@ -236,6 +249,8 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         }
         return getString(R.string.set)
     }
+
+
 
 
 }

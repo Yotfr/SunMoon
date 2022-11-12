@@ -5,19 +5,20 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemOutdatedTaskBinding
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTaskListModel
 
 
-interface OutdatedUncompletedTaskDelegate{
-    fun taskPressed(taskId:Long)
-    fun schedulePressed(task:OutdatedTaskListModel)
+interface OutdatedUncompletedTaskDelegate {
+    fun taskPressed(taskId: Long)
+    fun schedulePressed(task: OutdatedTaskListModel)
 }
 
 class OutdatedUncompletedTaskDiffCallback(
-    private val oldList:List<OutdatedTaskListModel>,
-    private val newList:List<OutdatedTaskListModel>
-): DiffUtil.Callback() {
+    private val oldList: List<OutdatedTaskListModel>,
+    private val newList: List<OutdatedTaskListModel>
+) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
     override fun getNewListSize(): Int = newList.size
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -29,7 +30,8 @@ class OutdatedUncompletedTaskDiffCallback(
     }
 }
 
-class OutdatedUncompletedTaskAdapter:RecyclerView.Adapter<OutdatedUncompletedTaskAdapter.OutdatedTaskViewHolder>() {
+class OutdatedUncompletedTaskAdapter :
+    RecyclerView.Adapter<OutdatedUncompletedTaskAdapter.OutdatedTaskViewHolder>() {
 
     private var delegate: OutdatedUncompletedTaskDelegate? = null
 
@@ -52,7 +54,7 @@ class OutdatedUncompletedTaskAdapter:RecyclerView.Adapter<OutdatedUncompletedTas
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ),delegate
+            ), delegate
         )
     }
 
@@ -63,27 +65,32 @@ class OutdatedUncompletedTaskAdapter:RecyclerView.Adapter<OutdatedUncompletedTas
     override fun getItemCount(): Int = outdatedTasks.size
 
     class OutdatedTaskViewHolder(
-        private val binding:ItemOutdatedTaskBinding,
+        private val binding: ItemOutdatedTaskBinding,
         private val delegate: OutdatedUncompletedTaskDelegate?
-    ):RecyclerView.ViewHolder(binding.root){
-        fun bind(outdatedTask:OutdatedTaskListModel){
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(outdatedTask: OutdatedTaskListModel) {
             binding.apply {
 
                 itemOutdatedTaskTvScheduledTime.text = outdatedTask.scheduledFormattedTime
                 itemOutdatedTaskTvScheduledTime.isVisible = outdatedTask.isAddTimeButtonVisible
                 itemOutdatedTaskTvTaskDescription.text = outdatedTask.taskDescription
                 itemOutdatedTaskCb.isChecked = outdatedTask.isCompleted
+                itemScheduledTaskTvSetTime.isVisible = !outdatedTask.isAddTimeButtonVisible
                 itemOutdatedTaskTaskProgress.progress = outdatedTask.completionProgress
-                itemOutdatedTaskTvOverdue.text = outdatedTask.formattedOverDueTime
+                itemOutdatedTaskTvOverdue.text =
+                    itemView.context.resources.getString(
+                        R.string.task_overdue,
+                        outdatedTask.formattedOverDueTime
+                    )
 
                 itemOutdatedTaskTvTaskDescription.setOnClickListener {
                     delegate?.taskPressed(
-                       taskId =  outdatedTask.taskId
+                        taskId = outdatedTask.taskId
                     )
                 }
                 itemOutdatedTaskReschedule.setOnClickListener {
                     delegate?.schedulePressed(
-                       task = outdatedTask
+                        task = outdatedTask
                     )
                 }
 

@@ -14,6 +14,7 @@
         android:padding="@dimen/small_padding">
 
         <TextView
+            android:maxLines="1"
             android:id="@+id/item_unplanned_completed_task_tv_task_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

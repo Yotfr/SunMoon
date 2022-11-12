@@ -41,7 +41,6 @@ open class SubTaskAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
 
-
     var subTasks: List<SubTaskModel> = emptyList()
         set(newValue) {
             val diffCallback = SubTaskDiffCallback(field, newValue)
@@ -113,6 +112,8 @@ open class SubTaskAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
                 itemNestedTitle.addTextChangedListener(listener)
                 itemNestedTitle.setText(subTask.subTaskDescription)
+                fragmentItemSubtaskCb.isEnabled = subTask.isEnabled
+                itemNestedTitle.isEnabled = subTask.isEnabled
 
                 itemNestedTitle.setOnFocusChangeListener { _, isFocused ->
                     if(!isFocused) {

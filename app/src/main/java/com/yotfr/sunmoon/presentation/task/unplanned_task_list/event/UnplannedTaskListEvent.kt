@@ -11,7 +11,7 @@ sealed interface UnplannedTaskListEvent {
         val task: UnplannedTaskListModel
         ): UnplannedTaskListEvent
 
-    data class ScheduleTask(val task: UnplannedTaskListModel, val selectedDate: Long?, val selectedTime:Long?): UnplannedTaskListEvent
+    data class ScheduleTask(val task: UnplannedTaskListModel, val selectedDate: Long, val selectedTime:Long?): UnplannedTaskListEvent
 
     data class TrashUnplannedTask(val task: UnplannedTaskListModel) : UnplannedTaskListEvent
 

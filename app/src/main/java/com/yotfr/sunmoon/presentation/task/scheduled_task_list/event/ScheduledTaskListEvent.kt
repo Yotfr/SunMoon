@@ -26,6 +26,8 @@ sealed interface ScheduledTaskListEvent {
 
     data class DeleteTasks(val deleteOption: ScheduledTaskDeleteOption) : ScheduledTaskListEvent
 
+    data class SelectCalendarDate(val selectedDate:Long) : ScheduledTaskListEvent
+
     object ChangeCompletedTasksVisibility : ScheduledTaskListEvent
 
 }

@@ -39,7 +39,7 @@ class DataStoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDateFormat(): Flow<String?> {
+    override suspend fun getDateFormat(): Flow<String> {
         val dateFormat = context.dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
@@ -50,7 +50,7 @@ class DataStoreRepositoryImpl @Inject constructor(
                 }
             }
             .map { preferences ->
-                preferences[PreferencesKeys.DATE_FORMAT]
+                preferences[PreferencesKeys.DATE_FORMAT] ?: "yyyy/MM/dd"
             }
         return dateFormat
     }

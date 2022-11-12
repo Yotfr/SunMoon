@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.*
@@ -179,6 +178,11 @@ class ScheduledTaskListViewModel @Inject constructor(
                         )
                     )
                 }
+            }
+            is ScheduledTaskListEvent.SelectCalendarDate -> {
+                sendToUi(ScheduledTaskListUiEvent.SelectCalendarDate(
+                    selectedDate = event.selectedDate
+                ))
             }
         }
     }

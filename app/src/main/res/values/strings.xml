@@ -112,8 +112,7 @@
 
     <string name="set">Set</string>
     <string name="task_scheduled">Task scheduled</string>
-    <string name="task_overdue">Overdue by:</string>
-    <string name="task_overdue_part_two">days</string>
+    <string name="task_overdue">Overdue by: %1$s days</string>
 
     <string name="mark_undone">Mark undone</string>
     <string name="schedule">Schedule</string>

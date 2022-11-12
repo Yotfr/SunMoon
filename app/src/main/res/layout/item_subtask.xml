@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:background="?attr/colorSurface"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
+    android:orientation="horizontal">
 
     <CheckBox
         android:id="@+id/fragment_item_subtask_cb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:button="@drawable/selector_checkbox"
-        app:buttonTint = "@null"
+        app:buttonTint="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:useMaterialThemeColors="false" />
 
     <EditText
-        tools:text="My subtask"
-        android:inputType="textNoSuggestions"
-        android:maxLines="1"
         android:id="@+id/item_nested_title"
-        android:layout_width="wrap_content"
         style="@style/Theme.SunMoon.EditText"
-        android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:hint="@string/add_sub_task"
+        android:inputType="textMultiLine"
+        android:minHeight="48dp"
         android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.SunMoon.BodyMedium"
         android:textColorHint="?attr/colorSecondary"
-        app:layout_constraintBottom_toBottomOf="@id/fragment_item_subtask_cb"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/fragment_item_subtask_cb"
-        app:layout_constraintTop_toTopOf="@id/fragment_item_subtask_cb" />
+        app:layout_constraintStart_toEndOf="@+id/fragment_item_subtask_cb"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="My subTask" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

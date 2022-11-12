@@ -10,8 +10,8 @@ import com.yotfr.sunmoon.databinding.ItemOutdatedCompletedTaskBinding
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTaskListModel
 
 interface OutdatedCompletedTaskListDelegate {
-    fun taskPressed(taskId:Long)
-    fun schedulePressed(task:OutdatedTaskListModel)
+    fun taskPressed(taskId: Long)
+    fun schedulePressed(task: OutdatedTaskListModel)
 }
 
 class OutdatedCompletedTaskDiffCallback(
@@ -80,10 +80,16 @@ class OutdatedCompletedTaskAdapter :
 
                 itemOutdatedCompletedTaskTaskProgress.progress = outdatedTask.completionProgress
                 itemOutdatedCompletedTaskTvScheduledTime.text = outdatedTask.scheduledFormattedTime
-                itemOutdatedCompletedTaskTvScheduledTime.isVisible = outdatedTask.isAddTimeButtonVisible
+                itemOutdatedCompletedTaskTvScheduledTime.isVisible =
+                    !outdatedTask.isAddTimeButtonVisible
                 itemOutdatedCompletedTaskTvTaskDescription.text = outdatedTask.taskDescription
+                itemOutdatedCompletedTaskTvSetTime.isVisible = outdatedTask.isAddTimeButtonVisible
                 itemOutdatedCompletedTaskCb.isChecked = outdatedTask.isCompleted
-                itemOutdatedCompletedTaskTvOverdue.text = outdatedTask.formattedOverDueTime
+                itemOutdatedCompletedTaskTvOverdue.text =
+                    itemView.context.resources.getString(
+                        R.string.task_overdue,
+                        outdatedTask.formattedOverDueTime
+                    )
 
                 itemOutdatedCompletedTaskReschedule.setOnClickListener {
                     delegate?.schedulePressed(

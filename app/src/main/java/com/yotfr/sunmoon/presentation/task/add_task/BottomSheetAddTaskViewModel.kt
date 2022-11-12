@@ -67,7 +67,9 @@ class BottomSheetAddTaskViewModel @Inject constructor(
                         )
                     )
                 }
-                sendToUi(BottomSheetAddTaskUiEvent.PopBackStack)
+                sendToUi(BottomSheetAddTaskUiEvent.PopBackStack(
+                    date = _uiState.value.selectedDate
+                ))
             }
             is BottomSheetAddTaskEvent.DateTimeChanged -> {
                 viewModelScope.launch {

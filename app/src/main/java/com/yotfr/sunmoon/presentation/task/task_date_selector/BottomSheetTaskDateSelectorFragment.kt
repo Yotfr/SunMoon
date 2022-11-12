@@ -45,8 +45,10 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.calendarView.minDate = getCurrentDate()
+        binding.calendarView.maxDate = getMaxCalendardate()
 
-        //Done
+
         binding.calendarView.setOnDateChangeListener { _, year, month, date ->
             binding.btnWithoutDate.visibility = View.GONE
             binding.btnSelectedTime.isEnabled = true
@@ -61,7 +63,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
 
 
-        //Done
         binding.chipDateHelpers.setOnCheckedStateChangeListener { btn, _ ->
             if (btn.checkedChipId == View.NO_ID) {
                 viewModel.onEvent(
@@ -89,6 +90,10 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
                             false
                         )
                     }
+                        changeBtnWithoutDateVisibility(
+                            isVisible = state.selectedDate == null
+                        )
+
                 }
             }
         }
@@ -113,13 +118,12 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
 
 
-        //Done
         binding.btnReschedule.setOnClickListener {
             changeBtnWithoutDateVisibility(true)
             viewModel.onEvent(BottomSheetTaskDateSelectorEvent.SaveDateTimePressed)
         }
 
-        //Done
+
         binding.btnCancel.setOnClickListener {
             changeBtnWithoutDateVisibility(true)
             findNavController().popBackStack()
@@ -167,7 +171,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //Done
     private fun parseSelectedChipAndChangeDate(tag: String) {
         when (tag) {
             "today" -> {
@@ -197,7 +200,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //Done
     private fun changeViewModelDate(dateTemplates: DateTemplates) {
         viewModel.onEvent(
             BottomSheetTaskDateSelectorEvent.DateTimeChanged(
@@ -206,17 +208,18 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         )
     }
 
-    private fun changeBtnWithoutDateVisibility(isVisble: Boolean) {
-        if (isVisble) {
+    private fun changeBtnWithoutDateVisibility(isVisible: Boolean) {
+        if (isVisible) {
             binding.btnWithoutDate.visibility = View.VISIBLE
             binding.btnSelectedTime.isEnabled = false
+            binding.chipDateHelpers.findViewWithTag<Chip>("withoutdate").isEnabled = false
         } else {
             binding.btnWithoutDate.visibility = View.GONE
             binding.btnSelectedTime.isEnabled = true
+            binding.chipDateHelpers.findViewWithTag<Chip>("withoutdate").isEnabled = true
         }
     }
 
-    //Done
     private fun parseDateToTimeButtonText(
         currentTimePattern: String,
         time: Long?
@@ -230,12 +233,17 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         return getString(R.string.without_time)
     }
 
-
-    //Done
     private fun parseDateAndSelectChip(date: Long?) {
 
         if (date == null) {
-            binding.chipDateHelpers.clearCheck()
+            viewModel.onEvent(BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
+                isNeeded = true
+            ))
+
+            val chipWithoutDate = binding.chipDateHelpers.findViewWithTag<Chip>("withoutdate")
+            if (chipWithoutDate.id != binding.chipDateHelpers.checkedChipId) {
+                chipWithoutDate.performClick()
+            }
             return
         }
 
@@ -288,13 +296,16 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
                     binding.chipOnWeekend.isChecked = true
                     return
                 } else {
+
+                    viewModel.onEvent(BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
+                        isNeeded = false
+                    ))
                     binding.chipDateHelpers.clearCheck()
                 }
             }
         }
     }
 
-    //Done
     private fun parseDateTemplatesToDate(dateTemplates: DateTemplates): Long {
 
         val calendar = Calendar.getInstance(Locale.getDefault())
@@ -328,6 +339,16 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
                 calendar.timeInMillis
             }
         }
+    }
+
+    private fun getCurrentDate():Long{
+        return Calendar.getInstance(Locale.getDefault()).timeInMillis
+    }
+
+    private fun getMaxCalendardate():Long{
+        val calendar = Calendar.getInstance(Locale.getDefault())
+        calendar.add(Calendar.MONTH,6)
+        return calendar.timeInMillis
     }
 
 

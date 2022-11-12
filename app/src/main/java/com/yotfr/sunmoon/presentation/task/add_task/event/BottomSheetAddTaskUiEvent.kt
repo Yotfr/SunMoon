@@ -4,6 +4,6 @@ sealed interface BottomSheetAddTaskUiEvent {
 
     data class NavigateToDateSelector(val date: Long?, val time: Long?) : BottomSheetAddTaskUiEvent
 
-    object PopBackStack : BottomSheetAddTaskUiEvent
+    data class PopBackStack(val date:Long?) : BottomSheetAddTaskUiEvent
 
 }

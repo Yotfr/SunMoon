@@ -1,10 +1,7 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
-import android.animation.LayoutTransition
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
@@ -58,8 +55,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     private var searchView: SearchView? = null
 
-    //TODO:viewBinding by delegate
     private lateinit var binding: FragmentScheduledTaskListBinding
+
     private lateinit var uncompletedTaskListAdapter: ScheduledUncompletedTaskListAdapter
     private lateinit var completedTaskListAdapter: ScheduledCompletedTaskAdapter
     private lateinit var completedTaskHeaderAdapter: ScheduledCompletedHeaderAdapter
@@ -159,35 +156,9 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         //ScrollCalendarToSelectedDate
         binding.scheduledTaskListFragmentTvCurrentDate.setOnClickListener {
             showDatePicker { date ->
-                val monthCalendar = Calendar.getInstance(Locale.getDefault())
-                monthCalendar.timeInMillis = date
-                if (monthCalendar.get(Calendar.MONTH) != cal.get(Calendar.MONTH)) {
-                    if (monthCalendar.timeInMillis > cal.timeInMillis) {
-                        do {
-                            changeCalendarMonth(CalendarChangeDirection.NEXT)
-                        } while (
-                            cal.get(Calendar.MONTH) != monthCalendar.get(Calendar.MONTH)
-                        )
-                    } else {
-                        do {
-                            changeCalendarMonth(CalendarChangeDirection.PREVIOUS)
-                        } while (
-                            cal.get(Calendar.MONTH) != monthCalendar.get(Calendar.MONTH)
-                        )
-                    }
-                }
-                viewLifecycleOwner.lifecycleScope.launch {
-                    val position = async {
-                        withContext(Dispatchers.Default) {
-                            dates.indexOfFirst { it.time in date..date + 86400000 }
-                        }
-                    }
-                    binding.scheduledTaskListFragmentRvCalendar.smoothScrollToPosition(position.await())
-                    delay(400)
-                    binding.scheduledTaskListFragmentRvCalendar.findViewHolderForAdapterPosition(
-                        position.await()
-                    )?.itemView?.findViewById<View>(R.id.item_calendar_card)?.performClick()
-                }
+                scrollCalendarToSelectedDate(
+                    date = date
+                )
             }
         }
 
@@ -208,7 +179,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 )
                 exitTransition = MaterialElevationScale(false)
                 reenterTransition = MaterialElevationScale(true)
-                Log.d("TRANSITION", "exited - > ${extras.sharedElements}")
                 navigateToDestination(
                     direction = direction,
                     extras = extras
@@ -225,7 +195,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
             override fun taskTimePressed(task: ScheduledTaskListModel) {
                 showTimePicker(
-                    timeFormat = viewModel.timeFormat.value
+                    timeFormat = viewModel.timeFormat.value,
+                    currentTaskTime = task.scheduledTime
                 ) { selectedTime ->
                     viewModel.onEvent(
                         ScheduledTaskListEvent.ChangeTaskScheduledTime(
@@ -331,6 +302,11 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                                 )
                             }
                         }
+                        is ScheduledTaskListUiEvent.SelectCalendarDate -> {
+                            scrollCalendarToSelectedDate(
+                                date = uiEvent.selectedDate
+                            )
+                        }
                     }
                 }
             }
@@ -343,8 +319,49 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         return viewModel.selectedCalendarDate.value
     }
 
+    fun selectCalendarDate(selectedTaskDate: Long) {
+        viewModel.onEvent(
+            ScheduledTaskListEvent.SelectCalendarDate(
+                selectedDate = selectedTaskDate
+            )
+        )
+    }
+
+    private fun scrollCalendarToSelectedDate(date:Long){
+        val monthCalendar = Calendar.getInstance(Locale.getDefault())
+        monthCalendar.timeInMillis = date
+        if (monthCalendar.get(Calendar.MONTH) != cal.get(Calendar.MONTH)) {
+            if (monthCalendar.timeInMillis > cal.timeInMillis) {
+                do {
+                    changeCalendarMonth(CalendarChangeDirection.NEXT)
+                } while (
+                    cal.get(Calendar.MONTH) != monthCalendar.get(Calendar.MONTH)
+                )
+            } else {
+                do {
+                    changeCalendarMonth(CalendarChangeDirection.PREVIOUS)
+                } while (
+                    cal.get(Calendar.MONTH) != monthCalendar.get(Calendar.MONTH)
+                )
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            val position = async {
+                withContext(Dispatchers.Default) {
+                    dates.indexOfFirst { it.time in date..date + 86400000 }
+                }
+            }
+            binding.scheduledTaskListFragmentRvCalendar.smoothScrollToPosition(position.await())
+            delay(500)
+            binding.scheduledTaskListFragmentRvCalendar.findViewHolderForAdapterPosition(
+                position.await()
+            )?.itemView?.findViewById<View>(R.id.item_calendar_card)?.performClick()
+        }
+    }
+
 
     private fun setUpCalendar(changeMonth: Calendar? = null) {
+
         binding.scheduledTaskListFragmentTvCurrentDate.text = sdf.format(cal.time)
         val monthCalendar = cal.clone() as Calendar
         val maxDaysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -424,8 +441,11 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     private fun showDatePicker(onPositive: (date: Long) -> Unit) {
         val calendar = Calendar.getInstance(Locale.getDefault())
+        val endDateCalendar = calendar.clone() as Calendar
+        endDateCalendar.add(Calendar.MONTH, 6)
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
+            .setEnd(endDateCalendar.timeInMillis)
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(getString(R.string.select_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -482,9 +502,13 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     private fun showTimePicker(
         timeFormat: Int,
+        currentTaskTime: Long?,
         onPositive: (date: Long) -> Unit
     ) {
         val calendar = Calendar.getInstance(Locale.getDefault())
+        currentTaskTime?.let { time ->
+            calendar.timeInMillis = time
+        }
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
         val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(requireContext())

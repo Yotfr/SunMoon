@@ -100,6 +100,9 @@ class UnplannedTaskListViewModel @Inject constructor(
                         newTime = event.selectedTime
                     )
                 }
+                sendToUi(UnplannedTaskListUiEvent.NavigateToScheduledTask(
+                    taskDate = event.selectedDate
+                ))
             }
             is UnplannedTaskListEvent.TrashUnplannedTask -> {
                 viewModelScope.launch {

@@ -7,7 +7,7 @@ sealed interface OutdatedTaskEvent {
 
     data class UpdateSearchQuery(val searchQuery: String): OutdatedTaskEvent
 
-    data class ScheduleTask(val task:OutdatedTaskListModel, val date:Long?, val time:Long?,
+    data class ScheduleTask(val task:OutdatedTaskListModel, val date:Long, val time:Long?,
     val isMakeUndoneNeeded:Boolean = false): OutdatedTaskEvent
 
     data class TrashOutdatedTask(val task: OutdatedTaskListModel): OutdatedTaskEvent

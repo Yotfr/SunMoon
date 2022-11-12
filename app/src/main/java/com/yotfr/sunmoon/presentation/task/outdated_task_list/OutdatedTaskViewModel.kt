@@ -65,7 +65,7 @@ class OutdatedTaskViewModel @Inject constructor(
                     currentDate = getCurrentDate()
                 ),
                 completedTasksHeaderState,
-                dataStoreRepository.getTimePattern()
+                dataStoreRepository.getTimePattern(),
             ) { tasks, headerState, timePattern ->
                 Quadruple(tasks.first, tasks.second, headerState, timePattern)
             }.collect { state ->
@@ -111,6 +111,9 @@ class OutdatedTaskViewModel @Inject constructor(
                         newTime = event.time
                     )
                 }
+                sendToUi(OutdatedTaskUiEvent.NavigateToScheduledTask(
+                    taskDate = event.date
+                ))
             }
 
             is OutdatedTaskEvent.TrashOutdatedTask -> {

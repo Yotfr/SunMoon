@@ -14,13 +14,14 @@
         android:padding="@dimen/small_padding">
 
         <TextView
+            android:maxLines="1"
             android:id="@+id/item_unplanned_task_tv_task_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/default_margin"
             android:textAppearance="@style/TextAppearance.SunMoon.BodyLarge"
             android:textColor="?attr/colorSecondary"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_importance_task_cb"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Do your stuff" />

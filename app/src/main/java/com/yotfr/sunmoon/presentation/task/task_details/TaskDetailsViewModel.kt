@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.task_details
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,11 +39,8 @@ class TaskDetailsViewModel @Inject constructor(
 
     private val changedEtText = MutableStateFlow("")
 
-    private val _rvClickAllowed = MutableStateFlow(false)
-    val rvClickAllowed = _rvClickAllowed.asStateFlow()
-
     private val _uiState = MutableStateFlow(TaskDetailsModel())
-    val uiState = _uiState.asSharedFlow()
+    val uiState = _uiState.asStateFlow()
 
     private val _uiEvents = Channel<TaskDetailsUiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
@@ -64,16 +60,11 @@ class TaskDetailsViewModel @Inject constructor(
                 task?.let {
                     _uiState.value = taskDetailsMapper.fromDomain(it)
                         .copy(state = _state.value)
-                    _rvClickAllowed.value = if (task.isCompleted) {
-                        false
-                    }else _state.value != State.OUTDATED
                 }
             }
         }
         viewModelScope.launch {
-            Log.d("DETAILS","scoped")
             dataStoreRepository.getDateTimeSettings().collect{
-                Log.d("DETAILS","collected -> $it")
                 _dateTimeSettings.value = DateTimeSettings(
                     datePattern = it.first ?: "yyyy/MM/dd" ,
                     timePattern = it.second,
@@ -208,11 +199,13 @@ class TaskDetailsViewModel @Inject constructor(
                 _state.value = State.SCHEDULED
             }
             TaskDetailsEvent.GetTaskId -> {
-                sendUiEvents(
-                    TaskDetailsUiEvent.NavigateToAddSubTask(
-                        taskId = _uiState.value.taskId!!
+                if (!_uiState.value.completionStatus){
+                    sendUiEvents(
+                        TaskDetailsUiEvent.NavigateToAddSubTask(
+                            taskId = _uiState.value.taskId!!
+                        )
                     )
-                )
+                }
             }
             TaskDetailsEvent.MarkUndone -> {
                 viewModelScope.launch {

@@ -117,8 +117,7 @@
 
     <string name="set">Установить</string>
     <string name="task_scheduled">Задача запланированна</string>
-    <string name="task_overdue">Просрочено на:</string>
-    <string name="task_overdue_part_two">дней</string>
+    <string name="task_overdue">Просрочено на: %1$s дней</string>
 
     <string name="mark_undone">Сделать невыполненным</string>
     <string name="schedule">Запланировать</string>

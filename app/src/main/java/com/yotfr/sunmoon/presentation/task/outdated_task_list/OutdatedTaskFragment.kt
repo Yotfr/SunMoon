@@ -1,6 +1,7 @@
 package com.yotfr.sunmoon.presentation.task.outdated_task_list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -28,9 +29,9 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
 import com.google.android.material.transition.MaterialFadeThrough
-import com.google.android.material.transition.MaterialSharedAxis
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentOutdatedTaskListBinding
+import com.yotfr.sunmoon.presentation.task.TaskRootFragment
 import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import com.yotfr.sunmoon.presentation.task.TaskRootFragmentDirections
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.adapter.*
@@ -203,6 +204,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     state?.let { uiModel ->
+                        Log.d("OUTDATED","${uiModel.uncompletedTasks}")
                         outdatedCompletedTaskAdapter.tasks = uiModel.completedTasks
                         outdatedUncompletedTaskAdapter.outdatedTasks = uiModel.uncompletedTasks
                         outdatedCompletedHeaderAdapter.headerState = uiModel.headerState
@@ -215,16 +217,22 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiEvent.collect { event ->
-                    when (event) {
+                viewModel.uiEvent.collect { uiEvent ->
+                    when (uiEvent) {
                         is OutdatedTaskUiEvent.UndoDeleteOutdatedTask -> {
                             showUndoDeleteSnackbar {
                                 viewModel.onEvent(
                                     OutdatedTaskEvent.UndoDeleteOutdatedTask(
-                                        task = event.task
+                                        task = uiEvent.task
                                     )
                                 )
                             }
+                        }
+                        is OutdatedTaskUiEvent.NavigateToScheduledTask -> {
+                            (parentFragment as TaskRootFragment).changeTabFromChildFragment(
+                                fragmentPosition = 0,
+                                selectedTaskDate = uiEvent.taskDate
+                            )
                         }
                     }
                 }
@@ -279,14 +287,17 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     private fun showDateTimePicker(
         currentTimeFormat:Int,
         onResult: (
-            selectedDate: Long?, selectedTime: Long?
+            selectedDate: Long, selectedTime: Long?
         ) -> Unit
     ) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
-        var selectedDate: Long?
+        var selectedDate: Long
         var selectedTime: Long? = null
+        val endDateCalendar = calendarDate.clone() as Calendar
+        endDateCalendar.add(Calendar.MONTH, 6)
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
+            .setEnd(endDateCalendar.timeInMillis)
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(getString(R.string.select_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
