@@ -7,6 +7,8 @@ import com.yotfr.sunmoon.presentation.settings.settings_theme.event.SettingsThem
 import com.yotfr.sunmoon.presentation.settings.settings_theme.event.SettingsThemeUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,9 +18,18 @@ class SettingsThemeViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ):ViewModel() {
 
+    private val _themeState = MutableStateFlow("orange")
+    val themeState = _themeState.asStateFlow()
+
     //uiEvents channel
     private val _uiEvent = Channel<SettingsThemeUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    init {
+        viewModelScope.launch {
+            _themeState.value = dataStoreRepository.getTheme() ?: "orange"
+        }
+    }
 
     //method for fragment to communicate with viewModel
     fun onEvent(event:SettingsThemeEvent) {
@@ -28,9 +39,11 @@ class SettingsThemeViewModel @Inject constructor(
                     dataStoreRepository.updateTheme(
                         theme = event.newTheme
                     )
+                    _themeState.value = event.newTheme
                     sendToUi(SettingsThemeUiEvent.RestartActivity)
                 }
             }
+
         }
     }
 

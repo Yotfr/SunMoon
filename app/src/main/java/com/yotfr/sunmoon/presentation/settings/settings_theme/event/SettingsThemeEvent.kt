@@ -4,4 +4,5 @@ interface SettingsThemeEvent {
 
     data class ChangeTheme(val newTheme:String):SettingsThemeEvent
 
+    object SaveTheme:SettingsThemeEvent
 }

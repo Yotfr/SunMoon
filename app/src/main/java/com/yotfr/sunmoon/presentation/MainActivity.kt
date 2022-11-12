@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                     "orange" -> {
                         theme.applyStyle(R.style.OverlayThemeOrangeSunMoon, true)
                     }
-                    "pink" -> {
+                    "green" -> {
                         theme.applyStyle(R.style.OverlayThemeGreenSunMoon, true)
                     }
                     "yellow" -> {
