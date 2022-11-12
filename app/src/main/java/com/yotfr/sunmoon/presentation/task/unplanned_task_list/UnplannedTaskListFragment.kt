@@ -220,8 +220,8 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     state?.let {
-                        unplannedUncompletedTaskListAdapter.tasks = it.uncompletedTasks
-                        unplannedCompletedTaskListAdapter.tasks = it.completedTasks
+                        unplannedUncompletedTaskListAdapter.submitList(it.uncompletedTasks)
+                        unplannedCompletedTaskListAdapter.submitList(it.completedTasks)
                         unplannedCompletedTaskHeaderAdapter.headerState = it.headerState
                         unplannedFooterAdapter.footerState = it.footerState
                     }
@@ -257,7 +257,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
     //initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
-            val task = unplannedUncompletedTaskListAdapter.tasks[positionToRemove]
+            val task = unplannedUncompletedTaskListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 UnplannedTaskListEvent.TrashUnplannedTask(
                     task = task
@@ -265,7 +265,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
             )
         }
         val onCompletedItemTrashed = { positionToRemove: Int ->
-            val task = unplannedCompletedTaskListAdapter.tasks[positionToRemove]
+            val task = unplannedCompletedTaskListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 UnplannedTaskListEvent.TrashUnplannedTask(
                     task = task

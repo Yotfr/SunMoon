@@ -3,50 +3,40 @@ package com.yotfr.sunmoon.presentation.notes.note_list.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemNoteBinding
-import com.yotfr.sunmoon.databinding.ItemNoteListFooterBinding
 import com.yotfr.sunmoon.presentation.notes.note_list.model.NoteListModel
-import java.lang.IllegalArgumentException
-
 
 interface NoteListDelegate {
     fun noteDetailsClicked(noteId: Long)
     fun pinPressed(note: NoteListModel)
 }
 
-class NoteListDiffCallBack(
-    private val oldList: List<NoteListModel>,
-    private val newList: List<NoteListModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].id == newList[newItemPosition].id
+class NoteListDiffCallBack: DiffUtil.ItemCallback<NoteListModel>() {
+
+    override fun areItemsTheSame(oldItem: NoteListModel, newItem: NoteListModel): Boolean {
+        return oldItem.id == newItem.id
+
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(oldItem: NoteListModel, newItem: NoteListModel): Boolean {
+        return oldItem == newItem
+
     }
 }
 
 
-class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
+class NoteListAdapter : ListAdapter<NoteListModel,NoteListAdapter.NoteViewHolder>(
+    NoteListDiffCallBack()
+) {
 
     private var delegate: NoteListDelegate? = null
 
     fun attachDelegate(delegate: NoteListDelegate) {
         this.delegate = delegate
     }
-
-    var notes: List<NoteListModel> = emptyList()
-        set(newValue) {
-            val diffCallback = NoteListDiffCallBack(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder(
@@ -59,14 +49,12 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        holder.bind(notes[position])
+        holder.bind(getItem(position))
     }
 
     override fun getItemViewType(position: Int): Int {
         return  R.layout.item_note
     }
-
-    override fun getItemCount() = notes.size
 
     class NoteViewHolder(
         private val binding: ItemNoteBinding,

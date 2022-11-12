@@ -149,7 +149,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.noteListUiState.collect { noteState ->
                     noteState?.let { notes ->
-                        noteListAdapter.notes = notes.notes
+                        noteListAdapter.submitList(notes.notes)
                         noteListFooterAdapter.footerState = notes.footerState
                     }
                 }
@@ -299,7 +299,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onTrashItem = { positionToRemove: Int ->
-            val note = noteListAdapter.notes[positionToRemove]
+            val note = noteListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 NoteListEvent.DeleteNote(
                     note = note
@@ -307,7 +307,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             )
         }
         val onArchiveItem = { positionToRemove: Int ->
-            val note = noteListAdapter.notes[positionToRemove]
+            val note = noteListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 NoteListEvent.ArchiveNote(
                     note = note

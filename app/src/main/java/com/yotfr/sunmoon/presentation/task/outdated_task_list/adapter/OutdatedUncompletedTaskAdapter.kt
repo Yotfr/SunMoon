@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemOutdatedTaskBinding
@@ -17,23 +18,27 @@ interface OutdatedUncompletedTaskDelegate {
     fun schedulePressed(task: OutdatedTaskListModel)
 }
 
-class OutdatedUncompletedTaskDiffCallback(
-    private val oldList: List<OutdatedTaskListModel>,
-    private val newList: List<OutdatedTaskListModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].taskId == newList[newItemPosition].taskId
+class OutdatedUncompletedTaskDiffCallback : DiffUtil.ItemCallback<OutdatedTaskListModel>() {
+    override fun areItemsTheSame(
+        oldItem: OutdatedTaskListModel,
+        newItem: OutdatedTaskListModel
+    ): Boolean {
+        return oldItem.taskId == newItem.taskId
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(
+        oldItem: OutdatedTaskListModel,
+        newItem: OutdatedTaskListModel
+    ): Boolean {
+        return oldItem == newItem
     }
 }
 
 class OutdatedUncompletedTaskAdapter :
-    RecyclerView.Adapter<OutdatedUncompletedTaskAdapter.OutdatedTaskViewHolder>() {
+    ListAdapter<OutdatedTaskListModel,
+            OutdatedUncompletedTaskAdapter.OutdatedTaskViewHolder>(
+        OutdatedUncompletedTaskDiffCallback()
+    ) {
 
     private var delegate: OutdatedUncompletedTaskDelegate? = null
 
@@ -42,13 +47,6 @@ class OutdatedUncompletedTaskAdapter :
         this.delegate = delegate
     }
 
-    var outdatedTasks: List<OutdatedTaskListModel> = emptyList()
-        set(newValue) {
-            val diffCallback = OutdatedUncompletedTaskDiffCallback(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OutdatedTaskViewHolder {
         return OutdatedTaskViewHolder(
@@ -61,10 +59,9 @@ class OutdatedUncompletedTaskAdapter :
     }
 
     override fun onBindViewHolder(holder: OutdatedTaskViewHolder, position: Int) {
-        holder.bind(outdatedTasks[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = outdatedTasks.size
 
     class OutdatedTaskViewHolder(
         private val binding: ItemOutdatedTaskBinding,

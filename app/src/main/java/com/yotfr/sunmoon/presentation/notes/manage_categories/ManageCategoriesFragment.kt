@@ -91,7 +91,7 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { categories ->
                     categories?.let {
-                        adapter.categories = it.categories
+                        adapter.submitList(it.categories)
                         footerAdapter.footerState = it.footerState
                     }
                 }

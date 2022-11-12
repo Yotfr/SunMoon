@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemScheduledCompletedTaskBinding
@@ -16,41 +17,32 @@ interface ScheduledCompletedTaskListDelegate {
     fun taskCheckBoxPressed(task: ScheduledTaskListModel)
 }
 
-class ScheduledCompletedTaskDiffCallback(
-    private val oldList: List<ScheduledTaskListModel>,
-    private val newList: List<ScheduledTaskListModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].taskId == newList[newItemPosition].taskId
+class ScheduledCompletedTaskDiffCallback : DiffUtil.ItemCallback<ScheduledTaskListModel>() {
+    override fun areItemsTheSame(
+        oldItem: ScheduledTaskListModel,
+        newItem: ScheduledTaskListModel
+    ): Boolean {
+        return oldItem.taskId == newItem.taskId
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(
+        oldItem: ScheduledTaskListModel,
+        newItem: ScheduledTaskListModel
+    ): Boolean {
+        return oldItem == newItem
     }
 }
 
 class ScheduledCompletedTaskAdapter :
-    RecyclerView.Adapter<ScheduledCompletedTaskAdapter.CompletedTaskViewHolder>() {
+    ListAdapter<ScheduledTaskListModel, ScheduledCompletedTaskAdapter.CompletedTaskViewHolder>(
+        ScheduledCompletedTaskDiffCallback()
+    ) {
 
     private var delegate: ScheduledCompletedTaskListDelegate? = null
 
     fun attachDelegate(delegate: ScheduledCompletedTaskListDelegate) {
         this.delegate = delegate
     }
-
-    var tasks: List<ScheduledTaskListModel> = emptyList()
-        set(newValue) {
-            val diffCallback = ScheduledCompletedTaskDiffCallback(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
-
-
-    override fun getItemCount(): Int = tasks.size
-
 
     override fun getItemViewType(position: Int): Int {
         return R.layout.item_scheduled_completed_task
@@ -69,7 +61,7 @@ class ScheduledCompletedTaskAdapter :
 
 
     override fun onBindViewHolder(holder: CompletedTaskViewHolder, position: Int) {
-        holder.bind(tasks[position])
+        holder.bind(getItem(position))
     }
 
 

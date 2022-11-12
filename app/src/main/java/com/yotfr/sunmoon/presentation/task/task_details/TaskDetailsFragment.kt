@@ -304,7 +304,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                             currentTimePattern = viewModel.dateTimeSettings.value.timePattern,
                             state.remindTime
                         )
-                        subTaskAdapter.subTasks = state.subTasks
+                        subTaskAdapter.submitList(state.subTasks)
                         fragmentTaskDetailsLinearProgress.progress = state.completionProgress
 
                         if (state.scheduledDate == null) {
@@ -474,7 +474,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
     //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onSubTaskItemTrashed = { positionToRemove: Int ->
-            val subTask = subTaskAdapter.subTasks[positionToRemove]
+            val subTask = subTaskAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 TaskDetailsEvent.DeleteSubTask(
                     subTask = subTask

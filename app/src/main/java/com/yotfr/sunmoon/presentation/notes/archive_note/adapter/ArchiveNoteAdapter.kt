@@ -3,6 +3,7 @@ package com.yotfr.sunmoon.presentation.notes.archive_note.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemArchiveNoteBinding
@@ -12,36 +13,28 @@ interface ArchiveNoteListDelegate {
     fun noteDetailsClicked(id: Long)
 }
 
-class ArchiveNoteListDiffCallBack(
-    private val oldList: List<ArchiveNoteModel>,
-    private val newList: List<ArchiveNoteModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].id == newList[newItemPosition].id
+class ArchiveNoteListDiffCallBack: DiffUtil.ItemCallback<ArchiveNoteModel>() {
+
+    override fun areItemsTheSame(oldItem: ArchiveNoteModel, newItem: ArchiveNoteModel): Boolean {
+        return oldItem.id == newItem.id
+
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(oldItem: ArchiveNoteModel, newItem: ArchiveNoteModel): Boolean {
+        return oldItem == newItem
+
     }
 }
 
-class ArchiveNoteAdapter : RecyclerView.Adapter<ArchiveNoteAdapter.ArchiveNoteViewHolder>() {
+class ArchiveNoteAdapter : ListAdapter<ArchiveNoteModel,ArchiveNoteAdapter.ArchiveNoteViewHolder>(
+    ArchiveNoteListDiffCallBack()
+) {
 
     private var delegate: ArchiveNoteListDelegate? = null
 
     fun attachDelegate(delegate: ArchiveNoteListDelegate) {
         this.delegate = delegate
     }
-
-    var notes: List<ArchiveNoteModel> = emptyList()
-        set(newValue) {
-            val diffCallback = ArchiveNoteListDiffCallBack(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchiveNoteViewHolder {
         return ArchiveNoteViewHolder(
@@ -54,14 +47,12 @@ class ArchiveNoteAdapter : RecyclerView.Adapter<ArchiveNoteAdapter.ArchiveNoteVi
     }
 
     override fun onBindViewHolder(holder: ArchiveNoteViewHolder, position: Int) {
-        holder.bind(notes[position])
+        holder.bind(getItem(position))
     }
 
     override fun getItemViewType(position: Int): Int {
         return R.layout.item_note
     }
-
-    override fun getItemCount() = notes.size
 
     class ArchiveNoteViewHolder(
         private val binding: ItemArchiveNoteBinding,

@@ -144,8 +144,8 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { taskState ->
                     taskState?.let { uiModel ->
-                        completedTrashTaskAdapter.tasks = uiModel.completedTasks
-                        uncompletedTrashTaskAdapter.deletedTasks = uiModel.uncompletedTasks
+                        completedTrashTaskAdapter.submitList(uiModel.completedTasks)
+                        uncompletedTrashTaskAdapter.submitList(uiModel.uncompletedTasks)
                         completedTrashTaskHeaderAdapter.headerState = uiModel.headerState
                         trashTaskFooterAdapter.footerState = uiModel.footerState
                     }
@@ -345,7 +345,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
     //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemRemoved = { positionToRemove: Int ->
-            val task = uncompletedTrashTaskAdapter.deletedTasks[positionToRemove]
+            val task = uncompletedTrashTaskAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 TrashTaskEvent.DeleteTrashedTask(
                     task = task
@@ -353,7 +353,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             )
         }
         val onCompletedItemRemoved = { positionToRemove: Int ->
-            val task = completedTrashTaskAdapter.tasks[positionToRemove]
+            val task = completedTrashTaskAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 TrashTaskEvent.DeleteTrashedTask(
                     task = task
@@ -361,7 +361,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             )
         }
         val onUncompletedItemRestored = { positionToRemove: Int ->
-            val task = uncompletedTrashTaskAdapter.deletedTasks[positionToRemove]
+            val task = uncompletedTrashTaskAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 TrashTaskEvent.RestoreTrashedTask(
                     task = task
@@ -369,7 +369,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             )
         }
         val onCompletedItemRestored = { positionToRemove: Int ->
-            val task = completedTrashTaskAdapter.tasks[positionToRemove]
+            val task = completedTrashTaskAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 TrashTaskEvent.RestoreTrashedTask(
                     task = task

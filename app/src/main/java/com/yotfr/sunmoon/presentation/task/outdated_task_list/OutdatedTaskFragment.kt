@@ -210,8 +210,8 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     state?.let { uiModel ->
-                        outdatedCompletedTaskAdapter.tasks = uiModel.completedTasks
-                        outdatedUncompletedTaskAdapter.outdatedTasks = uiModel.uncompletedTasks
+                        outdatedCompletedTaskAdapter.submitList(uiModel.completedTasks)
+                        outdatedUncompletedTaskAdapter.submitList(uiModel.uncompletedTasks)
                         outdatedCompletedHeaderAdapter.headerState = uiModel.headerState
                         outdatedFooterAdapter.footerState = uiModel.footerState
                     }
@@ -270,7 +270,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     //initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
-            val task = outdatedUncompletedTaskAdapter.outdatedTasks[positionToRemove]
+            val task = outdatedUncompletedTaskAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 OutdatedTaskEvent.TrashOutdatedTask(
                     task = task
@@ -278,7 +278,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             )
         }
         val onCompletedItemTrashed = { positionToRemove: Int ->
-            val task = outdatedCompletedTaskAdapter.tasks[positionToRemove]
+            val task = outdatedCompletedTaskAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 OutdatedTaskEvent.TrashOutdatedTask(
                     task = task

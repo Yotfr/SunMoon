@@ -260,8 +260,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     state?.let { uiModel ->
-                        completedTaskListAdapter.tasks = uiModel.completedTasks
-                        uncompletedTaskListAdapter.tasks = uiModel.uncompletedTasks
+                        completedTaskListAdapter.submitList(uiModel.completedTasks)
+                        uncompletedTaskListAdapter.submitList(uiModel.uncompletedTasks)
                         completedTaskHeaderAdapter.headerState = uiModel.headerState
                         footerAdapter.footerState = uiModel.footerState
                     }
@@ -452,7 +452,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     //initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
-            val task = uncompletedTaskListAdapter.tasks[positionToRemove]
+            val task = uncompletedTaskListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 ScheduledTaskListEvent.TrashScheduledTask(
                     task = task
@@ -460,7 +460,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             )
         }
         val onCompletedItemTrashed = { positionToRemove: Int ->
-            val task = completedTaskListAdapter.tasks[positionToRemove]
+            val task = completedTaskListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 ScheduledTaskListEvent.TrashScheduledTask(
                     task = task

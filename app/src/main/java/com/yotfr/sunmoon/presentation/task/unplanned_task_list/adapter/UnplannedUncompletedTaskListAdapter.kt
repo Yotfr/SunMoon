@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemUnplannedTaskBinding
@@ -17,23 +18,27 @@ interface UnplannedUncompletedTaskDelegate {
     fun taskStarPressed(task: UnplannedTaskListModel)
 }
 
-class UnplannedUncompletedTaskDiffCallback(
-    private val oldList: List<UnplannedTaskListModel>,
-    private val newList: List<UnplannedTaskListModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].taskId == newList[newItemPosition].taskId
+class UnplannedUncompletedTaskDiffCallback : DiffUtil.ItemCallback<UnplannedTaskListModel>() {
+    override fun areItemsTheSame(
+        oldItem: UnplannedTaskListModel,
+        newItem: UnplannedTaskListModel
+    ): Boolean {
+        return oldItem.taskId == newItem.taskId
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(
+        oldItem: UnplannedTaskListModel,
+        newItem: UnplannedTaskListModel
+    ): Boolean {
+        return oldItem == newItem
     }
 }
 
 class UnplannedUncompletedTaskListAdapter :
-    RecyclerView.Adapter<UnplannedUncompletedTaskListAdapter.UnplannedTaskViewHolder>() {
+    ListAdapter<UnplannedTaskListModel,
+            UnplannedUncompletedTaskListAdapter.UnplannedTaskViewHolder>(
+        UnplannedUncompletedTaskDiffCallback()
+    ) {
 
     private var delegate: UnplannedUncompletedTaskDelegate? = null
 
@@ -41,14 +46,6 @@ class UnplannedUncompletedTaskListAdapter :
     fun attachDelegate(delegate: UnplannedUncompletedTaskDelegate) {
         this.delegate = delegate
     }
-
-    var tasks: List<UnplannedTaskListModel> = emptyList()
-        set(newValue) {
-            val diffCallback = UnplannedUncompletedTaskDiffCallback(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UnplannedTaskViewHolder {
         return UnplannedTaskViewHolder(
@@ -61,11 +58,8 @@ class UnplannedUncompletedTaskListAdapter :
     }
 
     override fun onBindViewHolder(holder: UnplannedTaskViewHolder, position: Int) {
-        holder.bind(tasks[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount(): Int = tasks.size
-
 
     override fun getItemViewType(position: Int): Int {
         return R.layout.item_scheduled_task

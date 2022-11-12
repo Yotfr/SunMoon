@@ -116,7 +116,7 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { noteState ->
                     noteState?.let { notes ->
-                        trashNotesAdapter.deletedNotes = notes.notes
+                        trashNotesAdapter.submitList(notes.notes)
                         trashNotesFooterAdapter.footerState = notes.footerState
                     }
                 }
@@ -180,13 +180,13 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
     //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onItemRemoved = { positionToRemove: Int ->
-            val note = trashNotesAdapter.deletedNotes[positionToRemove]
+            val note = trashNotesAdapter.currentList[positionToRemove]
             viewModel.onEvent(TrashNoteEvent.DeleteTrashedNote(
                 note = note
             ))
         }
         val onItemRestored = { positionToRemove: Int ->
-            val note = trashNotesAdapter.deletedNotes[positionToRemove]
+            val note = trashNotesAdapter.currentList[positionToRemove]
             viewModel.onEvent(TrashNoteEvent.RestoreTrashedNote(
                 note = note
             ))

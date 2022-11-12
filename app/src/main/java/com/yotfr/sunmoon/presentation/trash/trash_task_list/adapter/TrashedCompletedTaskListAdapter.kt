@@ -4,45 +4,39 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemTrashedCompletedTaskBinding
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskListModel
 
-class TrashedCompletedTaskListAdapter(
-    private val oldList: List<TrashedTaskListModel>,
-    private val newList: List<TrashedTaskListModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].taskId == newList[newItemPosition].taskId
+class TrashedCompletedTaskListAdapter : DiffUtil.ItemCallback<TrashedTaskListModel>() {
+
+    override fun areItemsTheSame(
+        oldItem: TrashedTaskListModel,
+        newItem: TrashedTaskListModel
+    ): Boolean {
+        return oldItem.taskId == newItem.taskId
+
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(
+        oldItem: TrashedTaskListModel,
+        newItem: TrashedTaskListModel
+    ): Boolean {
+        return oldItem == newItem
+
     }
 }
 
 class TrashedCompletedTaskAdapter :
-    RecyclerView.Adapter<TrashedCompletedTaskAdapter.CompletedTaskViewHolder>() {
-
-    var tasks: List<TrashedTaskListModel> = emptyList()
-        set(newValue) {
-            val diffCallback = TrashedCompletedTaskListAdapter(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
-
-
-    override fun getItemCount(): Int = tasks.size
-
+    ListAdapter<TrashedTaskListModel, TrashedCompletedTaskAdapter.CompletedTaskViewHolder>(
+        TrashedCompletedTaskListAdapter()
+    ) {
 
     override fun getItemViewType(position: Int): Int {
         return R.layout.item_scheduled_completed_task
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompletedTaskViewHolder {
         return CompletedTaskViewHolder(
@@ -54,11 +48,9 @@ class TrashedCompletedTaskAdapter :
         )
     }
 
-
     override fun onBindViewHolder(holder: CompletedTaskViewHolder, position: Int) {
-        holder.bind(tasks[position])
+        holder.bind(getItem(position))
     }
-
 
     class CompletedTaskViewHolder(
         private val binding: ItemTrashedCompletedTaskBinding

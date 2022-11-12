@@ -123,7 +123,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     uiState?.let { notes ->
-                        archiveNoteListAdapter.notes = notes.notes
+                        archiveNoteListAdapter.submitList(notes.notes)
                         archiveNoteListFooterAdapter.footerState = notes.footerState
                     }
                 }
@@ -167,7 +167,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
     //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onTrashItem = { positionToRemove: Int ->
-            val note = archiveNoteListAdapter.notes[positionToRemove]
+            val note = archiveNoteListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 ArchiveNoteEvent.DeleteArchiveNote(
                     note = note
@@ -175,7 +175,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
             )
         }
         val onUnarchiveItem = { positionToRemove: Int ->
-            val note = archiveNoteListAdapter.notes[positionToRemove]
+            val note = archiveNoteListAdapter.currentList[positionToRemove]
             viewModel.onEvent(
                 ArchiveNoteEvent.UnarchiveArchiveNote(
                     note = note

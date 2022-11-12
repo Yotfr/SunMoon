@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemAddSubtaskBinding
@@ -18,36 +19,28 @@ interface SubTaskDelegate {
     fun removeEmptySubTask(subTask: SubTaskModel)
 }
 
-class SubTaskDiffCallback(
-    private val oldList: List<SubTaskModel>,
-    private val newList: List<SubTaskModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].taskId == newList[newItemPosition].taskId
+class SubTaskDiffCallback : DiffUtil.ItemCallback<SubTaskModel>() {
+
+    override fun areItemsTheSame(oldItem: SubTaskModel, newItem: SubTaskModel): Boolean {
+        return oldItem.taskId == newItem.taskId
+
     }
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+
+    override fun areContentsTheSame(oldItem: SubTaskModel, newItem: SubTaskModel): Boolean {
+        return oldItem == newItem
+
     }
 }
 
-open class SubTaskAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SubTaskAdapter : ListAdapter<SubTaskModel, RecyclerView.ViewHolder>(
+    SubTaskDiffCallback()
+) {
 
     private var delegate: SubTaskDelegate? = null
 
     fun attachDelegate(delegate: SubTaskDelegate) {
         this.delegate = delegate
     }
-
-
-    var subTasks: List<SubTaskModel> = emptyList()
-        set(newValue) {
-            val diffCallback = SubTaskDiffCallback(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -76,8 +69,8 @@ open class SubTaskAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is SubTaskViewHolder -> {
-                holder.bind(subTasks[position])
-                holder.listener.subTask = subTasks[position]
+                holder.bind(getItem(position))
+                holder.listener.subTask = getItem(position)
             }
             is FooterViewHolder -> {
                 holder.bind()
@@ -86,16 +79,17 @@ open class SubTaskAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == subTasks.size) R.layout.item_add_subtask
+        return if (position == currentList.size) R.layout.item_add_subtask
         else R.layout.item_subtask
     }
 
 
     override fun getItemCount(): Int {
-        if (subTasks.isEmpty()) {
+        val count = super.getItemCount()
+        if (count == 0) {
             return 1
         }
-        return subTasks.size + 1
+        return count + 1
     }
 
     class SubTaskViewHolder(
@@ -116,7 +110,7 @@ open class SubTaskAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 itemNestedTitle.isEnabled = subTask.isEnabled
 
                 itemNestedTitle.setOnFocusChangeListener { _, isFocused ->
-                    if(!isFocused) {
+                    if (!isFocused) {
                         fragmentItemSubtaskCb.isEnabled = true
                         if (listener.changedText.isEmpty()) {
                             delegate?.removeEmptySubTask(subTask)
@@ -124,7 +118,7 @@ open class SubTaskAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                             delegate?.subTaskTextChanged(subTask, listener.changedText)
                         }
                         listener.changedText = ""
-                    }else {
+                    } else {
                         fragmentItemSubtaskCb.isEnabled = false
                     }
                 }

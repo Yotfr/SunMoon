@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemOutdatedCompletedTaskBinding
@@ -16,38 +17,33 @@ interface OutdatedCompletedTaskListDelegate {
     fun schedulePressed(task: OutdatedTaskListModel)
 }
 
-class OutdatedCompletedTaskDiffCallback(
-    private val oldList: List<OutdatedTaskListModel>,
-    private val newList: List<OutdatedTaskListModel>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].taskId == newList[newItemPosition].taskId
+class OutdatedCompletedTaskDiffCallback : DiffUtil.ItemCallback<OutdatedTaskListModel>() {
+    override fun areItemsTheSame(
+        oldItem: OutdatedTaskListModel,
+        newItem: OutdatedTaskListModel
+    ): Boolean {
+        return oldItem.taskId == newItem.taskId
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    override fun areContentsTheSame(
+        oldItem: OutdatedTaskListModel,
+        newItem: OutdatedTaskListModel
+    ): Boolean {
+        return oldItem == newItem
     }
 }
 
 class OutdatedCompletedTaskAdapter :
-    RecyclerView.Adapter<OutdatedCompletedTaskAdapter.OutdatedCompletedTaskViewHolder>() {
+    ListAdapter<OutdatedTaskListModel,
+            OutdatedCompletedTaskAdapter.OutdatedCompletedTaskViewHolder>(
+        OutdatedCompletedTaskDiffCallback()
+    ) {
 
     private var delegate: OutdatedCompletedTaskListDelegate? = null
 
     fun attachDelegate(delegate: OutdatedCompletedTaskListDelegate) {
         this.delegate = delegate
     }
-
-    var tasks: List<OutdatedTaskListModel> = emptyList()
-        set(newValue) {
-            val diffCallback = OutdatedCompletedTaskDiffCallback(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
-
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -63,11 +59,8 @@ class OutdatedCompletedTaskAdapter :
     }
 
     override fun onBindViewHolder(holder: OutdatedCompletedTaskViewHolder, position: Int) {
-        holder.bind(tasks[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount(): Int = tasks.size
-
 
     override fun getItemViewType(position: Int): Int {
         return R.layout.item_scheduled_completed_task
@@ -92,7 +85,10 @@ class OutdatedCompletedTaskAdapter :
                         R.string.task_overdue,
                         outdatedTask.formattedOverDueTime
                     )
-                ViewCompat.setTransitionName(itemOutdatedCompletedTaskCard, "task${outdatedTask.taskId}")
+                ViewCompat.setTransitionName(
+                    itemOutdatedCompletedTaskCard,
+                    "task${outdatedTask.taskId}"
+                )
 
                 itemOutdatedCompletedTaskReschedule.setOnClickListener {
                     delegate?.schedulePressed(
@@ -106,7 +102,6 @@ class OutdatedCompletedTaskAdapter :
                         transitionView = itemOutdatedCompletedTaskCard
                     )
                 }
-
             }
         }
     }
