@@ -25,24 +25,30 @@ class NoteListViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery = _searchQuery.asStateFlow()
-
     private val noteListMapper = NoteListMapper()
     private val categoryNoteListMapper = CategoryNoteListMapper()
 
+    //state for search view
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    //state for note list
     private val _noteListUiState = MutableStateFlow<NoteListUiStateModel?>(null)
     val noteListUiState = _noteListUiState.asStateFlow()
 
+    //state for category list
     private val _categoryListUiState = MutableStateFlow<List<CategoryNoteListModel>?>(null)
     val categoryListUiState = _categoryListUiState.asSharedFlow()
 
+    //state for selected category
     private val selectedCategoryId = MutableStateFlow<Long?>(-1L)
 
+    //uiEvents channel
     private val _uiEvent = Channel<NoteListUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //collect visible categories
         viewModelScope.launch {
             noteUseCase.getVisibleCategoryList().collect { categories ->
                 if (categories.indexOfFirst { it.categoryId == selectedCategoryId.value } == -1) {
@@ -51,10 +57,11 @@ class NoteListViewModel @Inject constructor(
                 _categoryListUiState.value =
                     categoryNoteListMapper.fromDomainList(
                         categories,
-                        dataStoreRepository.getDateFormat().first() ?: "yyyy/MM/dd"
+                        dataStoreRepository.getDateFormat().first()
                     )
             }
         }
+        //collect notes
         viewModelScope.launch {
             combine(
                 dataStoreRepository.getDateFormat(),
@@ -62,6 +69,7 @@ class NoteListViewModel @Inject constructor(
             ) { dateFormat, selectedCategoryId ->
                 Pair(dateFormat, selectedCategoryId)
             }.collectLatest {
+                //in case header category selected
                 if (it.second == -1L)
                     noteUseCase.getAllNotes(
                         searchQuery = _searchQuery
@@ -69,13 +77,15 @@ class NoteListViewModel @Inject constructor(
                         _noteListUiState.value = NoteListUiStateModel(
                             notes = noteListMapper.fromDomainList(
                                 notes,
-                                it.first ?: "yyyy/MM/dd"
+                                it.first
                             ),
                             footerState = NoteListFooterModel(
                                 isVisible = notes.isEmpty()
                             )
                         )
-                    } else {
+                    }
+                //in case other category selected
+                else {
                     noteUseCase.getCategoryWithNotes(
                         selectedCategoryId,
                         _searchQuery
@@ -85,7 +95,7 @@ class NoteListViewModel @Inject constructor(
                                 catWithNotes ?: throw IllegalArgumentException(
                                     "Not found category for selected chip"
                                 ),
-                                it.first ?: "yyyy/MM/dd"
+                                it.first
                             ).notes,
                             footerState = NoteListFooterModel(
                                 isVisible = catWithNotes.notes.isEmpty()
@@ -95,10 +105,9 @@ class NoteListViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: NoteListEvent) {
         when (event) {
             is NoteListEvent.DeleteNote -> {
@@ -126,12 +135,10 @@ class NoteListViewModel @Inject constructor(
                     )
                 }
             }
-
             is NoteListEvent.ChangeSelectedCategory -> {
                 selectedCategoryId.value = event.selectedCategoryId
                 Log.d("TEST", "selectedCategoryChanged -> ${selectedCategoryId.value}")
             }
-
             is NoteListEvent.ArchiveNote -> {
                 viewModelScope.launch {
                     noteUseCase.changeArchiveNoteState(
@@ -148,7 +155,6 @@ class NoteListViewModel @Inject constructor(
                     )
                 )
             }
-
             is NoteListEvent.UndoArchiveNote -> {
                 viewModelScope.launch {
                     noteUseCase.changeArchiveNoteState(
@@ -178,6 +184,7 @@ class NoteListViewModel @Inject constructor(
         }
     }
 
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: NoteListUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)

@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentTrashNoteBinding
 import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
-import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNoteDelegate
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNoteFooterAdapter
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNoteListItemCallback
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.adapter.TrashNotesAdapter
@@ -35,18 +34,18 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
 
-    private lateinit var searchView: SearchView
-    private lateinit var binding: FragmentTrashNoteBinding
-    private lateinit var trashNotesAdapter: TrashNotesAdapter
-    private lateinit var trashNotesFooterAdapter: TrashNoteFooterAdapter
-
     private val viewModel by viewModels<TrashNoteViewModel>()
 
+    private lateinit var searchView: SearchView
+
+    private lateinit var binding: FragmentTrashNoteBinding
+
+    private lateinit var trashNotesAdapter: TrashNotesAdapter
+    private lateinit var trashNotesFooterAdapter: TrashNoteFooterAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTrashNoteBinding.bind(view)
-
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -87,16 +86,9 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-
-
         //initRvAdapters
         val linearLayoutManager = LinearLayoutManager(requireContext())
         trashNotesAdapter = TrashNotesAdapter()
-        trashNotesAdapter.attachDelegate(object : TrashNoteDelegate {
-            override fun trashNoteClicked(noteId: Long) {
-                //TODO
-            }
-        })
 
         trashNotesFooterAdapter = TrashNoteFooterAdapter()
 
@@ -110,14 +102,16 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
 
         binding.fragmentTrashNoteRv.adapter = concatAdapter
         binding.fragmentTrashNoteRv.layoutManager = linearLayoutManager
+
         binding.fragmentTrashNoteRv.addItemDecoration(
             MarginItemDecoration(
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
             )
         )
+
         initSwipeToDelete()
 
-
+        //collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { noteState ->
@@ -129,16 +123,16 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
             }
         }
 
-
+        //collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         is TrashNoteUiEvent.ShowRestoreSnackbar -> {
-                            showRestoreSnackbar()
+                            showRestoreNoteSnackbar()
                         }
                         is TrashNoteUiEvent.ShowUndoDeleteSnackbar -> {
-                            showUndoDeleteSnackbar {
+                            showUndoDeleteNoteSnackbar {
                                 viewModel.onEvent(
                                     TrashNoteEvent.UndoDeleteTrashedNote(
                                         note = uiEvent.note
@@ -152,7 +146,7 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
         }
     }
 
-    private fun showUndoDeleteSnackbar(onAction: () -> Unit) {
+    private fun showUndoDeleteNoteSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.undo_delete_note_description),
@@ -163,7 +157,7 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
             }.show()
     }
 
-    private fun showRestoreSnackbar() {
+    private fun showRestoreNoteSnackbar() {
         Snackbar.make(
             requireView(),
             getString(R.string.note_restored),
@@ -183,6 +177,7 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
             .show()
     }
 
+    //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onItemRemoved = { positionToRemove: Int ->
             val note = trashNotesAdapter.deletedNotes[positionToRemove]

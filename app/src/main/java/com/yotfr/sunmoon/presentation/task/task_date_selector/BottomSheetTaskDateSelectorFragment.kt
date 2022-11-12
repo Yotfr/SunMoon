@@ -16,6 +16,7 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentBottomSheetDateTimeSelectorBinding
+import com.yotfr.sunmoon.presentation.task.add_task.BottomSheetAddTaskFragment
 import com.yotfr.sunmoon.presentation.task.task_date_selector.event.BottomSheetDateSelectorUiEvent
 import com.yotfr.sunmoon.presentation.task.task_date_selector.event.BottomSheetTaskDateSelectorEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +26,11 @@ import java.util.*
 
 @AndroidEntryPoint
 class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
+
+    companion object {
+        const val WITHOUT_DATE = -1L
+        const val WITHOUT_TIME = -1L
+    }
 
     private lateinit var binding: FragmentBottomSheetDateTimeSelectorBinding
     private val viewModel by viewModels<BottomSheetTaskDateSelectorViewModel>()
@@ -45,9 +51,9 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //add constraints to calendarView
         binding.calendarView.minDate = getCurrentDate()
         binding.calendarView.maxDate = getMaxCalendardate()
-
 
         binding.calendarView.setOnDateChangeListener { _, year, month, date ->
             binding.btnWithoutDate.visibility = View.GONE
@@ -62,27 +68,29 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
             )
         }
 
-
         binding.chipDateHelpers.setOnCheckedStateChangeListener { btn, _ ->
             if (btn.checkedChipId == View.NO_ID) {
+                //if unselect chip clear date&time
                 viewModel.onEvent(
                     BottomSheetTaskDateSelectorEvent.ClearDateTime
                 )
             } else {
                 parseSelectedChipAndChangeDate(btn.findViewById<Chip>(btn.checkedChipId).tag as String)
             }
-
         }
 
-
+        //collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    binding.btnSelectedTime.text = parseDateToTimeButtonText(
+                    //update time chip text
+                    binding.btnSelectedTime.text = parseTimeToTimeButtonText(
                         currentTimePattern = viewModel.timePattern.value,
                         state.selectedTime
                     )
+                    //select chip in chipGroup if one of chips match collected date
                     parseDateAndSelectChip(state.selectedDate)
+                    //select date in calendarView that matches collected date
                     state.selectedDate?.let { date ->
                         binding.calendarView.setDate(
                             date,
@@ -90,25 +98,27 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
                             false
                         )
                     }
-                        changeBtnWithoutDateVisibility(
-                            isVisible = state.selectedDate == null
-                        )
-
+                    //show withoutDate btn if collected date is null
+                    changeBtnWithoutDateVisibility(
+                        isVisible = state.selectedDate == null
+                    )
                 }
             }
         }
 
+        //collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiEvent.collect { event ->
-                    when (event) {
+                viewModel.uiEvent.collect { uiEvent ->
+                    when (uiEvent) {
                         is BottomSheetDateSelectorUiEvent.SaveDateTime -> {
-                            parentFragmentManager.setFragmentResult(
-                                REQUEST_CODE,
-                                bundleOf(
-                                    SELECTED_DATE to event.date,
-                                    SELECTED_TIME to event.time
-                                )
+                            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                                BottomSheetAddTaskFragment.DATE_KEY,
+                                uiEvent.date
+                            )
+                            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                                BottomSheetAddTaskFragment.TIME_KEY,
+                                uiEvent.time
                             )
                             findNavController().popBackStack()
                         }
@@ -117,18 +127,19 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
             }
         }
 
-
+        //save selected date and time and pop to addTask
         binding.btnReschedule.setOnClickListener {
             changeBtnWithoutDateVisibility(true)
             viewModel.onEvent(BottomSheetTaskDateSelectorEvent.SaveDateTimePressed)
         }
 
-
+        //pop to add task without selected date and time
         binding.btnCancel.setOnClickListener {
             changeBtnWithoutDateVisibility(true)
             findNavController().popBackStack()
         }
 
+        //show time picker
         binding.btnSelectedTime.setOnClickListener {
             showTimePicker(
                 currentTimeFormat = viewModel.timeFormat.value
@@ -171,6 +182,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
+    //parse pressed date chip, change date and show withoutDate btn if needed
     private fun parseSelectedChipAndChangeDate(tag: String) {
         when (tag) {
             "today" -> {
@@ -200,6 +212,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
+    //send new date to viewModel
     private fun changeViewModelDate(dateTemplates: DateTemplates) {
         viewModel.onEvent(
             BottomSheetTaskDateSelectorEvent.DateTimeChanged(
@@ -208,6 +221,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         )
     }
 
+    //hide/show withoutDate btn
     private fun changeBtnWithoutDateVisibility(isVisible: Boolean) {
         if (isVisible) {
             binding.btnWithoutDate.visibility = View.VISIBLE
@@ -220,7 +234,8 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun parseDateToTimeButtonText(
+    //format time
+    private fun parseTimeToTimeButtonText(
         currentTimePattern: String,
         time: Long?
     ): String {
@@ -233,12 +248,15 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         return getString(R.string.without_time)
     }
 
+    //select chip in chipGroup if one of chips match collected date
     private fun parseDateAndSelectChip(date: Long?) {
 
         if (date == null) {
-            viewModel.onEvent(BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
-                isNeeded = true
-            ))
+            viewModel.onEvent(
+                BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
+                    isNeeded = true
+                )
+            )
 
             val chipWithoutDate = binding.chipDateHelpers.findViewWithTag<Chip>("withoutdate")
             if (chipWithoutDate.id != binding.chipDateHelpers.checkedChipId) {
@@ -269,9 +287,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         val selectedWeekDay = selectedDate.get(Calendar.DAY_OF_WEEK)
         val selectedWeek = selectedDate.get(Calendar.WEEK_OF_MONTH)
 
-
-
-
         when (selectedDate.timeInMillis) {
             currentDate.timeInMillis -> {
                 binding.chipToday.isChecked = true
@@ -297,15 +312,18 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
                     return
                 } else {
 
-                    viewModel.onEvent(BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
-                        isNeeded = false
-                    ))
+                    viewModel.onEvent(
+                        BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
+                            isNeeded = false
+                        )
+                    )
                     binding.chipDateHelpers.clearCheck()
                 }
             }
         }
     }
 
+    //parse dateTemplates to Long date
     private fun parseDateTemplatesToDate(dateTemplates: DateTemplates): Long {
 
         val calendar = Calendar.getInstance(Locale.getDefault())
@@ -341,25 +359,19 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun getCurrentDate():Long{
+    //get current date
+    private fun getCurrentDate(): Long {
         return Calendar.getInstance(Locale.getDefault()).timeInMillis
     }
 
-    private fun getMaxCalendardate():Long{
+    //set maxDate for calendarView six months from the current one
+    private fun getMaxCalendardate(): Long {
         val calendar = Calendar.getInstance(Locale.getDefault())
-        calendar.add(Calendar.MONTH,6)
+        calendar.add(Calendar.MONTH, 6)
         return calendar.timeInMillis
     }
 
-
-    companion object {
-        const val REQUEST_CODE = "REQUEST_CODE"
-        const val SELECTED_DATE = "SELECTED_DATE"
-        const val SELECTED_TIME = "SELECTED_TIME"
-        const val WITHOUT_DATE = -1L
-        const val WITHOUT_TIME = -1L
-    }
-
+    //enum for chipTemplates
     enum class DateTemplates {
         TODAY,
         TOMORROW,
@@ -367,6 +379,4 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         NEXT_WEEK,
         ON_WEEKEND
     }
-
-
 }

@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list.model
 
-
 data class ScheduledTaskListModel(
     val taskId:Long,
     val taskDescription:String,

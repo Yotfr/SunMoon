@@ -22,7 +22,7 @@ sealed interface ScheduledTaskListEvent {
 
     data class TrashScheduledTask(val task: ScheduledTaskListModel) : ScheduledTaskListEvent
 
-    data class UndoTrashItem(val task: ScheduledTaskListModel) : ScheduledTaskListEvent
+    data class UndoTrashTask(val task: ScheduledTaskListModel) : ScheduledTaskListEvent
 
     data class DeleteTasks(val deleteOption: ScheduledTaskDeleteOption) : ScheduledTaskListEvent
 

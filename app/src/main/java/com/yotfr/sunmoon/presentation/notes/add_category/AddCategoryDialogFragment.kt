@@ -37,6 +37,7 @@ class AddCategoryDialogFragment : DialogFragment() {
 
     companion object{
         const val WITHOUT_CATEGORY_ID = -1L
+        const val WITHOUT_CATEGORY_TEXT = ""
     }
 
 }

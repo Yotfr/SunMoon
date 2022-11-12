@@ -25,32 +25,40 @@ class UnplannedTaskListViewModel @Inject constructor(
 
     private val unplannedTaskListMapper = UnplannedTaskListMapper()
 
+    //state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    //state for expand/collapse header in list
     private val completedTasksHeaderState = MutableStateFlow(
         UnplannedCompletedHeaderStateModel()
     )
 
+    //timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
+    //state for hide/show footer in list
     private val unplannedFooterState = MutableStateFlow(
         UnplannedFooterModel()
     )
 
+    //state for taskList
     private val _uiState = MutableStateFlow<UnplannedTaskListUiStateModel?>(null)
     val uiState = _uiState.asStateFlow()
 
+    //uiEvents channel
     private val _uiEvent = Channel<UnplannedTaskListUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //collect time format from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect{
                 _timeFormat.value = it ?: 2
             }
         }
+        //get data for taskList state
         viewModelScope.launch {
             combine(
                 taskUseCase.getUnplannedTaskList(
@@ -75,7 +83,7 @@ class UnplannedTaskListViewModel @Inject constructor(
         }
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: UnplannedTaskListEvent) {
         when (event) {
             is UnplannedTaskListEvent.ChangeUnplannedTaskCompletionStatus -> {
@@ -111,7 +119,7 @@ class UnplannedTaskListViewModel @Inject constructor(
                     )
                 }
                 sendToUi(
-                    UnplannedTaskListUiEvent.UndoDeleteUnplannedTask(
+                    UnplannedTaskListUiEvent.UndoTrashUnplannedTask(
                         task = event.task.copy(
                             isTrashed = true
                         )
@@ -130,7 +138,6 @@ class UnplannedTaskListViewModel @Inject constructor(
                     isExpanded = !completedTasksHeaderState.value.isExpanded
                 )
             }
-
             is UnplannedTaskListEvent.DeleteTasks -> {
                 viewModelScope.launch {
                     when (event.deleteOption) {
@@ -155,12 +162,14 @@ class UnplannedTaskListViewModel @Inject constructor(
         }
     }
 
+    //collapse/expand header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: UnplannedTaskListUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)

@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.outdated_task_list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -16,6 +15,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -28,7 +29,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
-import com.google.android.material.transition.MaterialFadeThrough
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentOutdatedTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
@@ -60,19 +60,9 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     private lateinit var outdatedCompletedHeaderAdapter: OutdatedCompletedHeaderAdapter
     private lateinit var outdatedFooterAdapter: OutdatedFooterAdapter
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        enterTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentOutdatedTaskListBinding.bind(view)
-
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -119,18 +109,24 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-
         //initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
         outdatedUncompletedTaskAdapter = OutdatedUncompletedTaskAdapter()
         outdatedUncompletedTaskAdapter.attachDelegate(object : OutdatedUncompletedTaskDelegate {
-            override fun taskPressed(taskId: Long) {
+            override fun taskPressed(taskId: Long, transitionView: View) {
                 val direction =
                     TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
                         taskId = taskId,
                         destination = TaskDetailsFragment.FROM_OUTDATED
                     )
-                navigateToDestination(direction)
+                val extras = FragmentNavigatorExtras(
+                    transitionView to
+                            transitionView.transitionName
+                )
+                navigateToDestination(
+                    direction = direction,
+                    extras = extras
+                )
             }
 
             override fun schedulePressed(task: OutdatedTaskListModel) {
@@ -147,15 +143,23 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
                 }
             }
         })
+
         outdatedCompletedTaskAdapter = OutdatedCompletedTaskAdapter()
         outdatedCompletedTaskAdapter.attachDelegate(object : OutdatedCompletedTaskListDelegate {
-            override fun taskPressed(taskId: Long) {
+            override fun taskPressed(taskId: Long, transitionView: View) {
                 val direction =
                     TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
                         taskId = taskId,
                         destination = TaskDetailsFragment.FROM_OUTDATED
                     )
-                navigateToDestination(direction)
+                val extras = FragmentNavigatorExtras(
+                    transitionView to
+                            transitionView.transitionName
+                )
+                navigateToDestination(
+                    direction = direction,
+                    extras = extras
+                )
             }
 
             override fun schedulePressed(task: OutdatedTaskListModel) {
@@ -173,11 +177,13 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
                 }
             }
         })
+
         outdatedCompletedHeaderAdapter = OutdatedCompletedHeaderAdapter()
         outdatedCompletedHeaderAdapter.attachDelegate(object : OutdatedCompletedHeaderDelegate {
             override fun hideCompleted() {
             }
         })
+
         outdatedFooterAdapter = OutdatedFooterAdapter()
         val concatAdapter = ConcatAdapter(
             ConcatAdapter.Config.Builder()
@@ -188,8 +194,10 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             outdatedCompletedTaskAdapter,
             outdatedFooterAdapter
         )
+
         binding.rvOutdatedTask.adapter = concatAdapter
         binding.rvOutdatedTask.layoutManager = layoutManager
+
         binding.rvOutdatedTask.addItemDecoration(
             MarginItemDecoration(
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
@@ -197,14 +205,11 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         )
         initSwipeToDelete()
 
-
-
-
+        //collectUiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     state?.let { uiModel ->
-                        Log.d("OUTDATED","${uiModel.uncompletedTasks}")
                         outdatedCompletedTaskAdapter.tasks = uiModel.completedTasks
                         outdatedUncompletedTaskAdapter.outdatedTasks = uiModel.uncompletedTasks
                         outdatedCompletedHeaderAdapter.headerState = uiModel.headerState
@@ -214,13 +219,13 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             }
         }
 
-
+        //collectUiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         is OutdatedTaskUiEvent.UndoDeleteOutdatedTask -> {
-                            showUndoDeleteSnackbar {
+                            showUndoTrashSnackbar {
                                 viewModel.onEvent(
                                     OutdatedTaskEvent.UndoDeleteOutdatedTask(
                                         task = uiEvent.task
@@ -240,8 +245,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         }
     }
 
-
-    private fun showUndoDeleteSnackbar(onAction: () -> Unit) {
+    private fun showUndoTrashSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.undo_delete_task_description),
@@ -252,14 +256,18 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             }.show()
     }
 
-    private fun navigateToDestination(direction: NavDirections?) {
+    private fun navigateToDestination(
+        direction: NavDirections?,
+        extras: FragmentNavigator.Extras
+    ) {
         if (direction == null) {
             findNavController().popBackStack()
         } else {
-            findNavController().navigate(direction)
+            findNavController().navigate(direction, extras)
         }
     }
 
+    //initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
             val task = outdatedUncompletedTaskAdapter.outdatedTasks[positionToRemove]

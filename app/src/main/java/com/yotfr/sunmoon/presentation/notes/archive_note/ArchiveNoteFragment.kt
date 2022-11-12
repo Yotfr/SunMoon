@@ -40,7 +40,9 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
     private val viewModel by viewModels<ArchiveNoteViewModel>()
 
     private lateinit var searchView: SearchView
+
     private lateinit var binding: FragmentArchiveNoteBinding
+
     private lateinit var archiveNoteListAdapter: ArchiveNoteAdapter
     private lateinit var archiveNoteListFooterAdapter: ArchiveNoteListFooterAdapter
 
@@ -89,10 +91,9 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
         val archiveNoteLayoutManager = LinearLayoutManager(requireContext())
         archiveNoteListAdapter = ArchiveNoteAdapter()
         archiveNoteListAdapter.attachDelegate(object : ArchiveNoteListDelegate {
-            //TODO
-            override fun noteDetailsClicked(id: Long?) {
+            override fun noteDetailsClicked(id: Long) {
                 navigateToAddEditNote(
-                    noteId = id!!
+                    noteId = id
                 )
             }
         })
@@ -108,14 +109,16 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
 
         binding.rvArchiveNote.adapter = concatAdapter
         binding.rvArchiveNote.layoutManager = archiveNoteLayoutManager
+
         binding.rvArchiveNote.addItemDecoration(
             MarginItemDecoration(
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
             )
         )
+
         initSwipeToDelete()
 
-
+        //collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
@@ -127,13 +130,13 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
             }
         }
 
-
+        //collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { event ->
                     when (event) {
                         is ArchiveNoteUiEvent.ShowUndoDeleteSnackbar -> {
-                            showUndoDeleteSnackbar {
+                            showUndoTrashNoteSnackbar {
                                 viewModel.onEvent(
                                     ArchiveNoteEvent.UndoDeleteArchiveNote(
                                         note = event.note
@@ -142,7 +145,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
                             }
                         }
                         ArchiveNoteUiEvent.ShowUnarchiveSnackbar ->  {
-                            showUnarchiveSnackbar()
+                            showUnarchiveNoteSnackbar()
                         }
                     }
                 }
@@ -161,6 +164,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
             }.show()
     }
 
+    //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onTrashItem = { positionToRemove: Int ->
             val note = archiveNoteListAdapter.notes[positionToRemove]
@@ -185,7 +189,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
         ItemTouchHelper(archiveNoteListItemCallBack).attachToRecyclerView(binding.rvArchiveNote)
     }
 
-    private fun showUnarchiveSnackbar(){
+    private fun showUnarchiveNoteSnackbar(){
         Snackbar.make(
             requireView(),
             getString(R.string.note_unarchived),
@@ -193,7 +197,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
         ).show()
     }
 
-    private fun showUndoDeleteSnackbar(onAction: () -> Unit) {
+    private fun showUndoTrashNoteSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.undo_delete_note_description),
@@ -203,7 +207,6 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
                 onAction()
             }.show()
     }
-
 
     private fun navigateToAddEditNote(noteId: Long) {
         val direction =

@@ -1,7 +1,9 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +12,7 @@ import com.yotfr.sunmoon.databinding.ItemScheduledCompletedTaskBinding
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledTaskListModel
 
 interface ScheduledCompletedTaskListDelegate {
-    fun taskPressed(taskId: Long)
+    fun taskPressed(taskId: Long, transitionView: View)
     fun taskCheckBoxPressed(task: ScheduledTaskListModel)
 }
 
@@ -83,6 +85,7 @@ class ScheduledCompletedTaskAdapter :
                 itemScheduledCompletedTaskTvTaskDescription.text = task.taskDescription
                 itemScheduledCompletedTaskCb.isChecked = task.isCompleted
                 itemScheduledCompletedTaskTvSetTime.isVisible = task.isAddTimeButtonVisible
+                ViewCompat.setTransitionName(itemScheduledCompletedTaskCard, "task${task.taskId}")
 
                 itemScheduledCompletedTaskCb.setOnClickListener {
                     delegate?.taskCheckBoxPressed(
@@ -92,7 +95,8 @@ class ScheduledCompletedTaskAdapter :
 
                 itemScheduledCompletedTaskTvTaskDescription.setOnClickListener {
                     delegate?.taskPressed(
-                        taskId = task.taskId
+                        taskId = task.taskId,
+                        transitionView = itemScheduledCompletedTaskCard
                     )
                 }
 

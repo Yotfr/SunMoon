@@ -27,35 +27,44 @@ class ScheduledTaskListViewModel @Inject constructor(
 
     private val scheduledTaskListMapper = ScheduledTaskListMapper()
 
+    //selected date in horizontal calendar
     private val _selectedCalendarDate = MutableStateFlow(getCurrentDay())
     val selectedCalendarDate = _selectedCalendarDate.asStateFlow()
 
+    //timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
+    //state for expand/collapse header in list
     private val completedTasksHeaderState = MutableStateFlow(
         ScheduledCompletedHeaderStateModel()
     )
+    //state for hide/show footer in list
     private val scheduledFooterState = MutableStateFlow(
         ScheduledFooterModel()
     )
 
+    //state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    //state for taskList
     private val _uiState = MutableStateFlow<ScheduledTaskListUiStateModel?>(null)
     val uiState = _uiState.asStateFlow()
 
+    //uiEvents channel
     private val _uiEvent = Channel<ScheduledTaskListUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
 
     init {
+        //collect time format from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect{
                 _timeFormat.value = it ?: 2
             }
         }
+        //get data for taskList state
         viewModelScope.launch {
             combine(
                 taskUseCase.getScheduledTaskList(
@@ -86,7 +95,7 @@ class ScheduledTaskListViewModel @Inject constructor(
         }
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: ScheduledTaskListEvent) {
         when (event) {
             is ScheduledTaskListEvent.ChangeTaskCompletionStatus -> {
@@ -103,7 +112,6 @@ class ScheduledTaskListViewModel @Inject constructor(
                     _selectedCalendarDate.value = event.newSelectedDate
                 }
             }
-
             is ScheduledTaskListEvent.ChangeTaskScheduledTime -> {
                 viewModelScope.launch {
                     taskUseCase.changeTaskScheduledTime(
@@ -114,7 +122,6 @@ class ScheduledTaskListViewModel @Inject constructor(
                     )
                 }
             }
-
             is ScheduledTaskListEvent.UpdateSearchQuery -> {
                 viewModelScope.launch {
                     _searchQuery.value = event.searchQuery
@@ -127,15 +134,14 @@ class ScheduledTaskListViewModel @Inject constructor(
                     )
                 }
                 sendToUi(
-                    ScheduledTaskListUiEvent.UndoDeleteScheduledTask(
+                    ScheduledTaskListUiEvent.UndoTrashScheduledTask(
                         task = event.task.copy(
                             isTrashed = true
                         )
                     )
                 )
             }
-
-            is ScheduledTaskListEvent.UndoTrashItem -> {
+            is ScheduledTaskListEvent.UndoTrashTask -> {
                 viewModelScope.launch {
                     taskUseCase.trashUntrashTask(
                         scheduledTaskListMapper.toDomain(event.task)
@@ -187,19 +193,21 @@ class ScheduledTaskListViewModel @Inject constructor(
         }
     }
 
-
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: ScheduledTaskListUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
 
+    //collapse/expand header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
+    //get beginning of current date
     private fun getCurrentDay(): Long {
         val currentDayCalendar = Calendar.getInstance(Locale.getDefault())
         currentDayCalendar.apply {
@@ -210,5 +218,4 @@ class ScheduledTaskListViewModel @Inject constructor(
         }
         return currentDayCalendar.timeInMillis
     }
-
 }

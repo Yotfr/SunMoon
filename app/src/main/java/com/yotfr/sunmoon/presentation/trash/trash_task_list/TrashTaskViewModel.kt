@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.trash.trash_task_list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.*
@@ -27,12 +26,15 @@ class TrashTaskViewModel @Inject constructor(
 
     private val trashedTaskListMapper = TrashedTaskListMapper()
 
+    //state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    //state for timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
+    //state for header
     private val completedTasksHeaderState = MutableStateFlow(
         TrashedCompletedHeaderStateModel()
     )
@@ -40,15 +42,18 @@ class TrashTaskViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<TrashedTaskUiStateModel?>(null)
     val uiState = _uiState.asSharedFlow()
 
+    //channel for uiEvents
     private val _uiEvent = Channel<TrashTaskUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //get timeFormat from data store
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect{
                 _timeFormat.value = it ?: 2
             }
         }
+        //get trashed task
         viewModelScope.launch {
             combine(
                 taskUseCase.getTrashedTaskListUseCase(
@@ -80,7 +85,7 @@ class TrashTaskViewModel @Inject constructor(
         }
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: TrashTaskEvent) {
         when (event) {
             is TrashTaskEvent.ChangeCompletedTasksVisibility -> {
@@ -88,7 +93,6 @@ class TrashTaskViewModel @Inject constructor(
                     isExpanded = !completedTasksHeaderState.value.isExpanded
                 )
             }
-
             is TrashTaskEvent.UpdateSearchQuery -> {
                 _searchQuery.value = event.searchQuery
             }
@@ -160,18 +164,21 @@ class TrashTaskViewModel @Inject constructor(
         }
     }
 
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: TrashTaskUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
 
+    //expand or collapse header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
+    //get beginning of current day
     private fun getCurrentDay(): Long {
         val currentDayCalendar = Calendar.getInstance(Locale.getDefault())
         currentDayCalendar.apply {
@@ -182,5 +189,4 @@ class TrashTaskViewModel @Inject constructor(
         }
         return currentDayCalendar.timeInMillis
     }
-
 }

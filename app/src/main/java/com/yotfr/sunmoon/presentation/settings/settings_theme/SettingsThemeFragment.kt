@@ -56,6 +56,7 @@ class SettingsThemeFragment: Fragment(R.layout.fragment_theme_picker) {
                 viewModel.uiEvent.collect{ uiEvent ->
                     when(uiEvent) {
                         is SettingsThemeUiEvent.RestartActivity -> {
+                            //restart activity when new theme picked
                             requireActivity().recreate()
                         }
                     }

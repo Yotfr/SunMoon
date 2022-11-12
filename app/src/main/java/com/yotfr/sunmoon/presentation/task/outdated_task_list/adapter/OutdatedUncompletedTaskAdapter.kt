@@ -1,7 +1,9 @@
 package com.yotfr.sunmoon.presentation.task.outdated_task_list.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +13,7 @@ import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTask
 
 
 interface OutdatedUncompletedTaskDelegate {
-    fun taskPressed(taskId: Long)
+    fun taskPressed(taskId: Long, transitionView: View)
     fun schedulePressed(task: OutdatedTaskListModel)
 }
 
@@ -70,7 +72,6 @@ class OutdatedUncompletedTaskAdapter :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(outdatedTask: OutdatedTaskListModel) {
             binding.apply {
-
                 itemOutdatedTaskTvScheduledTime.text = outdatedTask.scheduledFormattedTime
                 itemOutdatedTaskTvScheduledTime.isVisible = outdatedTask.isAddTimeButtonVisible
                 itemOutdatedTaskTvTaskDescription.text = outdatedTask.taskDescription
@@ -82,10 +83,12 @@ class OutdatedUncompletedTaskAdapter :
                         R.string.task_overdue,
                         outdatedTask.formattedOverDueTime
                     )
+                ViewCompat.setTransitionName(itemOutdatedTaskCard, "task${outdatedTask.taskId}")
 
                 itemOutdatedTaskTvTaskDescription.setOnClickListener {
                     delegate?.taskPressed(
-                        taskId = outdatedTask.taskId
+                        taskId = outdatedTask.taskId,
+                        transitionView = itemOutdatedTaskCard
                     )
                 }
                 itemOutdatedTaskReschedule.setOnClickListener {

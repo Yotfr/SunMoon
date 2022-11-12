@@ -24,37 +24,44 @@ class BottomSheetAddTaskViewModel @Inject constructor(
 
     private val addTaskMapper = AddTaskMapper()
 
+    //get date selected in horizontal calendar from scheduledTaskList fragment
     private val selectedDate = state.get<Long>("selectedDate")
 
+    //timePattern from dataStore
     private val _timePattern = MutableStateFlow("HH:mm")
     val timePattern = _timePattern.asStateFlow()
 
+    //timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(2)
     val timeFormat = _timeFormat.asStateFlow()
 
     private val _uiState = MutableStateFlow(AddTaskUiState())
     val uiState = _uiState.asStateFlow()
 
+    //channel for uiEvents
     private val _uiEvents = Channel<BottomSheetAddTaskUiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
     init {
+        //get TimePattern from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimePattern().collect {
                 _timePattern.value = it
             }
         }
+        //get TimeFormat from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
             }
         }
+
         _uiState.value = AddTaskUiState(
             selectedDate = initState(selectedDate)
         )
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: BottomSheetAddTaskEvent) {
         when (event) {
             is BottomSheetAddTaskEvent.AddTask -> {
@@ -67,21 +74,12 @@ class BottomSheetAddTaskViewModel @Inject constructor(
                         )
                     )
                 }
-                sendToUi(BottomSheetAddTaskUiEvent.PopBackStack(
-                    date = _uiState.value.selectedDate
-                ))
+                sendToUi(
+                    BottomSheetAddTaskUiEvent.PopBackStack(
+                        date = _uiState.value.selectedDate
+                    )
+                )
             }
-            is BottomSheetAddTaskEvent.DateTimeChanged -> {
-                viewModelScope.launch {
-                    event.newDate?.let { newDate ->
-                        _uiState.value = _uiState.value.copy(selectedDate = newDate)
-                    }
-                    event.newTime?.let { newTime ->
-                        _uiState.value = _uiState.value.copy(selectedTime = newTime)
-                    }
-                }
-            }
-
             is BottomSheetAddTaskEvent.NavigateToDateSelector -> {
                 viewModelScope.launch {
                     _uiEvents.send(
@@ -92,28 +90,34 @@ class BottomSheetAddTaskViewModel @Inject constructor(
                     )
                 }
             }
-
             is BottomSheetAddTaskEvent.ChangeTime -> {
                 viewModelScope.launch {
-                    _uiState.value = _uiState.value.copy(
-                        selectedTime = event.newTime
-                    )
+                    _uiState.update {
+                        it.copy(
+                            selectedTime = event.newTime
+                        )
+                    }
                 }
             }
-
+            is BottomSheetAddTaskEvent.ChangeDate -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(
+                            selectedDate = event.newDate
+                        )
+                    }
+                }
+            }
             is BottomSheetAddTaskEvent.ClearDateTime -> {
                 _uiState.value = _uiState.value.copy(
                     selectedDate = null,
                     selectedTime = null
                 )
             }
-
         }
     }
 
-
-
-
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: BottomSheetAddTaskUiEvent) {
         viewModelScope.launch {
             _uiEvents.send(event)

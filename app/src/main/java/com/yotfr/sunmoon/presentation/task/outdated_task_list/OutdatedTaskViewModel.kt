@@ -30,34 +30,43 @@ class OutdatedTaskViewModel @Inject constructor(
 
     private val outdatedTaskListMapper = OutdatedTaskListMapper()
 
+    //state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    //timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
+    //state for expand/collapse header in list
     private val completedTasksHeaderState = MutableStateFlow(
         OutdatedCompletedHeaderStateModel()
     )
 
+    //state for hide/show footer in list
     private val outdatedFooterState = MutableStateFlow(
         OutdatedFooterModel()
     )
 
+    //beginning of the current day
     private val currentDate = getCurrentDate()
 
+    //state for taskList
     private val _uiState = MutableStateFlow<OutdatedTaskListUiStateModel?>(null)
     val uiState = _uiState.asStateFlow()
 
+    //uiEvents channel
     private val _uiEvent = Channel<OutdatedTaskUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //collect time format from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
             }
         }
+        //get data for taskList state
         viewModelScope.launch {
             combine(
                 taskUseCase.getOutdatedTaskList(
@@ -91,13 +100,12 @@ class OutdatedTaskViewModel @Inject constructor(
         }
     }
 
+    //method for fragment to communicate with viewModel
     fun onEvent(event: OutdatedTaskEvent) {
         when (event) {
-
             is OutdatedTaskEvent.UpdateSearchQuery -> {
                 _searchQuery.value = event.searchQuery
             }
-
             is OutdatedTaskEvent.ScheduleTask -> {
                 viewModelScope.launch {
                     val task = if (event.isMakeUndoneNeeded) event.task.copy(
@@ -115,7 +123,6 @@ class OutdatedTaskViewModel @Inject constructor(
                     taskDate = event.date
                 ))
             }
-
             is OutdatedTaskEvent.TrashOutdatedTask -> {
                 viewModelScope.launch {
                     taskUseCase.trashUntrashTask(
@@ -137,13 +144,11 @@ class OutdatedTaskViewModel @Inject constructor(
                     )
                 }
             }
-
             is OutdatedTaskEvent.ChangeCompletedTasksVisibility -> {
                 completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
                     isExpanded = !completedTasksHeaderState.value.isExpanded
                 )
             }
-
             is OutdatedTaskEvent.DeleteTasks -> {
                 viewModelScope.launch {
                     when (event.deleteOption) {
@@ -163,6 +168,7 @@ class OutdatedTaskViewModel @Inject constructor(
         }
     }
 
+    //get beginning of current date
     private fun getCurrentDate(): Long {
         val currentDayCalendar = Calendar.getInstance(Locale.getDefault())
         currentDayCalendar.apply {
@@ -174,12 +180,14 @@ class OutdatedTaskViewModel @Inject constructor(
         return currentDayCalendar.timeInMillis
     }
 
+    //collapse/expand header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
+    //send uiEvents to uiEvent channel
     private fun sendToUi(uiEvent: OutdatedTaskUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(uiEvent)

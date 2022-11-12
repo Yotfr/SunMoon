@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     android:background="?attr/colorSurface"
     android:padding="@dimen/default_padding"
-    android:transitionName="fabToSheet"
     tools:context=".presentation.task.add_task.BottomSheetAddTaskFragment">
 
     <View

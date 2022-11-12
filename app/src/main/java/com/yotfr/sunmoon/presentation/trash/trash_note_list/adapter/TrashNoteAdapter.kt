@@ -8,10 +8,6 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.*
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteModel
 
-interface TrashNoteDelegate {
-    fun trashNoteClicked(noteId: Long)
-}
-
 class TrashNoteListDiffCallBack(
     private val oldList: List<TrashNoteModel>,
     private val newList: List<TrashNoteModel>
@@ -30,12 +26,6 @@ class TrashNoteListDiffCallBack(
 
 class TrashNotesAdapter : RecyclerView.Adapter<TrashNotesAdapter.DeletedNoteViewHolder>() {
 
-    private var delegate: TrashNoteDelegate? = null
-
-    fun attachDelegate(delegate: TrashNoteDelegate) {
-        this.delegate = delegate
-    }
-
     var deletedNotes: List<TrashNoteModel> = emptyList()
         set(newValue) {
             val diffCallback = TrashNoteListDiffCallBack(field, newValue)
@@ -50,7 +40,7 @@ class TrashNotesAdapter : RecyclerView.Adapter<TrashNotesAdapter.DeletedNoteView
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            )
         )
     }
 
@@ -67,19 +57,13 @@ class TrashNotesAdapter : RecyclerView.Adapter<TrashNotesAdapter.DeletedNoteView
 
 
     class DeletedNoteViewHolder(
-        private val binding: ItemTrashedNoteBinding,
-        private val delegate: TrashNoteDelegate?
+        private val binding: ItemTrashedNoteBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(note: TrashNoteModel) {
             binding.apply {
                 tvDeletedNoteDescription.text = note.text
                 tvDeletedNoteTitle.text = note.title
                 tvDeletedNoteDate.text = note.createdAt
-                itemDeletedNoteCard.setOnClickListener {
-                    delegate?.trashNoteClicked(
-                        noteId = note.id
-                    )
-                }
             }
         }
     }

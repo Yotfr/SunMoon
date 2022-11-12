@@ -9,7 +9,7 @@ import com.yotfr.sunmoon.databinding.ItemArchiveNoteBinding
 import com.yotfr.sunmoon.presentation.notes.archive_note.model.ArchiveNoteModel
 
 interface ArchiveNoteListDelegate {
-    fun noteDetailsClicked(id: Long?)
+    fun noteDetailsClicked(id: Long)
 }
 
 class ArchiveNoteListDiffCallBack(

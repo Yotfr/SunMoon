@@ -24,10 +24,12 @@ class ManageCategoriesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ManageCategoriesUiState?>(null)
     val uiState = _uiState.asStateFlow()
 
+    //uiEvents channel
     private val _uiEvent = Channel<ManageCategoriesUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //collect categories
         viewModelScope.launch {
             noteUseCase.getCategoryList().collect { categories ->
                 _uiState.value = ManageCategoriesUiState(
@@ -42,10 +44,9 @@ class ManageCategoriesViewModel @Inject constructor(
         }
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: ManageCategoriesEvent) {
         when (event) {
-
             is ManageCategoriesEvent.DeleteCategory -> {
                 viewModelScope.launch {
                     noteUseCase.deleteCategory(
@@ -55,7 +56,6 @@ class ManageCategoriesViewModel @Inject constructor(
                     )
                 }
             }
-
             is ManageCategoriesEvent.ChangeCategoryVisibility -> {
                 viewModelScope.launch {
                     noteUseCase.changeCategoryVisibility(
@@ -65,8 +65,6 @@ class ManageCategoriesViewModel @Inject constructor(
                     )
                 }
             }
-
         }
     }
-
 }

@@ -26,16 +26,18 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
 
+    private val viewModel by viewModels<ManageCategoriesViewModel>()
+
     private lateinit var binding: FragmentManageCategoriesBinding
+
     private lateinit var adapter: ManageCategoriesAdapter
     private lateinit var footerAdapter: ManageCategoriesFooterAdapter
-    private val viewModel by viewModels<ManageCategoriesViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentManageCategoriesBinding.bind(view)
 
-
+        //initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
         adapter = ManageCategoriesAdapter()
         adapter.attachDelegate(object : CategoriesDelegate {
@@ -77,13 +79,14 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
 
         binding.rvCategoryListManage.adapter = concatAdapter
         binding.rvCategoryListManage.layoutManager = layoutManager
+
         binding.rvCategoryListManage.addItemDecoration(
             MarginItemDecoration(
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
             )
         )
 
-
+        //collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { categories ->
@@ -92,12 +95,6 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
                         footerAdapter.footerState = it.footerState
                     }
                 }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
             }
         }
     }

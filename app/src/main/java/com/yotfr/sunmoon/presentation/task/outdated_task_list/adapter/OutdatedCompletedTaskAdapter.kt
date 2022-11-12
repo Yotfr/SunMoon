@@ -1,7 +1,9 @@
 package com.yotfr.sunmoon.presentation.task.outdated_task_list.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +12,7 @@ import com.yotfr.sunmoon.databinding.ItemOutdatedCompletedTaskBinding
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTaskListModel
 
 interface OutdatedCompletedTaskListDelegate {
-    fun taskPressed(taskId: Long)
+    fun taskPressed(taskId: Long, transitionView: View)
     fun schedulePressed(task: OutdatedTaskListModel)
 }
 
@@ -90,6 +92,7 @@ class OutdatedCompletedTaskAdapter :
                         R.string.task_overdue,
                         outdatedTask.formattedOverDueTime
                     )
+                ViewCompat.setTransitionName(itemOutdatedCompletedTaskCard, "task${outdatedTask.taskId}")
 
                 itemOutdatedCompletedTaskReschedule.setOnClickListener {
                     delegate?.schedulePressed(
@@ -99,7 +102,8 @@ class OutdatedCompletedTaskAdapter :
 
                 itemOutdatedCompletedTaskTvTaskDescription.setOnClickListener {
                     delegate?.taskPressed(
-                        taskId = outdatedTask.taskId
+                        taskId = outdatedTask.taskId,
+                        transitionView = itemOutdatedCompletedTaskCard
                     )
                 }
 

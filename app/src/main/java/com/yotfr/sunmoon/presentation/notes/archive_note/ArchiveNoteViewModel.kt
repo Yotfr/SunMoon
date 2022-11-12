@@ -23,16 +23,19 @@ class ArchiveNoteViewModel @Inject constructor(
 
     private val archiveNoteListMapper = ArchiveNoteMapper()
 
+    //state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
     private val _uiState = MutableStateFlow<ArchiveNoteUiState?>(null)
     val uiState = _uiState.asStateFlow()
 
+    //uiEvents channel
     private val _uiEvent = Channel<ArchiveNoteUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //collect archive notes
         viewModelScope.launch {
             combine(
                 dataStoreRepository.getDateFormat(),
@@ -43,7 +46,7 @@ class ArchiveNoteViewModel @Inject constructor(
                 _uiState.value = ArchiveNoteUiState(
                     notes = archiveNoteListMapper.fromDomainList(
                         it.second,
-                        it.first  ?: "yyyy/MM/dd"
+                        it.first
                     ),
                     footerState = ArchiveNoteFooterModel(
                         isVisible = it.second.isEmpty()
@@ -53,10 +56,9 @@ class ArchiveNoteViewModel @Inject constructor(
         }
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: ArchiveNoteEvent) {
         when (event) {
-
             is ArchiveNoteEvent.DeleteArchiveNote -> {
                 viewModelScope.launch {
                     noteUseCase.trashUntrashNote(
@@ -73,7 +75,6 @@ class ArchiveNoteViewModel @Inject constructor(
                     )
                 )
             }
-
             is ArchiveNoteEvent.UndoDeleteArchiveNote -> {
                 viewModelScope.launch {
                     noteUseCase.trashUntrashNote(
@@ -104,7 +105,7 @@ class ArchiveNoteViewModel @Inject constructor(
         }
     }
 
-
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: ArchiveNoteUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)

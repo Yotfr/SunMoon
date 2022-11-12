@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.yotfr.sunmoon.R
@@ -32,19 +30,24 @@ import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListUiEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.model.NoteListModel
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     companion object{
+        //header category chipId
         private const val CHIP_HEADER_TAG = -1L
     }
 
     private val viewModel by viewModels<NoteListViewModel>()
 
     private lateinit var searchView: SearchView
+
     private lateinit var binding: FragmentNoteListBinding
+
     private lateinit var noteListAdapter: NoteListAdapter
     private lateinit var noteListFooterAdapter: NoteListFooterAdapter
 
@@ -52,15 +55,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentNoteListBinding.bind(view)
 
-        binding.fragmentNoteListCategoriesGroup.addView(
-            createHeaderChip()
-        )
-        val chipHeader =  binding.fragmentNoteListCategoriesGroup.findViewWithTag<Chip>(
-            CHIP_HEADER_TAG
-        )
-        chipHeader.performClick()
-
-
+        addHeaderChipAndPerformClick()
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -118,6 +113,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
                 )
             }
         })
+
         noteListFooterAdapter = NoteListFooterAdapter()
 
         val concatAdapter = ConcatAdapter(
@@ -130,13 +126,16 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
         binding.rvNoteList.adapter = concatAdapter
         binding.rvNoteList.layoutManager = noteLayoutManager
+
         binding.rvNoteList.addItemDecoration(
             MarginItemDecoration(
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
             )
         )
+
         initSwipeToDelete()
 
+        //on change selected chip
         binding.fragmentNoteListCategoriesGroup.setOnCheckedStateChangeListener { group, _ ->
              val chipId = group.findViewById<Chip>(group.checkedChipId).tag as Long
             Log.d("CHIP","$chipId")
@@ -145,7 +144,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             ))
         }
 
-
+        //collect notes uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.noteListUiState.collect { noteState ->
@@ -157,23 +156,27 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             }
         }
 
+        //collect category uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categoryListUiState.collect { categoryState ->
                     categoryState?.let { categories ->
+                        //createChip for each collected category
                         val chips:MutableList<Chip> = mutableListOf()
-                        val headerChip = createHeaderChip()
-                        categories.forEach {
-                            chips.add(createCategoryChip(
-                                text = it.categoryDescription,
-                                categoryId = it.id
-                            ))
+                        withContext(Dispatchers.Default){
+                            categories.forEach { category ->
+                                chips.add(createCategoryChip(
+                                    text = category.categoryDescription,
+                                    categoryId = category.id
+                                ))
+                            }
                         }
+                        //replace chips in chipGroup
                         binding.fragmentNoteListCategoriesGroup.removeViews(1,
                         binding.fragmentNoteListCategoriesGroup.childCount - 1)
-                        chips.forEach {
+                        chips.forEach { chip ->
                             binding.fragmentNoteListCategoriesGroup.addView(
-                                it
+                                chip
                             )
                         }
                     }
@@ -181,12 +184,13 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             }
         }
 
+        //collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { event ->
                     when (event) {
                         is NoteListUiEvent.ShowUndoDeleteSnackbar -> {
-                            showUndoDeleteSnackbar {
+                            showUndoTrashNoteSnackbar {
                                 viewModel.onEvent(
                                     NoteListEvent.UndoDeleteNote(
                                         note = event.note
@@ -195,7 +199,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
                             }
                         }
                         is NoteListUiEvent.ShowUndoArchiveSnackbar -> {
-                            showUndoArchiveSnackbar {
+                            showUndoArchiveNoteSnackbar {
                                 viewModel.onEvent(
                                     NoteListEvent.UndoArchiveNote(
                                         note = event.note
@@ -209,22 +213,37 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         }
     }
 
+    //add header chip in chipGroup and performClick
+    private fun addHeaderChipAndPerformClick(){
+        binding.fragmentNoteListCategoriesGroup.addView(
+            createHeaderChip()
+        )
+        val chipHeader =  binding.fragmentNoteListCategoriesGroup.findViewWithTag<Chip>(
+            CHIP_HEADER_TAG
+        )
+        chipHeader.performClick()
+    }
+
+    //create headerChip
     private fun createHeaderChip():Chip{
         val chip = Chip(requireContext(),
         null,R.attr.PrimaryChipStyle)
         chip.apply {
             text = getString(R.string.all)
+            id = -1
             tag = CHIP_HEADER_TAG
             isChecked = true
         }
         return chip
     }
 
+    //create categoryChip
     private fun createCategoryChip(text:String, categoryId:Long):Chip{
         val chip = Chip(requireContext(),
             null,R.attr.PrimaryChipStyle)
         chip.apply {
             setText(text)
+            id = categoryId.toInt()
             tag = categoryId
         }
         return chip
@@ -241,7 +260,12 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             }.show()
     }
 
-    private fun showUndoDeleteSnackbar(onAction: () -> Unit) {
+    //get current selected category to open addNoteFragment with it
+    fun getCurrentSelectedCategory():Long{
+        return binding.fragmentNoteListCategoriesGroup.checkedChipId.toLong()
+    }
+
+    private fun showUndoTrashNoteSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.undo_delete_note_description),
@@ -252,7 +276,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             }.show()
     }
 
-    private fun showUndoArchiveSnackbar(onAction: () -> Unit) {
+    private fun showUndoArchiveNoteSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.note_archived),
@@ -272,6 +296,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         findNavController().navigate(direction)
     }
 
+    //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onTrashItem = { positionToRemove: Int ->
             val note = noteListAdapter.notes[positionToRemove]

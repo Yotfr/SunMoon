@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.google.android.material.transition.MaterialContainerTransform
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentBottomSheetAddTaskBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
@@ -30,7 +29,8 @@ import java.util.*
 class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
 
     companion object {
-        const val REQUEST_CODE = "REQUEST_CODE_ADD_TASK"
+        const val DATE_KEY = "DATE_KEY"
+        const val TIME_KEY = "TIME_KEY"
         const val WITHOUT_SELECTED_DATE = -1L
         const val WITHOUT_SELECTED_TIME = -1L
     }
@@ -41,7 +41,13 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition =  MaterialContainerTransform()
+        //remove backStack StateFlow values
+        findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long?>(
+            DATE_KEY
+        )
+        findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long?>(
+            TIME_KEY
+        )
     }
 
     override fun onCreateView(
@@ -60,6 +66,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //focus edit text when open bottomSheet
         binding.textFieldTaskDescription.editText?.isFocusableInTouchMode = true
         binding.textFieldTaskDescription.editText?.requestFocus()
 
@@ -68,13 +75,12 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             binding.btnAddTask.isEnabled = !charSequence.isNullOrBlank()
         }
 
-        //navigate to dateSelector
+        //get date and time from viewModel needed for navigate to dateSelector
         binding.chipScheduledDate.setOnClickListener {
             viewModel.onEvent(BottomSheetAddTaskEvent.NavigateToDateSelector)
         }
 
-
-        //changeScheduledTime
+        //show time picker and change date chip text
         binding.chipScheduledTime.setOnClickListener {
             showTimePicker(
                 currentTimeFormat = viewModel.timeFormat.value,
@@ -86,10 +92,9 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
                     )
                 )
             }
-
         }
 
-        //addTask
+        //save task
         binding.btnAddTask.setOnClickListener {
             val taskDescription = binding.textFieldTaskDescription.editText?.text.toString()
             viewModel.onEvent(
@@ -114,33 +119,41 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             }
         }
 
-        parentFragmentManager.setFragmentResultListener(
-            BottomSheetTaskDateSelectorFragment.REQUEST_CODE,
-            viewLifecycleOwner
-        ) { _, data ->
-            val date =
-                if (data.getLong(BottomSheetTaskDateSelectorFragment.SELECTED_DATE) == WITHOUT_SELECTED_DATE) {
-                    null
-                } else data.getLong(BottomSheetTaskDateSelectorFragment.SELECTED_DATE)
-            val time =
-                if (data.getLong(BottomSheetTaskDateSelectorFragment.SELECTED_TIME) == WITHOUT_SELECTED_TIME) {
-                    null
-                } else data.getLong(BottomSheetTaskDateSelectorFragment.SELECTED_TIME)
-            if (date == null && time == null) {
-                viewModel.onEvent(BottomSheetAddTaskEvent.ClearDateTime)
-            } else {
-                viewModel.onEvent(
-                    BottomSheetAddTaskEvent.DateTimeChanged(
-                        newDate = date,
-                        newTime = time
+        //collect date from dateSelector
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val navController = findNavController()
+                navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<Long?>(
+                    DATE_KEY, null
+                )?.collect { date ->
+                    val selectedDate = if (date == WITHOUT_SELECTED_DATE) null else date
+                    viewModel.onEvent(
+                        BottomSheetAddTaskEvent.ChangeDate(
+                            newDate = selectedDate
+                        )
                     )
-                )
+                }
             }
         }
 
+        //collect time from dateSelector
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val navController = findNavController()
+                navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<Long?>(
+                    TIME_KEY, null
+                )?.collect { time ->
+                    val selectedTime = if (time == WITHOUT_SELECTED_TIME) null else time
+                    viewModel.onEvent(
+                        BottomSheetAddTaskEvent.ChangeTime(
+                            newTime = selectedTime
+                        )
+                    )
+                }
+            }
+        }
 
-
-
+        //collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvents.collect { uiEvent ->
@@ -153,16 +166,16 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
                                     uiEvent.time ?: BottomSheetTaskDateSelectorFragment
                                         .WITHOUT_TIME
                                 )
-                            findNavController().navigate(directions)
+                            navigateToDestination(
+                                direction = directions
+                            )
                         }
                         is BottomSheetAddTaskUiEvent.PopBackStack -> {
-                            parentFragmentManager.setFragmentResult(
-                                REQUEST_CODE,
-                                bundleOf(
-                                    TaskRootFragment.SELECTED_TASK_DATE to uiEvent.date
-                                )
+                            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                                TaskRootFragment.SELECTED_TASK_DATE,
+                                uiEvent.date
                             )
-                            findNavController().popBackStack()
+                            navigateToDestination()
                         }
                     }
                 }
@@ -170,10 +183,9 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         }
     }
 
-
     private fun showTimePicker(
-        currentTimeFormat:Int,
-        currentSelectedTime:Long?,
+        currentTimeFormat: Int,
+        currentSelectedTime: Long?,
         onPositive: (time: Long) -> Unit
     ) {
         val calendar = Calendar.getInstance(Locale.getDefault())
@@ -185,7 +197,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         val isSystem24Hour = android.text.format.DateFormat.is24HourFormat(activity)
         val clockFormat = if (currentTimeFormat != 2) {
             currentTimeFormat
-        }else if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+        } else if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
 
         val picker = MaterialTimePicker.Builder()
             .setTimeFormat(clockFormat)
@@ -202,6 +214,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         }
     }
 
+    //format Long date
     private fun parseSelectedDateToChipText(selectedDateInMillis: Long?): String {
         val sdf = SimpleDateFormat("MMM d", Locale.getDefault())
         val currentDate = Calendar.getInstance(Locale.getDefault())
@@ -226,7 +239,6 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
                 return getString(R.string.on_weekend)
             }
         }
-
         return when (selectedDateInMillis) {
             currentDate.timeInMillis -> getString(R.string.today)
             currentDate.timeInMillis + 86400000 -> getString(R.string.tomorrow)
@@ -237,8 +249,9 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         }
     }
 
+    //parse Long time
     private fun parseSelectedTimeToChipText(
-        currentTimePattern:String,
+        currentTimePattern: String,
         selectedTimeInMillis: Long?
     ): String {
         val sdf = SimpleDateFormat(currentTimePattern, Locale.getDefault())
@@ -250,7 +263,14 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         return getString(R.string.set)
     }
 
-
-
-
+    //navigate to dateSelector or popBackStack
+    private fun navigateToDestination(
+        direction: NavDirections? = null
+    ) {
+        if (direction == null) {
+            findNavController().popBackStack()
+        } else {
+            findNavController().navigate(direction)
+        }
+    }
 }

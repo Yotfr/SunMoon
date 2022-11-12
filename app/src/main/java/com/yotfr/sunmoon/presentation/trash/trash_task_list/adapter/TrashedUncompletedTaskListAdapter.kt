@@ -10,10 +10,6 @@ import com.yotfr.sunmoon.databinding.ItemTrashedTaskBinding
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskListModel
 
 
-interface UncompletedTrashTaskDelegate {
-    fun taskItemPressed(taskId: Long)
-}
-
 class TrashedUncompletedTaskDiffCallback(
     private val oldList: List<TrashedTaskListModel>,
     private val newList: List<TrashedTaskListModel>
@@ -31,12 +27,6 @@ class TrashedUncompletedTaskDiffCallback(
 
 class TrashedUncompletedTaskListAdapter : RecyclerView.Adapter<TrashedUncompletedTaskListAdapter.TrashedTaskViewHolder>() {
 
-    private var delegate: UncompletedTrashTaskDelegate? = null
-
-    fun attachDelegate(delegate: UncompletedTrashTaskDelegate) {
-        this.delegate = delegate
-    }
-
     var deletedTasks: List<TrashedTaskListModel> = emptyList()
         set(newValue) {
             val diffCallback = TrashedUncompletedTaskDiffCallback(field, newValue)
@@ -51,7 +41,7 @@ class TrashedUncompletedTaskListAdapter : RecyclerView.Adapter<TrashedUncomplete
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            )
         )
     }
 
@@ -68,8 +58,7 @@ class TrashedUncompletedTaskListAdapter : RecyclerView.Adapter<TrashedUncomplete
 
 
     class TrashedTaskViewHolder(
-        private val binding: ItemTrashedTaskBinding,
-        private val delegate: UncompletedTrashTaskDelegate?
+        private val binding: ItemTrashedTaskBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: TrashedTaskListModel) {
             binding.apply {
@@ -79,12 +68,6 @@ class TrashedUncompletedTaskListAdapter : RecyclerView.Adapter<TrashedUncomplete
                 itemTrashedTaskTaskProgress.progress = task.completionProgress
                 itemTrashedTaskTvScheduledTime.isVisible = !task.isAddTimeButtonVisible
                 itemTrashedTaskTvSetTime.isVisible = task.isAddTimeButtonVisible
-
-                itemTrashedTaskTvTaskDescription.setOnClickListener {
-                    delegate?.taskItemPressed(
-                        taskId = task.taskId
-                    )
-                }
             }
         }
     }

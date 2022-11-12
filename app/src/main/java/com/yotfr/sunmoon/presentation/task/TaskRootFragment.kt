@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.yotfr.sunmoon.R
@@ -26,7 +25,9 @@ import kotlinx.coroutines.launch
 class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
 
     companion object {
+        //selectedDate coming from taskDetails or addTask
         const val SELECTED_TASK_DATE = "SELECTED_TASK_DATE"
+        //null selectedDate coming from taskDetails or addTask
         const val WITHOUT_TASK_DATE = 0L
     }
 
@@ -45,6 +46,11 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //remove backStack StateFlow value
+        findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long?>(
+            SELECTED_TASK_DATE
+        )
 
         if (savedInstanceState == null) {
             val scheduledTaskListFragment =
@@ -92,8 +98,10 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTaskRootBinding.bind(view)
 
+        //setUpActionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTaskRootToolbar)
 
+        //change fragment from selected tab
         binding.fragmentTaskRootTabLayout.addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -110,74 +118,53 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
                     }
                 }
             }
-
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
-
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
 
+        //collect backStack selectedDate from taskDetails or addTask and change tab
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val navController = findNavController()
                 navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<Long?>(
-                    SELECTED_TASK_DATE, WITHOUT_TASK_DATE
+                    SELECTED_TASK_DATE, null
                 )?.collect { date ->
-                    val selectedDate = if (date == WITHOUT_TASK_DATE) null
-                    else date
-                    if (selectedDate != null) {
-                        changeTabFromChildFragment(
-                            fragmentPosition = 0,
-                            selectedTaskDate = date
-                        )
-                    } else {
-                        changeTabFromChildFragment(
-                            fragmentPosition = 1
-                        )
+                    when(date) {
+                        WITHOUT_TASK_DATE -> {
+                            changeTabFromChildFragment(
+                                fragmentPosition = 1
+                            )
+                        }
+                        null -> {}
+                        else -> {
+                            changeTabFromChildFragment(
+                                fragmentPosition = 0,
+                                selectedTaskDate = date
+                            )
+                        }
                     }
                 }
-                navController.currentBackStackEntry?.savedStateHandle?.remove<Long?>(
-                    SELECTED_TASK_DATE
-                )
             }
         }
 
-        parentFragmentManager.setFragmentResultListener(
-            BottomSheetAddTaskFragment.REQUEST_CODE,
-            viewLifecycleOwner
-        ) { _, data ->
-            val date = if (data.getLong(SELECTED_TASK_DATE) == WITHOUT_TASK_DATE) null
-            else data.getLong(SELECTED_TASK_DATE)
-            if (date != null) {
-                changeTabFromChildFragment(
-                    fragmentPosition = 0,
-                    selectedTaskDate = date
-                )
-            } else {
-                changeTabFromChildFragment(
-                    fragmentPosition = 1
-                )
-            }
-        }
-
+        //hide/show fab on scroll  in childFragments
         binding.fragmentTaskRootScrollView.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 if (scrollY > oldScrollY && binding.fragmentTaskRootFab.isShown) {
                     binding.fragmentTaskRootFab.hide()
                 }
-
                 if (scrollY < oldScrollY && !binding.fragmentTaskRootFab.isShown) {
                     binding.fragmentTaskRootFab.show()
                 }
-
                 if (scrollY == 0) {
                     binding.fragmentTaskRootFab.show()
                 }
             }
         )
 
-
+        //choose fab click destination depends on current selected fragment
         binding.fragmentTaskRootFab.setOnClickListener {
             when (selectedIndex) {
                 0 -> {
@@ -194,11 +181,15 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
 
     override fun onResume() {
         super.onResume()
-        binding.fragmentTaskRootTabLayout.selectTab(
-            binding.fragmentTaskRootTabLayout.getTabAt(selectedIndex)
-        )
+        changeSelectedTab()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("selectedIndex", selectedIndex)
+    }
+
+    //public toAccess from childFragments
     fun changeTabFromChildFragment(
         fragmentPosition: Int,
         selectedTaskDate: Long? = null
@@ -210,17 +201,17 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
                     "Trying to navigate to scheduledTasks without task scheduled date"
                 )
             )
-            binding.fragmentTaskRootTabLayout.selectTab(
-                binding.fragmentTaskRootTabLayout.getTabAt(selectedIndex)
-            )
+            changeSelectedTab()
             return
         }
         selectFragment(fragmentPosition)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt("selectedIndex", selectedIndex)
+    //change selected tab
+    private fun changeSelectedTab(){
+        binding.fragmentTaskRootTabLayout.selectTab(
+            binding.fragmentTaskRootTabLayout.getTabAt(selectedIndex)
+        )
     }
 
     private fun FragmentTransaction.selectFragment(selectedIndex: Int): FragmentTransaction {
@@ -234,10 +225,8 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
         return this
     }
 
-
     private fun selectFragment(indexToSelect: Int) {
         this.selectedIndex = indexToSelect
-
         childFragmentManager.beginTransaction()
             .selectFragment(indexToSelect)
             .commit()
@@ -248,11 +237,7 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
             TaskRootFragmentDirections.actionTaskRootFragmentToBottomSheetAddTaskFragment(
                 selectedDate = selectedDate ?: BottomSheetAddTaskFragment.WITHOUT_SELECTED_DATE
             )
-        val extras = FragmentNavigatorExtras(
-            binding.fragmentTaskRootFab to
-                    binding.fragmentTaskRootFab.transitionName
-        )
-        findNavController().navigate(direction, extras)
+        findNavController().navigate(direction)
     }
 
 

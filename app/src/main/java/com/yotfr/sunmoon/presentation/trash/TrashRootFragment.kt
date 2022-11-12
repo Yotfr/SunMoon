@@ -18,8 +18,6 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
     private lateinit var noteFragment: TrashNoteFragment
     private lateinit var taskFragment: TrashTaskFragment
 
-    private var tabListener:TabLayout.OnTabSelectedListener ? = null
-
     private val fragments: Array<Fragment> get() = arrayOf(noteFragment, taskFragment)
     private var selectedIndex = 0
 
@@ -50,10 +48,11 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTrashRootBinding.bind(view)
 
+        //setUpActionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTrashRootToolbar)
 
-
-        tabListener = object :TabLayout.OnTabSelectedListener{
+        //change fragment from selected tab
+        binding.fragmentTrashRootTabLayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 selectFragment(tab?.position!!)
             }
@@ -63,10 +62,7 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
-        }
-
-        //TODO
-        binding.fragmentTrashRootTabLayout.addOnTabSelectedListener(tabListener)
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -92,12 +88,5 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
         childFragmentManager.beginTransaction()
             .selectFragment(indexToSelect)
             .commit()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.fragmentTrashRootTabLayout.removeOnTabSelectedListener(
-            tabListener
-        )
     }
 }

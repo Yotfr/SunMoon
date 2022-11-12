@@ -23,17 +23,19 @@ class TrashNoteViewModel @Inject constructor(
 
     private val trashNoteMapper = TrashNoteMapper()
 
+    //state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
-
 
     private val _uiState = MutableStateFlow<TrashNoteUiState?>(null)
     val uiState = _uiState.asStateFlow()
 
+    //uiEvents channel
     private val _uiEvent = Channel<TrashNoteUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //get trashed notes
         viewModelScope.launch {
             combine(
                 dataStoreRepository.getDateFormat(),
@@ -55,10 +57,9 @@ class TrashNoteViewModel @Inject constructor(
         }
     }
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event: TrashNoteEvent) {
         when (event) {
-
             is TrashNoteEvent.DeleteTrashedNote -> {
                 viewModelScope.launch {
                     noteUseCase.deleteNote(
@@ -101,6 +102,7 @@ class TrashNoteViewModel @Inject constructor(
         }
     }
 
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: TrashNoteUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)

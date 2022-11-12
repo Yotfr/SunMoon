@@ -9,12 +9,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentSettingsBinding
 import com.yotfr.sunmoon.presentation.MainActivity
 import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsEvent
-import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsUiEvent
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.DatePattern
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,12 +32,15 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSettingsBinding.bind(view)
 
+        //navigate to change theme fragment
         binding.btnChangeTheme.setOnClickListener {
             navigateToThemePicker()
         }
 
+        //setUp actionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentSettingsToolbar)
 
+        //show dateFormat picker dialog
         binding.btnDateFormat.setOnClickListener {
             showDateFormatSelectorDialog(
                 viewModel.settingsUiState.value.datePattern
@@ -52,6 +53,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
 
+        //show timeFormat picker dialog
         binding.btnTimeFormat.setOnClickListener {
             showTimeFormatSelectorDialog(
                 viewModel.settingsUiState.value.timeFormat,
@@ -65,32 +67,24 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
 
+        //collectUiEvents
+        //TODO:useless
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
-                        is SettingsUiEvent.ShowChangeRestartSnackbar -> {
-                            showRestartRequiredSnackbar()
-                        }
+                        else -> {}
                     }
                 }
             }
         }
     }
 
-    private fun showRestartRequiredSnackbar() {
-        Snackbar.make(
-            requireView(),
-            getString(R.string.restart_required),
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
 
     private fun navigateToThemePicker() {
         val direction = SettingsFragmentDirections.actionSettingsFragmentToSettingsThemeFragment()
         findNavController().navigate(direction)
     }
-
 
     private fun showDateFormatSelectorDialog(
         currentDatePattern: DatePattern,

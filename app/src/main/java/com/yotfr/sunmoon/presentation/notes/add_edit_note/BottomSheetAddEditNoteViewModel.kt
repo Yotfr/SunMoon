@@ -25,7 +25,9 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
     private val addEditNoteMapper = AddEditNoteMapper()
     private val addEditNoteCategoryMapper = AddEditNoteCategoryMapper()
 
+    //noteId state coming from note list
     private val noteId = state.get<Long>("noteId")
+    //categoryId state coming from note list
     private val categoryId = state.get<Long>("categoryId")
 
     private val _addEditNoteUiState = MutableStateFlow(AddEditNoteModel())
@@ -38,14 +40,32 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
     private val _uiStateSelectedCategory = MutableStateFlow<AddEditNoteCategoryModel?>(null)
     val uiStateSelectedCategory = _uiStateSelectedCategory.asStateFlow()
 
+    //channel for uiEvents
     private val _uiEvent = Channel<AddEditNoteUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        //update selected category state if navigated from noteListFragment
+        if (categoryId != BottomSheetAddEditNoteFragment.WITHOUT_CATEGORY_ID) {
+            viewModelScope.launch {
+                noteUseCase.getCategoryById(
+                    categoryId = categoryId ?: throw IllegalArgumentException(
+                        "categoryId is null"
+                    )
+                ).collectLatest { category ->
+                    _uiStateSelectedCategory.value = addEditNoteCategoryMapper.fromDomain(
+                        category
+                    )
+                }
+            }
+        }
+        //update note state and selected category state if editing existing note
         if (noteId != BottomSheetAddEditNoteFragment.WITHOUT_NOTE_ID) {
             viewModelScope.launch {
                 noteUseCase.getNoteById(
-                    noteId = noteId!!
+                    noteId = noteId ?: throw IllegalArgumentException(
+                        "noteId is null"
+                    )
                 ).collect { note ->
                     _addEditNoteUiState.value = addEditNoteMapper.fromDomain(
                         note
@@ -62,6 +82,7 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
                 }
             }
         }
+        //collect categories
         viewModelScope.launch {
             noteUseCase.getCategoryList().collect { categories ->
                 _addEditNoteCategoryUiState.value = addEditNoteCategoryMapper.fromDomainList(
@@ -71,6 +92,7 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
         }
     }
 
+    //method for fragment to communicate with viewModel
     fun onEvent(event: AddEditNoteEvent) {
         when (event) {
             is AddEditNoteEvent.SaveNotePressed -> {
@@ -106,7 +128,7 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
         }
     }
 
-
+    //send uiEvents to uiEvent channel
     private fun sendToUi(event: AddEditNoteUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)

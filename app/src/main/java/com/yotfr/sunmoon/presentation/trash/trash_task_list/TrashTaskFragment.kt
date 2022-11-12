@@ -38,14 +38,16 @@ import java.util.*
 @AndroidEntryPoint
 class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
 
+    private val viewModel by viewModels<TrashTaskViewModel>()
+
     private lateinit var binding: FragmentTrashTaskBinding
+
+    private lateinit var searchView: SearchView
+
     private lateinit var uncompletedTrashTaskAdapter: TrashedUncompletedTaskListAdapter
     private lateinit var completedTrashTaskAdapter: TrashedCompletedTaskAdapter
     private lateinit var completedTrashTaskHeaderAdapter: TrashedCompletedHeaderAdapter
     private lateinit var trashTaskFooterAdapter: TrashTaskFooterAdapter
-    private lateinit var searchView: SearchView
-
-    private val viewModel by viewModels<TrashTaskViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -104,23 +106,16 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
         //initRvAdapters
         val linearLayoutManager = LinearLayoutManager(requireContext())
         uncompletedTrashTaskAdapter = TrashedUncompletedTaskListAdapter()
-        uncompletedTrashTaskAdapter.attachDelegate(object : UncompletedTrashTaskDelegate {
-            override fun taskItemPressed(taskId: Long) {
-                //TODO
-            }
-        })
+
         completedTrashTaskAdapter = TrashedCompletedTaskAdapter()
-        completedTrashTaskAdapter.attachDelegate(object : TrashedCompletedTaskListDelegate {
-            override fun taskItemPressed(taskId: Long) {
-                //TODO
-            }
-        })
+
         completedTrashTaskHeaderAdapter = TrashedCompletedHeaderAdapter()
         completedTrashTaskHeaderAdapter.attachDelegate(object : TrashedCompletedHeaderDelegate {
             override fun hideCompleted() {
                 viewModel.onEvent(TrashTaskEvent.ChangeCompletedTasksVisibility)
             }
         })
+
         trashTaskFooterAdapter = TrashTaskFooterAdapter()
 
         val concatAdapter = ConcatAdapter(
@@ -132,16 +127,19 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             completedTrashTaskAdapter,
             trashTaskFooterAdapter
         )
+
         binding.fragmentTrashTaskRv.adapter = concatAdapter
         binding.fragmentTrashTaskRv.layoutManager = linearLayoutManager
+
         binding.fragmentTrashTaskRv.addItemDecoration(
             MarginItemDecoration(
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
             )
         )
+
         initSwipeToDelete()
 
-
+        //collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { taskState ->
@@ -155,15 +153,16 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }
         }
 
+        //collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         TrashTaskUiEvent.ShowRestoreSnackbar -> {
-                            showRestoreSnackbar()
+                            showRestoreTaskSnackbar()
                         }
                         is TrashTaskUiEvent.ShowUndoDeleteSnackbar -> {
-                            showUndoDeleteSnackBar {
+                            showUndoDeleteTaskSnackBar {
                                 viewModel.onEvent(
                                     TrashTaskEvent.UndoDeleteTrashedTask(
                                         uiEvent.task
@@ -212,6 +211,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
         }
     }
 
+    //show date time change dialog in case restoring deleted task is outdated
     private fun showDateTimeChangeDialog(
         onNeutral: () -> Unit,
         onNegative: () -> Unit,
@@ -323,7 +323,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }.show()
     }
 
-    private fun showUndoDeleteSnackBar(onAction: () -> Unit) {
+    private fun showUndoDeleteTaskSnackBar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.task_deleted),
@@ -334,7 +334,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }.show()
     }
 
-    private fun showRestoreSnackbar() {
+    private fun showRestoreTaskSnackbar() {
         Snackbar.make(
             requireView(),
             getString(R.string.task_restored),
@@ -342,6 +342,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
         ).show()
     }
 
+    //initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemRemoved = { positionToRemove: Int ->
             val task = uncompletedTrashTaskAdapter.deletedTasks[positionToRemove]
@@ -384,6 +385,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
         ItemTouchHelper(trashedTaskListItemCallback).attachToRecyclerView(binding.fragmentTrashTaskRv)
     }
 
+    //enum for delete dialog options
     enum class DeleteOption {
         ALL_TRASHED, COMPLETED_TRASHED
     }

@@ -12,6 +12,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,7 +26,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
-import com.google.android.material.transition.MaterialFadeThrough
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentUnplannedTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
@@ -56,18 +57,9 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
     private lateinit var unplannedCompletedTaskHeaderAdapter: UnplannedCompletedTaskHeaderAdapter
     private lateinit var unplannedFooterAdapter: UnplannedFooterAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        enterTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUnplannedTaskListBinding.bind(view)
-
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -118,13 +110,20 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         unplannedUncompletedTaskListAdapter = UnplannedUncompletedTaskListAdapter()
         unplannedUncompletedTaskListAdapter.attachDelegate(object :
             UnplannedUncompletedTaskDelegate {
-            override fun taskPressed(taskId: Long) {
+            override fun taskPressed(taskId: Long, transitionView: View) {
                 val direction =
                     TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
                         taskId = taskId,
                         destination = TaskDetailsFragment.FROM_UNPLANNED
                     )
-                navigateToDestination(direction = direction)
+                val extras = FragmentNavigatorExtras(
+                    transitionView to
+                            transitionView.transitionName
+                )
+                navigateToDestination(
+                    direction = direction,
+                    extras = extras
+                )
             }
 
             override fun taskCheckBoxPressed(task: UnplannedTaskListModel) {
@@ -157,15 +156,23 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 )
             }
         })
+
         unplannedCompletedTaskListAdapter = UnplannedCompletedTaskListAdapter()
         unplannedCompletedTaskListAdapter.attachDelegate(object : UnplannedCompletedTaskDelegate {
-            override fun taskPressed(taskId: Long) {
+            override fun taskPressed(taskId: Long, transitionView: View) {
                 val direction =
                     TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
                         taskId = taskId,
                         destination = TaskDetailsFragment.FROM_UNPLANNED
                     )
-                navigateToDestination(direction = direction)
+                val extras = FragmentNavigatorExtras(
+                    transitionView to
+                            transitionView.transitionName
+                )
+                navigateToDestination(
+                    direction = direction,
+                    extras = extras
+                )
             }
 
             override fun taskCheckBoxPressed(task: UnplannedTaskListModel) {
@@ -176,6 +183,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 )
             }
         })
+
         unplannedCompletedTaskHeaderAdapter = UnplannedCompletedTaskHeaderAdapter()
         unplannedCompletedTaskHeaderAdapter.attachDelegate(object :
             UnplannedCompletedHeaderDelegate {
@@ -183,7 +191,9 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 viewModel.onEvent(UnplannedTaskListEvent.ChangeCompletedTasksVisibility)
             }
         })
+
         unplannedFooterAdapter = UnplannedFooterAdapter()
+
         val concatAdapter =
             ConcatAdapter(
                 ConcatAdapter.Config.Builder()
@@ -194,16 +204,16 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 unplannedCompletedTaskListAdapter,
                 unplannedFooterAdapter
             )
+
         binding.fragmentUnplannedTaskRvTaskList.layoutManager = layoutManager
         binding.fragmentUnplannedTaskRvTaskList.adapter = concatAdapter
+
         binding.fragmentUnplannedTaskRvTaskList.addItemDecoration(
             MarginItemDecoration(
                 spaceSize = resources.getDimensionPixelSize(R.dimen.default_margin)
             )
         )
         initSwipeToDelete()
-
-
 
         //CollectUiState
         viewLifecycleOwner.lifecycleScope.launch {
@@ -225,8 +235,8 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
-                        is UnplannedTaskListUiEvent.UndoDeleteUnplannedTask -> {
-                            showUndoDeleteSnackbar {
+                        is UnplannedTaskListUiEvent.UndoTrashUnplannedTask -> {
+                            showUndoTrashSnackbar {
                                 viewModel.onEvent(UnplannedTaskListEvent.UndoTrashItem(
                                     task = uiEvent.task
                                 ))
@@ -244,8 +254,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         }
     }
 
-
-
+    //initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
             val task = unplannedUncompletedTaskListAdapter.tasks[positionToRemove]
@@ -270,7 +279,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         ItemTouchHelper(unplannedTaskListItemCallback).attachToRecyclerView(binding.fragmentUnplannedTaskRvTaskList)
     }
 
-    private fun showUndoDeleteSnackbar(onAction: () -> Unit) {
+    private fun showUndoTrashSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.undo_delete_task_description),
@@ -382,11 +391,14 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
             .show()
     }
 
-    private fun navigateToDestination(direction: NavDirections?) {
+    private fun navigateToDestination(
+        direction: NavDirections?,
+        extras: FragmentNavigator.Extras
+    ) {
         if (direction == null) {
             findNavController().popBackStack()
         } else {
-            findNavController().navigate(direction)
+            findNavController().navigate(direction, extras)
         }
     }
 

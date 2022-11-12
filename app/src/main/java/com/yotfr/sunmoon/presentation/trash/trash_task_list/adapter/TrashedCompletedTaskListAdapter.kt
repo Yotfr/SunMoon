@@ -9,10 +9,6 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemTrashedCompletedTaskBinding
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskListModel
 
-interface TrashedCompletedTaskListDelegate {
-    fun taskItemPressed(taskId: Long)
-}
-
 class TrashedCompletedTaskListAdapter(
     private val oldList: List<TrashedTaskListModel>,
     private val newList: List<TrashedTaskListModel>
@@ -30,12 +26,6 @@ class TrashedCompletedTaskListAdapter(
 
 class TrashedCompletedTaskAdapter :
     RecyclerView.Adapter<TrashedCompletedTaskAdapter.CompletedTaskViewHolder>() {
-
-    private var delegate: TrashedCompletedTaskListDelegate? = null
-
-    fun attachDelegate(delegate: TrashedCompletedTaskListDelegate) {
-        this.delegate = delegate
-    }
 
     var tasks: List<TrashedTaskListModel> = emptyList()
         set(newValue) {
@@ -60,7 +50,7 @@ class TrashedCompletedTaskAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            )
         )
     }
 
@@ -71,8 +61,7 @@ class TrashedCompletedTaskAdapter :
 
 
     class CompletedTaskViewHolder(
-        private val binding: ItemTrashedCompletedTaskBinding,
-        private val delegate: TrashedCompletedTaskListDelegate?
+        private val binding: ItemTrashedCompletedTaskBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: TrashedTaskListModel) {
             binding.apply {
@@ -82,12 +71,6 @@ class TrashedCompletedTaskAdapter :
                 itemTrashedCompletedTaskCb.isChecked = task.completionStatus
                 itemTrashedCompletedTaskTvScheduledTime.isVisible = !task.isAddTimeButtonVisible
                 itemTrashedCompletedTaskTvSetTime.isVisible = task.isAddTimeButtonVisible
-
-                itemTrashedCompletedTaskTvTaskDescription.setOnClickListener {
-                    delegate?.taskItemPressed(
-                       taskId =  task.taskId
-                    )
-                }
             }
         }
     }

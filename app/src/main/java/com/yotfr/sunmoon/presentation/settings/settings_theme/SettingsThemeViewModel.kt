@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.settings.settings_theme
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
@@ -17,10 +16,11 @@ class SettingsThemeViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ):ViewModel() {
 
+    //uiEvents channel
     private val _uiEvent = Channel<SettingsThemeUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-
+    //method for fragment to communicate with viewModel
     fun onEvent(event:SettingsThemeEvent) {
         when (event) {
             is SettingsThemeEvent.ChangeTheme -> {
@@ -30,11 +30,11 @@ class SettingsThemeViewModel @Inject constructor(
                     )
                     sendToUi(SettingsThemeUiEvent.RestartActivity)
                 }
-
             }
         }
     }
 
+    //send uiEvents to uiEvent channel
     private fun sendToUi(uiEvent:SettingsThemeUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(uiEvent)

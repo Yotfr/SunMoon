@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,8 +27,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
-import com.google.android.material.transition.MaterialElevationScale
-import com.google.android.material.transition.MaterialFadeThrough
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentScheduledTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragmentDirections
@@ -75,21 +72,11 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     private var selectedMonth: Int = currentMonth
     private var selectedYear: Int = currentYear
     private val dates = ArrayList<Date>()
-    //Calendar
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        enterTransition = MaterialFadeThrough()
-        exitTransition = MaterialFadeThrough()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        postponeEnterTransition()
 
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentScheduledTaskListBinding.bind(view)
-
 
         //Calendar
         val snapHelper = LinearSnapHelper()
@@ -153,7 +140,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             changeCalendarMonth(CalendarChangeDirection.NEXT)
         }
 
-        //ScrollCalendarToSelectedDate
+        //Show date picker and scroll rv
         binding.scheduledTaskListFragmentTvCurrentDate.setOnClickListener {
             showDatePicker { date ->
                 scrollCalendarToSelectedDate(
@@ -161,7 +148,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 )
             }
         }
-
 
         //InitRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
@@ -177,8 +163,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                     transitionView to
                             transitionView.transitionName
                 )
-                exitTransition = MaterialElevationScale(false)
-                reenterTransition = MaterialElevationScale(true)
                 navigateToDestination(
                     direction = direction,
                     extras = extras
@@ -218,17 +202,20 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
         completedTaskListAdapter = ScheduledCompletedTaskAdapter()
         completedTaskListAdapter.attachDelegate(object : ScheduledCompletedTaskListDelegate {
-            override fun taskPressed(taskId: Long) {
+            override fun taskPressed(taskId: Long, transitionView: View) {
                 val direction =
                     TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
                         taskId = taskId,
                         destination = TaskDetailsFragment.FROM_SCHEDULED
                     )
-                //TODO:Rename destination
-                val extras = FragmentNavigatorExtras()
-                navigateToDestination(direction = direction, extras)
+                val extras = FragmentNavigatorExtras(
+                    transitionView to
+                            transitionView.transitionName
+                )
+                navigateToDestination(
+                    direction = direction,
+                    extras = extras)
             }
-
             override fun taskCheckBoxPressed(task: ScheduledTaskListModel) {
                 viewModel.onEvent(
                     ScheduledTaskListEvent.ChangeTaskCompletionStatus(
@@ -237,7 +224,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 )
             }
         })
-
 
         completedTaskHeaderAdapter = ScheduledCompletedHeaderAdapter()
         completedTaskHeaderAdapter.attachDelegate(object : ScheduledCompletedHeaderDelegate {
@@ -257,7 +243,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             completedTaskListAdapter,
             footerAdapter
         )
-
 
         binding.scheduledTaskListFragmentRvTasks.adapter = concatAdapter
         binding.scheduledTaskListFragmentRvTasks.layoutManager = layoutManager
@@ -279,10 +264,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                         uncompletedTaskListAdapter.tasks = uiModel.uncompletedTasks
                         completedTaskHeaderAdapter.headerState = uiModel.headerState
                         footerAdapter.footerState = uiModel.footerState
-
-                        (view.parent as? ViewGroup)?.doOnPreDraw {
-                            startPostponedEnterTransition()
-                        }
                     }
                 }
             }
@@ -293,10 +274,10 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
-                        is ScheduledTaskListUiEvent.UndoDeleteScheduledTask -> {
-                            showUndoDeleteSnackBar {
+                        is ScheduledTaskListUiEvent.UndoTrashScheduledTask -> {
+                            showUndoTrashSnackBar {
                                 viewModel.onEvent(
-                                    ScheduledTaskListEvent.UndoTrashItem(
+                                    ScheduledTaskListEvent.UndoTrashTask(
                                         uiEvent.task
                                     )
                                 )
@@ -315,10 +296,12 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     }
 
+    //method for TaskRootFragment to open addTask fragment with selected date in horizontal calendar
     fun getCurrentSelectedDate(): Long {
         return viewModel.selectedCalendarDate.value
     }
 
+    //method for TaskRootFragment to scroll rv to selectedDate when pop from addTask or taskDetails
     fun selectCalendarDate(selectedTaskDate: Long) {
         viewModel.onEvent(
             ScheduledTaskListEvent.SelectCalendarDate(
@@ -327,6 +310,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         )
     }
 
+    //scrollCalendarToSelectedDate
     private fun scrollCalendarToSelectedDate(date:Long){
         val monthCalendar = Calendar.getInstance(Locale.getDefault())
         monthCalendar.timeInMillis = date
@@ -352,6 +336,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 }
             }
             binding.scheduledTaskListFragmentRvCalendar.smoothScrollToPosition(position.await())
+            //delay to let rv get data
             delay(500)
             binding.scheduledTaskListFragmentRvCalendar.findViewHolderForAdapterPosition(
                 position.await()
@@ -359,9 +344,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         }
     }
 
-
+    //setUpHorizontalCalendar
     private fun setUpCalendar(changeMonth: Calendar? = null) {
-
         binding.scheduledTaskListFragmentTvCurrentDate.text = sdf.format(cal.time)
         val monthCalendar = cal.clone() as Calendar
         val maxDaysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -417,7 +401,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         })
     }
 
-
+    //change month of horizontal calendar
     private fun changeCalendarMonth(direction: CalendarChangeDirection) {
         when (direction) {
             CalendarChangeDirection.PREVIOUS -> {
@@ -465,6 +449,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     }
 
 
+    //initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
             val task = uncompletedTaskListAdapter.tasks[positionToRemove]
@@ -489,7 +474,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         ItemTouchHelper(taskListItemCallback).attachToRecyclerView(binding.scheduledTaskListFragmentRvTasks)
     }
 
-    private fun showUndoDeleteSnackBar(onAction: () -> Unit) {
+    private fun showUndoTrashSnackBar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
             getString(R.string.undo_delete_task_description),
@@ -568,6 +553,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             }.show()
     }
 
+    //enum for back/forward destination in horizontal calendar
     enum class CalendarChangeDirection {
         NEXT, PREVIOUS
     }

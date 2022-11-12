@@ -1,7 +1,9 @@
 package com.yotfr.sunmoon.presentation.task.unplanned_task_list.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
@@ -9,7 +11,7 @@ import com.yotfr.sunmoon.databinding.ItemUnplannedCompletedTaskBinding
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedTaskListModel
 
 interface UnplannedCompletedTaskDelegate {
-    fun taskPressed(taskId: Long)
+    fun taskPressed(taskId: Long, transitionView: View)
     fun taskCheckBoxPressed(task: UnplannedTaskListModel)
 }
 
@@ -80,13 +82,15 @@ class UnplannedCompletedTaskListAdapter :
                 itemUnplannedCompletedTaskTaskProgress.progress = task.completionProgress
                 itemUnplannedCompletedTaskTvTaskDescription.text = task.taskDescription
                 itemUnplannedCompletedTaskCb.isChecked = task.isCompleted
+                ViewCompat.setTransitionName(itemUnplannedCompletedTaskCard, "task${task.taskId}")
 
                 itemUnplannedCompletedTaskCb.setOnClickListener {
                     delegate?.taskCheckBoxPressed(task)
                 }
                 itemUnplannedCompletedTaskTvTaskDescription.setOnClickListener {
                     delegate?.taskPressed(
-                        taskId = task.taskId
+                        taskId = task.taskId,
+                        transitionView = itemUnplannedCompletedTaskCard
                     )
                 }
             }

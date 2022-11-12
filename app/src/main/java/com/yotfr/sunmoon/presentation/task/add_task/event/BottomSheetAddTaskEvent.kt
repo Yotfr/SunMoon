@@ -7,7 +7,10 @@ sealed interface BottomSheetAddTaskEvent {
 
     data class ChangeTime(val newTime: Long?) : BottomSheetAddTaskEvent
 
-    data class DateTimeChanged(val newDate: Long?, val newTime: Long?) : BottomSheetAddTaskEvent
+    data class ChangeDate(
+        val newDate: Long?
+    ) : BottomSheetAddTaskEvent
+
 
     object ClearDateTime : BottomSheetAddTaskEvent
 
