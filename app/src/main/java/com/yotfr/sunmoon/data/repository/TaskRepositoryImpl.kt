@@ -13,8 +13,8 @@ class TaskRepositoryImpl @Inject constructor(
     private val taskDao: TaskDao
 ) : TaskRepository {
 
-    override suspend fun insertTask(taskEntity: TaskEntity): Long {
-        return taskDao.insertTask(taskEntity)
+    override suspend fun upsertTask(taskEntity: TaskEntity): Long {
+        return taskDao.upsertTask(taskEntity)
     }
 
     override suspend fun getTaskById(taskId: Long): Flow<TaskWithSubTasksRelation?> {
@@ -22,7 +22,7 @@ class TaskRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAllremindedTasks(): List<TaskEntity> {
-        return taskDao.getAllremindedTasks()
+        return taskDao.getAllRemindedTasks()
     }
 
     override suspend fun deleteTask(taskEntity: TaskEntity) {

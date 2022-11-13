@@ -1,5 +1,7 @@
 package com.yotfr.sunmoon.domain.interactor.note
 
+import com.yotfr.sunmoon.domain.interactor.note.use_case.*
+
 data class NoteUseCase(
     val addCategory: AddCategory,
     val addNote: AddNote,
@@ -16,7 +18,7 @@ data class NoteUseCase(
     val getCategoryWithNotes: GetCategoryWithNotes,
     val changeArchiveNoteState: ChangeArchiveNoteState,
     val getVisibleCategoryList: GetVisibleCategoryList,
-    val deleteAllUnarchivedNotes:DeleteAllUnarchivedNotes,
+    val deleteAllUnarchivedNotes: DeleteAllUnarchivedNotes,
     val deleteAllArchivedNotes: DeleteAllArchivedNotes,
     val getAllNotes: GetAllNotes,
     val changeNotePinnedState: ChangeNotePinnedState

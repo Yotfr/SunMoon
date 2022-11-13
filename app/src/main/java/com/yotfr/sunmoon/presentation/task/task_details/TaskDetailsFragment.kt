@@ -462,11 +462,11 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
     private fun showDeleteTaskDialog(onPositive: () -> Unit) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.confirm_delete))
-            .setMessage(resources.getString(R.string.sure_delete))
-            .setNegativeButton(resources.getString(R.string.NO)) { _, _ ->
+            .setTitle(resources.getString(R.string.confirm_delete_task))
+            .setMessage(resources.getString(R.string.task_dialog_message))
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
             }
-            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 onPositive()
             }.show()
     }
@@ -493,7 +493,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             getString(R.string.undo_delete_subtask_description),
             Snackbar.LENGTH_LONG
         )
-            .setAction(getString(R.string.undo_delete_task_button_text)) {
+            .setAction(getString(R.string.undo)) {
                 onAction()
             }.show()
     }
@@ -681,7 +681,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                 if (completionStatus) {
                     makeUndone()
                 } else {
-                    makeScheculed()
+                    makeScheduled()
                 }
             }
             State.UNPLANNED -> {
@@ -709,7 +709,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         var returnDate = getString(R.string.without_date)
 
         val calendar = Calendar.getInstance(Locale.getDefault())
-        val sdfDate = SimpleDateFormat(currentDateFormat)
+        val sdfDate = SimpleDateFormat(currentDateFormat, Locale.getDefault())
         date?.let {
             calendar.timeInMillis = it
             returnDate = sdfDate.format(calendar.time)
@@ -731,7 +731,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
     }
 
     //update ui to make task scheduled
-    private fun makeScheculed() {
+    private fun makeScheduled() {
         binding.apply {
             fragmentTaskDetailsSubtaskCard.alpha = 1f
             fragmentTaskDetailsTaskDescription.isEnabled = true

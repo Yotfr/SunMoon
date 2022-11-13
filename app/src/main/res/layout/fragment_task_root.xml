@@ -56,12 +56,12 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/scheduled" />
+                    android:text="@string/calendar" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/unplanned" />
+                    android:text="@string/without_date" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -96,7 +96,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="@string/content_description_fab_add_task"
         android:src="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

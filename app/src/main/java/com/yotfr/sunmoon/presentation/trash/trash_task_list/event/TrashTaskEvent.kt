@@ -18,6 +18,8 @@ sealed interface TrashTaskEvent {
 
     data class UndoDeleteTrashedTask(val task: TrashedTaskListModel) : TrashTaskEvent
 
+    data class DeleteRelatedTasks(val task: TrashedTaskListModel):TrashTaskEvent
+
     object DeleteAllTrashedTask : TrashTaskEvent
 
     object DeleteAllTrashedCompletedTask : TrashTaskEvent

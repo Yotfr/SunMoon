@@ -80,18 +80,20 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.mi_delete_all_tasks -> {
-                        showDeleteAllDialog {
-                            when (it) {
-                                DeleteOption.ALL_TRASHED -> {
-                                    viewModel.onEvent(
-                                        TrashTaskEvent.DeleteAllTrashedTask
-                                    )
+                        showDeleteAllDialog { deleteOption ->
+                            showConfirmationDialog {
+                                when (deleteOption) {
+                                    DeleteOption.ALL_TRASHED -> {
+                                        viewModel.onEvent(
+                                            TrashTaskEvent.DeleteAllTrashedTask
+                                        )
 
-                                }
-                                DeleteOption.COMPLETED_TRASHED -> {
-                                    viewModel.onEvent(
-                                        TrashTaskEvent.DeleteAllTrashedCompletedTask
-                                    )
+                                    }
+                                    DeleteOption.COMPLETED_TRASHED -> {
+                                        viewModel.onEvent(
+                                            TrashTaskEvent.DeleteAllTrashedCompletedTask
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -162,13 +164,22 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
                             showRestoreTaskSnackbar()
                         }
                         is TrashTaskUiEvent.ShowUndoDeleteSnackbar -> {
-                            showUndoDeleteTaskSnackBar {
-                                viewModel.onEvent(
-                                    TrashTaskEvent.UndoDeleteTrashedTask(
-                                        uiEvent.task
+                            showUndoDeleteTaskSnackBar(
+                                onAction = {
+                                    viewModel.onEvent(
+                                        TrashTaskEvent.UndoDeleteTrashedTask(
+                                            task = uiEvent.task
+                                        )
                                     )
-                                )
-                            }
+                                },
+                                onDismiss = {
+                                    viewModel.onEvent(
+                                        TrashTaskEvent.DeleteRelatedTasks(
+                                            task = uiEvent.task
+                                        )
+                                    )
+                                }
+                            )
                         }
                         is TrashTaskUiEvent.ShowDateTimeChangeDialog -> {
                             showDateTimeChangeDialog(
@@ -181,26 +192,17 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
                                         )
                                     )
                                 },
-                                onNegative = {
-                                    viewModel.onEvent(
-                                        TrashTaskEvent.RestoreTrashedTaskWithDateTimeChanged(
-                                            task = uiEvent.task,
-                                            date = null,
-                                            time = null
-                                        )
-                                    )
-                                },
                                 onPositive = {
                                     showDateTimePicker(
                                         viewModel.timeFormat.value
-                                    ){ selectedDate, selectedTime ->
-                                       viewModel.onEvent(
-                                           TrashTaskEvent.RestoreTrashedTaskWithDateTimeChanged(
-                                               task = uiEvent.task,
-                                               date = selectedDate,
-                                               time = selectedTime
-                                           )
-                                       )
+                                    ) { selectedDate, selectedTime ->
+                                        viewModel.onEvent(
+                                            TrashTaskEvent.RestoreTrashedTaskWithDateTimeChanged(
+                                                task = uiEvent.task,
+                                                date = selectedDate,
+                                                time = selectedTime
+                                            )
+                                        )
                                     }
                                 }
                             )
@@ -214,16 +216,12 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
     //show date time change dialog in case restoring deleted task is outdated
     private fun showDateTimeChangeDialog(
         onNeutral: () -> Unit,
-        onNegative: () -> Unit,
         onPositive: () -> Unit
     ) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.trash_need_change))
-            .setNeutralButton(resources.getString(R.string.NO)) { _, _ ->
+            .setNegativeButton(resources.getString(R.string.NO)) { _, _ ->
                 onNeutral()
-            }
-            .setNegativeButton(resources.getString(R.string.make_unplanned)) { _, _ ->
-                onNegative()
             }
             .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
                 onPositive()
@@ -323,15 +321,40 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }.show()
     }
 
-    private fun showUndoDeleteTaskSnackBar(onAction: () -> Unit) {
+    private fun showConfirmationDialog(
+        onPositive:() -> Unit
+    ) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.delete_tasks))
+            .setMessage(resources.getString(R.string.tasks_dialog_message))
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                onPositive()
+            }.show()
+    }
+
+    private fun showUndoDeleteTaskSnackBar(
+        onAction: () -> Unit,
+        onDismiss: () -> Unit
+    ) {
         Snackbar.make(
             requireView(),
             getString(R.string.task_deleted),
             Snackbar.LENGTH_LONG
         )
-            .setAction(getString(R.string.undo_delete_task_button_text)) {
+            .setAction(getString(R.string.undo)) {
                 onAction()
-            }.show()
+            }
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (event == DISMISS_EVENT_TIMEOUT){
+                        onDismiss()
+                    }
+                }
+            })
+            .show()
     }
 
     private fun showRestoreTaskSnackbar() {

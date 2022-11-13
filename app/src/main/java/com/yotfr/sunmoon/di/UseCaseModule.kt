@@ -1,7 +1,9 @@
 package com.yotfr.sunmoon.di
 
 import com.yotfr.sunmoon.domain.interactor.note.*
+import com.yotfr.sunmoon.domain.interactor.note.use_case.*
 import com.yotfr.sunmoon.domain.interactor.task.*
+import com.yotfr.sunmoon.domain.interactor.task.use_case.*
 import com.yotfr.sunmoon.domain.repository.note.CategoryRepository
 import com.yotfr.sunmoon.domain.repository.note.NoteRepository
 import com.yotfr.sunmoon.domain.repository.task.SubTaskRepository
@@ -103,7 +105,8 @@ class UseCaseModule {
             changeTaskImportanceState = ChangeTaskImportanceState(
                 taskRepository
             ),
-            getAllRemindedTasks = GetAllRemindedTasks(taskRepository)
+            getAllRemindedTasks = GetAllRemindedTasks(taskRepository),
+            deleteAllRelatedSubTasks = DeleteAllRelatedSubTasks(subTaskRepository)
         )
     }
 

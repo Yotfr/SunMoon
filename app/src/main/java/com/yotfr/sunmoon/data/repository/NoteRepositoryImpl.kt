@@ -11,8 +11,9 @@ import javax.inject.Singleton
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao
 ) : NoteRepository {
-    override suspend fun insertNote(noteEntity: NoteEntity): Long {
-        return noteDao.insertNote(noteEntity)
+
+    override suspend fun upsertNote(noteEntity: NoteEntity): Long {
+        return noteDao.upsertNote(noteEntity)
     }
 
     override suspend fun deleteNote(noteEntity: NoteEntity) {

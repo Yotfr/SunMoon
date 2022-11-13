@@ -2,18 +2,21 @@ package com.yotfr.sunmoon.data.data_source
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import androidx.room.Upsert
 import com.yotfr.sunmoon.data.data_source.model.task.SubTaskEntity
 
 
 @Dao
 interface SubTaskDao {
 
-    @Insert(entity = SubTaskEntity::class, onConflict = REPLACE)
-    suspend fun insertSubTask(subTaskEntity: SubTaskEntity)
+    @Upsert(entity = SubTaskEntity::class)
+    suspend fun upsertSubTask(subTaskEntity: SubTaskEntity)
 
     @Delete(entity = SubTaskEntity::class)
     suspend fun deleteSubTask(subTaskEntity: SubTaskEntity)
+
+    @Query("DELETE FROM subTask WHERE taskId =:taskId")
+    suspend fun deleteAllRelatedSubTasks(taskId:Long)
 
 }

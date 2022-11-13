@@ -49,7 +49,7 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
             }
 
             override fun deleteCategoryPressed(category: ManageCategoriesModel) {
-                showDeleteAllDialog {
+                showDeleteCategoryDialog {
                     viewModel.onEvent(
                         ManageCategoriesEvent.DeleteCategory(
                             category = category
@@ -99,13 +99,13 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
         }
     }
 
-    private fun showDeleteAllDialog(onPositive: () -> Unit) {
+    private fun showDeleteCategoryDialog(onPositive: () -> Unit) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.confirm_delete))
-            .setMessage(resources.getString(R.string.sure_delete_archive_note))
-            .setNegativeButton(resources.getString(R.string.NO)) { _, _ ->
+            .setTitle(resources.getString(R.string.confirm_delete_category))
+            .setMessage(resources.getString(R.string.category_dialog_message))
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
             }
-            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 onPositive()
             }.show()
     }

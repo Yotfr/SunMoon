@@ -93,9 +93,11 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 return when (menuItem.itemId) {
                     R.id.mi_delete_all_tasks -> {
                         showDeleteAllDialog { deleteOption ->
-                            viewModel.onEvent(UnplannedTaskListEvent.DeleteTasks(
-                                deleteOption = deleteOption
-                            ))
+                            showConfirmationDialog {
+                                viewModel.onEvent(UnplannedTaskListEvent.DeleteTasks(
+                                    deleteOption = deleteOption
+                                ))
+                            }
                         }
                         true
                     }
@@ -282,10 +284,10 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
     private fun showUndoTrashSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
-            getString(R.string.undo_delete_task_description),
+            getString(R.string.task_trashed),
             Snackbar.LENGTH_LONG
         )
-            .setAction(getString(R.string.undo_delete_task_button_text)) {
+            .setAction(getString(R.string.undo)) {
                 onAction()
             }.show()
     }
@@ -389,6 +391,19 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 }
             }
             .show()
+    }
+
+    private fun showConfirmationDialog(
+        onPositive:() -> Unit
+    ) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.delete_tasks))
+            .setMessage(resources.getString(R.string.tasks_dialog_message))
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                onPositive()
+            }.show()
     }
 
     private fun navigateToDestination(

@@ -129,6 +129,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/btnLanguage"
                     style="@style/Widget.SunMoon.Button.TextButton"
                     app:icon = "@drawable/ic_language"
                     android:text="@string/language"

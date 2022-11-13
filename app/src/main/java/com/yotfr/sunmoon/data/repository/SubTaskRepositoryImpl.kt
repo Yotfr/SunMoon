@@ -12,10 +12,14 @@ class SubTaskRepositoryImpl @Inject constructor(
 ): SubTaskRepository {
 
     override suspend fun createSubTask(subTask: SubTaskEntity) {
-        subTaskDao.insertSubTask(subTask)
+        subTaskDao.upsertSubTask(subTask)
     }
 
     override suspend fun deleteSubTask(subTask: SubTaskEntity) {
         subTaskDao.deleteSubTask(subTask)
+    }
+
+    override suspend fun deleteAllRelatedSubTasks(taskId: Long) {
+        subTaskDao.deleteAllRelatedSubTasks(taskId)
     }
 }

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-//TODO:create constants file
+
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "DATA_STORE")
 
 class DataStoreRepositoryImpl @Inject constructor(
@@ -122,10 +122,22 @@ class DataStoreRepositoryImpl @Inject constructor(
         return settings
     }
 
+    override suspend fun updateLanguage(languageCode: String) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.LANGUAGE] = languageCode
+        }
+    }
+
+    override suspend fun getLanguage(): String {
+        val preferences = context.dataStore.data.first()
+        return preferences[PreferencesKeys.LANGUAGE] ?: "en"
+    }
+
     private object PreferencesKeys {
         val THEME = stringPreferencesKey("THEME")
         val DATE_FORMAT = stringPreferencesKey("DATE_FORMAT")
         val TIME_PATTERN = stringPreferencesKey("TIME_PATTERN")
         val TIME_FORMAT = intPreferencesKey("TIME_FORMAT")
+        val LANGUAGE = stringPreferencesKey("LANGUAGE")
     }
 }

@@ -116,11 +116,13 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 return when (menuItem.itemId) {
                     R.id.mi_delete_all_tasks -> {
                         showDeleteAllDialog { deleteOption ->
-                            viewModel.onEvent(
-                                ScheduledTaskListEvent.DeleteTasks(
-                                    deleteOption = deleteOption
+                            showConfirmationDialog {
+                                viewModel.onEvent(
+                                    ScheduledTaskListEvent.DeleteTasks(
+                                        deleteOption = deleteOption
+                                    )
                                 )
-                            )
+                            }
                         }
                         true
                     }
@@ -477,10 +479,10 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     private fun showUndoTrashSnackBar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
-            getString(R.string.undo_delete_task_description),
+            getString(R.string.task_trashed),
             Snackbar.LENGTH_LONG
         )
-            .setAction(getString(R.string.undo_delete_task_button_text)) {
+            .setAction(getString(R.string.undo)) {
                 onAction()
             }.show()
     }
@@ -529,10 +531,10 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     private fun showDeleteAllDialog(onPositive: (scheduledTaskDeleteOption: ScheduledTaskDeleteOption) -> Unit) {
         val dialogOptions = arrayOf(
-            resources.getString(R.string.deleteAllScheduled),
+            resources.getString(R.string.all_scheduled),
             resources.getString(R.string.all_scheduled_completed),
-            resources.getString(R.string.deleteSelectedDay),
-            resources.getString(R.string.scheduled_completed_selcted)
+            resources.getString(R.string.for_selected_day),
+            resources.getString(R.string.completed_for_selected_day)
         )
         val checkedItem = 0
         var selectedItem = 0
@@ -550,6 +552,19 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                     2 -> onPositive(ScheduledTaskDeleteOption.ALL_SCHEDULED_FOR_SELECTED_DAY)
                     3 -> onPositive(ScheduledTaskDeleteOption.ALL_SCHEDULED_COMPLETED_FOR_SELECTED_DAY)
                 }
+            }.show()
+    }
+
+    private fun showConfirmationDialog(
+        onPositive:() -> Unit
+    ) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.delete_tasks))
+            .setMessage(resources.getString(R.string.tasks_dialog_message))
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                onPositive()
             }.show()
     }
 

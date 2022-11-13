@@ -244,7 +244,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             currentDate.timeInMillis + 86400000 -> getString(R.string.tomorrow)
             currentDate.timeInMillis + 172800000 -> getString(R.string.in_two_days)
             currentDate.timeInMillis + 604800000 -> getString(R.string.next_week)
-            null -> getString(R.string.set)
+            null -> getString(R.string.without_date)
             else -> sdf.format(selectedDate.time)
         }
     }
@@ -260,7 +260,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             selectedTime.timeInMillis = selectedTimeInMillis
             return sdf.format(selectedTime.time)
         }
-        return getString(R.string.set)
+        return getString(R.string.without_time)
     }
 
     //navigate to dateSelector or popBackStack

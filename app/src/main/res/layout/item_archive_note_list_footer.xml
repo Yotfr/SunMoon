@@ -18,7 +18,7 @@
         android:textColor="?attr/colorSecondary"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.SunMoon.TitleMedium"
-        android:text="@string/no_note_in_archive"
+        android:text="@string/no_note_in_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <TextView

@@ -1,5 +1,7 @@
 package com.yotfr.sunmoon.domain.interactor.task
 
+import com.yotfr.sunmoon.domain.interactor.task.use_case.*
+
 data class TaskUseCase(
     val addSubTask: AddSubTask,
     val addTask: AddTask,
@@ -29,5 +31,6 @@ data class TaskUseCase(
     val deleteAllOutdatedCompletedTasks: DeleteAllOutdatedCompletedTasks,
     val changeTaskRemindDateTime: ChangeTaskRemindDateTime,
     val changeTaskImportanceState: ChangeTaskImportanceState,
-    val getAllRemindedTasks: GetAllRemindedTasks
+    val getAllRemindedTasks: GetAllRemindedTasks,
+    val deleteAllRelatedSubTasks: DeleteAllRelatedSubTasks
 )

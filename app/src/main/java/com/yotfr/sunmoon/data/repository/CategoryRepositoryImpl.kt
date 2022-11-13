@@ -12,8 +12,9 @@ import javax.inject.Singleton
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryDao: CategoryDao
 ):CategoryRepository {
-    override suspend fun insertCategory(categoryEntity: CategoryEntity) {
-        categoryDao.insertCategory(categoryEntity)
+
+    override suspend fun upsertCategory(categoryEntity: CategoryEntity) {
+        categoryDao.upsertCategory(categoryEntity)
     }
 
     override suspend fun deleteCategory(categoryEntity: CategoryEntity) {

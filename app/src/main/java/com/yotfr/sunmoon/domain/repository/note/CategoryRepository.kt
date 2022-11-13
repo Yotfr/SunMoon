@@ -5,7 +5,7 @@ import com.yotfr.sunmoon.data.data_source.model.relations.CategoriesWithNotesRel
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-    suspend fun insertCategory(categoryEntity: CategoryEntity)
+    suspend fun upsertCategory(categoryEntity: CategoryEntity)
 
     suspend fun deleteCategory(categoryEntity: CategoryEntity)
 

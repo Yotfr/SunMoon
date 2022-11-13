@@ -13,7 +13,9 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentSettingsBinding
 import com.yotfr.sunmoon.presentation.MainActivity
 import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsEvent
+import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsUiEvent
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.DatePattern
+import com.yotfr.sunmoon.presentation.settings.settings_root.model.LanguageCode
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -43,7 +45,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         //show dateFormat picker dialog
         binding.btnDateFormat.setOnClickListener {
             showDateFormatSelectorDialog(
-                viewModel.settingsUiState.value.datePattern
+                viewModel.dateTimeUiState.value.datePattern
             ) { datePattern ->
                 viewModel.onEvent(
                     SettingsEvent.ChangeDateFormat(
@@ -56,7 +58,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         //show timeFormat picker dialog
         binding.btnTimeFormat.setOnClickListener {
             showTimeFormatSelectorDialog(
-                viewModel.settingsUiState.value.timeFormat,
+                viewModel.dateTimeUiState.value.timeFormat,
             ) { timePattern, timeFormat ->
                 viewModel.onEvent(
                     SettingsEvent.ChangeTimeFormat(
@@ -67,13 +69,28 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
 
+        //show language picker dialog
+        binding.btnLanguage.setOnClickListener {
+            showLanguageSelectorDialog(
+                currentLanguage = viewModel.languageUiState.value
+            ){ languageCode ->
+                viewModel.onEvent(
+                    SettingsEvent.ChangeLanguage(
+                        language = languageCode
+                    )
+                )
+            }
+        }
+
         //collectUiEvents
-        //TODO:useless
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
-                        else -> {}
+                        SettingsUiEvent.RestartActivity -> {
+                            //restart activity when new language picked
+                            requireActivity().recreate()
+                        }
                     }
                 }
             }
@@ -115,9 +132,45 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }.show()
     }
 
+    private fun showLanguageSelectorDialog(
+        currentLanguage: LanguageCode,
+        onResult: (languageCode:LanguageCode) -> Unit
+    ) {
+
+        val languageOptions = arrayOf(
+            getString(R.string.english),
+            getString(R.string.russian)
+        )
+
+        val checkedItem = languageOptions.indexOf(
+            when(currentLanguage) {
+                LanguageCode.RUSSIAN -> {
+                    getString(R.string.russian)
+                }
+                LanguageCode.ENGLISH -> {
+                    getString(R.string.english)
+                }
+            }
+        )
+        var selectedItem = 0
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.select_date_format))
+            .setSingleChoiceItems(languageOptions, checkedItem) { _, which ->
+                selectedItem = which
+            }
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.save)) { _, _ ->
+                when (selectedItem) {
+                    0 -> onResult(LanguageCode.ENGLISH)
+                    1 -> onResult(LanguageCode.RUSSIAN)
+                }
+            }.show()
+    }
+
 
     private fun showTimeFormatSelectorDialog(
-        currenTimeFormat: TimeFormat,
+        currentTimeFormat: TimeFormat,
         onResultPattern: (timePattern: String, timeFormat:Int) -> Unit
     ) {
         val dialogOptions = arrayOf(
@@ -125,7 +178,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             resources.getString(R.string.am_pm),
             resources.getString(R.string.normal_hour)
         )
-        val checkedItem = when (currenTimeFormat) {
+        val checkedItem = when (currentTimeFormat) {
             TimeFormat.SYSTEM_DEFAULT -> {
                 0
             }
@@ -140,7 +193,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val sdfPattern24 = "HH:mm"
         val sdfPattern12 = "h:mm a"
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.select_date_format))
+            .setTitle(resources.getString(R.string.select_time_format))
             .setSingleChoiceItems(dialogOptions, checkedItem) { _, which ->
                 selectedItem = which
             }

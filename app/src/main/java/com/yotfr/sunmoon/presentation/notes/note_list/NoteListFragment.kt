@@ -251,11 +251,11 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     private fun showDeleteAllDialog(onPositive: () -> Unit) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.confirm_delete))
-            .setMessage(resources.getString(R.string.sure_delete_note))
-            .setNegativeButton(resources.getString(R.string.NO)) { _, _ ->
+            .setTitle(resources.getString(R.string.confirm_delete_notes))
+            .setMessage(resources.getString(R.string.notes_dialog_message))
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
             }
-            .setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
+            .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 onPositive()
             }.show()
     }
@@ -268,10 +268,10 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
     private fun showUndoTrashNoteSnackbar(onAction: () -> Unit) {
         Snackbar.make(
             requireView(),
-            getString(R.string.undo_delete_note_description),
+            getString(R.string.note_trashed),
             Snackbar.LENGTH_LONG
         )
-            .setAction(getString(R.string.undo_delete_task_button_text)) {
+            .setAction(getString(R.string.undo)) {
                 onAction()
             }.show()
     }
@@ -282,7 +282,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             getString(R.string.note_archived),
             Snackbar.LENGTH_LONG
         )
-            .setAction(getString(R.string.undo_delete_task_button_text)) {
+            .setAction(getString(R.string.undo)) {
                 onAction()
             }.show()
     }

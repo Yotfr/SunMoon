@@ -161,6 +161,13 @@ class TrashTaskViewModel @Inject constructor(
                     )
                 }
             }
+            is TrashTaskEvent.DeleteRelatedTasks -> {
+                viewModelScope.launch {
+                    taskUseCase.deleteAllRelatedSubTasks(
+                        taskId = event.task.taskId
+                    )
+                }
+            }
         }
     }
 
