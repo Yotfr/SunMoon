@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
@@ -109,7 +110,7 @@ class UnplannedTaskListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -129,7 +130,7 @@ class UnplannedTaskListItemCallback(
         with(textPaint) {
             color = tint
             textSize = 40F
-            textAlign = android.graphics.Paint.Align.CENTER
+            textAlign = Paint.Align.CENTER
         }
 
         val textY =

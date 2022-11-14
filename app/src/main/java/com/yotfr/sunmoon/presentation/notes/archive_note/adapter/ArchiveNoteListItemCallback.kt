@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
@@ -73,7 +74,7 @@ class ArchiveNoteListItemCallback(
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
         val typedValueInactive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorPrimaryVariant,
+            com.google.android.material.R.attr.colorPrimaryContainer,
             typedValueInactive,
             true
         )
@@ -97,7 +98,7 @@ class ArchiveNoteListItemCallback(
 
         val typedValueActiveArchive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorSecondaryVariant,
+            com.google.android.material.R.attr.colorSecondaryContainer,
             typedValueActiveArchive,
             true
         )
@@ -107,10 +108,10 @@ class ArchiveNoteListItemCallback(
             if (abs(dX) > layoutMargin && dX > 0 ){
                 if (abs(dX) < (itemView.width*0.4f) ) {
                     drawDeleteBackground(c, itemView, inactiveColor)
-                    drawDeleteIcon(c, itemView, dX)
+                    drawDeleteIcon(c, itemView)
                 }else {
                     drawDeleteBackground(c,itemView,activeColor)
-                    drawDeleteIcon(c, itemView, dX)
+                    drawDeleteIcon(c, itemView)
                 }
             }else if (abs(dX) > layoutMargin && dX < 0 ) {
                 if (abs(dX) > (itemView.width*0.4f) ) {
@@ -125,14 +126,14 @@ class ArchiveNoteListItemCallback(
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    private fun drawDeleteIcon(canvas: Canvas, itemView: View, dX: Float){
+    private fun drawDeleteIcon(canvas: Canvas, itemView: View){
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
         val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
 
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -163,7 +164,7 @@ class ArchiveNoteListItemCallback(
 
     private fun drawUnarchiveIcon(canvas: Canvas, itemView: View){
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
-        val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
+        val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin_)
 
         val icon = ResourcesCompat.getDrawable(
             itemView.resources, R.drawable.ic_archive_gesture,
@@ -171,7 +172,7 @@ class ArchiveNoteListItemCallback(
         ) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2

@@ -1,6 +1,7 @@
 package com.yotfr.sunmoon.presentation.task
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -131,6 +132,7 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
                 navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<Long?>(
                     SELECTED_TASK_DATE, null
                 )?.collect { date ->
+                    Log.d("TEST","date -> $date")
                     when(date) {
                         WITHOUT_TASK_DATE -> {
                             changeTabFromChildFragment(

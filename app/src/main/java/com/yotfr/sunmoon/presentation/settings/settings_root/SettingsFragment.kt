@@ -1,6 +1,7 @@
 package com.yotfr.sunmoon.presentation.settings.settings_root
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -74,6 +75,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             showLanguageSelectorDialog(
                 currentLanguage = viewModel.languageUiState.value
             ){ languageCode ->
+                Log.d("TEST","langCode -> $languageCode")
                 viewModel.onEvent(
                     SettingsEvent.ChangeLanguage(
                         language = languageCode

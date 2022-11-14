@@ -3,6 +3,7 @@ package com.yotfr.sunmoon.presentation
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
                 ).getLanguage()
             )
         }
+        Log.d("TEST","attach -> $localeToSwitchTo")
         val localeUpdatedContext: ContextWrapper = ContextUtils.updateLocale(newBase,
             localeToSwitchTo
         )

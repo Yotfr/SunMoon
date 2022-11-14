@@ -1,5 +1,10 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -27,6 +32,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentScheduledTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragmentDirections
@@ -61,7 +67,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     //Calendar
     private val lastDayInCalendar = Calendar.getInstance(Locale.getDefault())
-    private val sdf = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
+    private val sdf = SimpleDateFormat("LLLL yyyy", Locale.ENGLISH)
     private val cal = Calendar.getInstance(Locale.getDefault())
     private val clickCalendar = Calendar.getInstance(Locale.getDefault())
     private val currentDate = Calendar.getInstance(Locale.getDefault())
@@ -216,8 +222,10 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 )
                 navigateToDestination(
                     direction = direction,
-                    extras = extras)
+                    extras = extras
+                )
             }
+
             override fun taskCheckBoxPressed(task: ScheduledTaskListModel) {
                 viewModel.onEvent(
                     ScheduledTaskListEvent.ChangeTaskCompletionStatus(
@@ -277,13 +285,18 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         is ScheduledTaskListUiEvent.UndoTrashScheduledTask -> {
-                            showUndoTrashSnackBar {
-                                viewModel.onEvent(
-                                    ScheduledTaskListEvent.UndoTrashTask(
-                                        uiEvent.task
+                            showUndoTrashSnackBar(
+                                onAction = {
+                                    viewModel.onEvent(
+                                        ScheduledTaskListEvent.UndoTrashTask(
+                                            uiEvent.task
+                                        )
                                     )
-                                )
-                            }
+                                },
+                                onDismiss = {
+                                    cancelAlarm(uiEvent.task.taskId)
+                                }
+                            )
                         }
                         is ScheduledTaskListUiEvent.SelectCalendarDate -> {
                             scrollCalendarToSelectedDate(
@@ -313,7 +326,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     }
 
     //scrollCalendarToSelectedDate
-    private fun scrollCalendarToSelectedDate(date:Long){
+    private fun scrollCalendarToSelectedDate(date: Long) {
         val monthCalendar = Calendar.getInstance(Locale.getDefault())
         monthCalendar.timeInMillis = date
         if (monthCalendar.get(Calendar.MONTH) != cal.get(Calendar.MONTH)) {
@@ -476,7 +489,10 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         ItemTouchHelper(taskListItemCallback).attachToRecyclerView(binding.scheduledTaskListFragmentRvTasks)
     }
 
-    private fun showUndoTrashSnackBar(onAction: () -> Unit) {
+    private fun showUndoTrashSnackBar(
+        onAction: () -> Unit,
+        onDismiss:() -> Unit
+    ) {
         Snackbar.make(
             requireView(),
             getString(R.string.task_trashed),
@@ -484,7 +500,16 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
         )
             .setAction(getString(R.string.undo)) {
                 onAction()
-            }.show()
+            }
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (event == DISMISS_EVENT_TIMEOUT) {
+                        onDismiss()
+                    }
+                }
+            })
+            .show()
     }
 
     private fun showTimePicker(
@@ -555,8 +580,19 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             }.show()
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun cancelAlarm(taskId: Long) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireActivity().applicationContext,
+            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
+    }
+
     private fun showConfirmationDialog(
-        onPositive:() -> Unit
+        onPositive: () -> Unit
     ) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.delete_tasks))

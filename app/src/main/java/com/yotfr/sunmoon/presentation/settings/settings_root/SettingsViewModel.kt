@@ -1,5 +1,6 @@
 package com.yotfr.sunmoon.presentation.settings.settings_root
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
@@ -10,6 +11,7 @@ import com.yotfr.sunmoon.presentation.settings.settings_root.model.LanguageCode
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.SettingsUiStateModel
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.TimeFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -41,6 +43,7 @@ class SettingsViewModel @Inject constructor(
                 "ru" -> {LanguageCode.RUSSIAN}
                 else -> {LanguageCode.ENGLISH}
             }
+            Log.d("TEST","collected ${_languageUiState.value}")
         }
         //get date&time format
         viewModelScope.launch {
@@ -83,13 +86,19 @@ class SettingsViewModel @Inject constructor(
                 }
             }
             is SettingsEvent.ChangeLanguage -> {
-                viewModelScope.launch {
-                    dataStoreRepository.updateLanguage(
-                        event.language.code
-                    )
-                }
                 _languageUiState.value = event.language
-                sendToUi(SettingsUiEvent.RestartActivity)
+                viewModelScope.launch {
+                    val result = async {
+                        dataStoreRepository.updateLanguage(
+                            event.language.code
+                        )
+                    }
+                    result.await()
+                    sendToUi(SettingsUiEvent.RestartActivity)
+                }
+
+                Log.d("TEST","changed ${event.language.code}")
+
             }
         }
     }

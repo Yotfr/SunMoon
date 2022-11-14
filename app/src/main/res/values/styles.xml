@@ -197,6 +197,11 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
+    //dialogFragment
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+    </style>
+
     //DatePicker
     <style name="ThemeOverlay.SunMoon.DatePicker" parent="@style/ThemeOverlay.Material3.MaterialCalendar">
         <item name="colorOnSurface">?attr/colorPrimary</item>

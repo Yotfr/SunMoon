@@ -32,6 +32,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.result.contract.ActivityResultContracts
@@ -67,6 +68,8 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
     private lateinit var binding: FragmentTaskDetailsBinding
     private lateinit var subTaskAdapter: SubTaskAdapter
 
+    private var hasPermission:Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -79,6 +82,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                 )
             )
         }
+        hasPermission = checkNotificationPermission()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,7 +110,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                     android.R.id.home -> {
                         findNavController().previousBackStackEntry?.savedStateHandle?.set(
                             TaskRootFragment.SELECTED_TASK_DATE,
-                            viewModel.uiState.value.scheduledDate
+                            viewModel.uiState.value.scheduledDate ?: TaskRootFragment.WITHOUT_TASK_DATE
                         )
                         findNavController().popBackStack()
                         true
@@ -205,7 +209,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
         //show dateTimePicker to set reminder
         binding.fragmentTaskDetailsRemindTvSet.setOnClickListener {
-            if (checkNotificationPermission()) {
+            if (hasPermission) {
                 showReminderDateTimePicker(
                     currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
                 ) { date, time, remindTime ->
@@ -222,7 +226,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
         //show dateTimePicker to set reminder
         binding.fragmentTaskDetailsRemindTvTime.setOnClickListener {
-            if (checkNotificationPermission()) {
+            if (hasPermission) {
                 showReminderDateTimePicker(
                     currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
                 ) { date, time, remindTime ->
@@ -239,7 +243,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
         //show dateTimePicker to set reminder
         binding.fragmentTaskDetailsRemindTvDate.setOnClickListener {
-            if (checkNotificationPermission()) {
+            if (hasPermission) {
                 showReminderDateTimePicker(
                     currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
                 ) { date, time, remindTime ->
@@ -402,14 +406,18 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
                             setAlarm(
                                 taskId = uiEvent.taskId,
                                 taskTitle = uiEvent.taskDescription,
-                                remindTime = uiEvent.alarmTime,
-                                destination = uiEvent.destination
+                                remindTime = uiEvent.alarmTime
                             )
                         }
                     }
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.onEvent(TaskDetailsEvent.ApplyTaskTextChange)
     }
 
     //check if user have notification permission and request it if not
@@ -432,15 +440,15 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
     }
 
     //set task reminder with alarmManager
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun setAlarm(
-        taskTitle: String, taskId: Long, remindTime: Long,
-        destination: Int
+        taskTitle: String, taskId: Long, remindTime: Long
     ) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra("taskTitle", taskTitle)
         intent.putExtra("taskId", taskId)
-        intent.putExtra("destination", destination)
+        intent.putExtra("destination", 0)
         val pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
             taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
@@ -449,6 +457,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
     }
 
     //cancel task reminder
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun cancelAlarm(taskId: Long) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
@@ -528,8 +537,11 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
     private fun showDatePicker(selectionDate: Long? = null, onPositive: (date: Long) -> Unit) {
         val calendar = Calendar.getInstance(Locale.getDefault())
+        val endDateCalendar = calendar.clone() as Calendar
+        endDateCalendar.add(Calendar.MONTH, 6)
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
+            .setEnd(endDateCalendar.timeInMillis)
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(getString(R.string.select_date))
             .setSelection(
@@ -558,8 +570,11 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
         var selectedDate: Long
         var selectedTime: Long
+        val endDateCalendar = calendarDate.clone() as Calendar
+        endDateCalendar.add(Calendar.MONTH, 6)
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
+            .setEnd(endDateCalendar.timeInMillis)
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(getString(R.string.select_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -614,8 +629,11 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
         var selectedDate: Long
         var selectedTime: Long? = null
+        val endDateCalendar = calendarDate.clone() as Calendar
+        endDateCalendar.add(Calendar.MONTH, 6)
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
+            .setEnd(endDateCalendar.timeInMillis)
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(getString(R.string.select_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())

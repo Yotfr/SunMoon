@@ -127,7 +127,9 @@ class TrashTaskViewModel @Inject constructor(
                             )
                         )
                     }
-                    sendToUi(TrashTaskUiEvent.ShowRestoreSnackbar)
+                    sendToUi(TrashTaskUiEvent.ShowRestoreSnackbar(
+                        task = event.task
+                    ))
                 }
             }
             is TrashTaskEvent.UndoDeleteTrashedTask -> {

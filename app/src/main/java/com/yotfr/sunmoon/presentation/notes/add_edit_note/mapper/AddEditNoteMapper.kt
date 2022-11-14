@@ -23,7 +23,7 @@ class AddEditNoteMapper {
             title = uiModel.title,
             text = uiModel.text,
             trashed = uiModel.trashed,
-            created = uiModel.created,
+            created = uiModel.created ?: System.currentTimeMillis(),
             archived = uiModel.archived,
             categoryId = uiModel.categoryId
         )

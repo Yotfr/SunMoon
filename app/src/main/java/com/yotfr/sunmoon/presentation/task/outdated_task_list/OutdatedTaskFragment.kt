@@ -1,5 +1,10 @@
 package com.yotfr.sunmoon.presentation.task.outdated_task_list
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -29,6 +34,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentOutdatedTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
@@ -227,13 +233,18 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         is OutdatedTaskUiEvent.UndoDeleteOutdatedTask -> {
-                            showUndoTrashSnackbar {
-                                viewModel.onEvent(
-                                    OutdatedTaskEvent.UndoDeleteOutdatedTask(
-                                        task = uiEvent.task
+                            showUndoTrashSnackbar(
+                                onAction = {
+                                    viewModel.onEvent(
+                                        OutdatedTaskEvent.UndoDeleteOutdatedTask(
+                                            task = uiEvent.task
+                                        )
                                     )
-                                )
-                            }
+                                },
+                                onDismiss = {
+                                    cancelAlarm(uiEvent.task.taskId)
+                                }
+                            )
                         }
                         is OutdatedTaskUiEvent.NavigateToScheduledTask -> {
                             (parentFragment as TaskRootFragment).changeTabFromChildFragment(
@@ -247,7 +258,10 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         }
     }
 
-    private fun showUndoTrashSnackbar(onAction: () -> Unit) {
+    private fun showUndoTrashSnackbar(
+        onAction: () -> Unit,
+        onDismiss: () -> Unit
+    ) {
         Snackbar.make(
             requireView(),
             getString(R.string.task_trashed),
@@ -255,7 +269,16 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         )
             .setAction(getString(R.string.undo)) {
                 onAction()
-            }.show()
+            }
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (event == DISMISS_EVENT_TIMEOUT) {
+                        onDismiss()
+                    }
+                }
+            })
+            .show()
     }
 
     private fun navigateToDestination(
@@ -295,7 +318,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     }
 
     private fun showDateTimePicker(
-        currentTimeFormat:Int,
+        currentTimeFormat: Int,
         onResult: (
             selectedDate: Long, selectedTime: Long?
         ) -> Unit
@@ -329,7 +352,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
 
             val timeFormat = if (currentTimeFormat != 2) {
                 currentTimeFormat
-            }else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+            } else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(timeFormat)
@@ -368,6 +391,17 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun cancelAlarm(taskId: Long) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireActivity().applicationContext,
+            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
+    }
+
     private fun showDeleteAllDialog(onPositive: (outdatedDeleteOption: OutdatedDeleteOption) -> Unit) {
         val dialogOptions = arrayOf(
             resources.getString(R.string.all_outdated),
@@ -391,7 +425,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     }
 
     private fun showConfirmationDialog(
-        onPositive:() -> Unit
+        onPositive: () -> Unit
     ) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.delete_tasks))

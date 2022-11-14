@@ -1,6 +1,7 @@
 package com.yotfr.sunmoon.presentation.notes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -131,6 +132,7 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
         binding.fragmentNoteRootFab.setOnClickListener {
             when (selectedIndex) {
                 0 -> {
+                    Log.d("TEST","root ${noteListFragment.getCurrentSelectedCategory()}")
                     navigateToDestination(
                         destination = Destination.ADD_NOTE,
                         selectedCategoryId = noteListFragment.getCurrentSelectedCategory()

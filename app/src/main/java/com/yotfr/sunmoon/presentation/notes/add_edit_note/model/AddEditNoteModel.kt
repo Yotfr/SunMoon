@@ -6,7 +6,7 @@ data class AddEditNoteModel(
     val title:String = "",
     val text:String = "",
     val trashed:Boolean = false,
-    val created: Long = System.currentTimeMillis(),
+    val created: Long? = null,
     val archived:Boolean = false,
     val categoryId:Long? = null
 )

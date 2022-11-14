@@ -7,10 +7,10 @@ import android.graphics.RectF
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import kotlin.math.abs
 
 class SubTaskListItemCallback(
@@ -34,6 +34,19 @@ class SubTaskListItemCallback(
         onItemTrashed(viewHolder.bindingAdapterPosition)
     }
 
+    override fun getSwipeDirs(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
+        return if (
+            viewHolder.itemViewType == R.layout.item_add_subtask
+        ) {
+            ItemTouchHelper.ACTION_STATE_IDLE
+        } else {
+            super.getSwipeDirs(recyclerView, viewHolder)
+        }
+    }
+
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float = 0.4f
 
     override fun onChildDraw(
@@ -48,7 +61,7 @@ class SubTaskListItemCallback(
         val itemView: View = viewHolder.itemView
         val typedValueInactive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorPrimaryVariant,
+            com.google.android.material.R.attr.colorPrimaryContainer,
             typedValueInactive,
             true
         )
@@ -85,8 +98,9 @@ class SubTaskListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
+
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 
@@ -105,7 +119,7 @@ class SubTaskListItemCallback(
         with(textPaint) {
             color = tint
             textSize = 40F
-            textAlign = android.graphics.Paint.Align.CENTER
+            textAlign = Paint.Align.CENTER
         }
 
         val textY =

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.sunmoon.R
+import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
 import kotlin.math.abs
 
 class TaskListItemCallback(
@@ -104,7 +105,8 @@ class TaskListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+
+        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2

@@ -22,6 +22,8 @@ sealed interface AddEditNoteEvent {
         val newText:String
     ): AddEditNoteEvent
 
+    object ApplySavedTextFields: AddEditNoteEvent
+
     object ClearSelectedCategory: AddEditNoteEvent
 
 }

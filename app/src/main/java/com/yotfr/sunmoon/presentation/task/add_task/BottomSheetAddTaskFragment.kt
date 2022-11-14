@@ -66,6 +66,10 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.onEvent(BottomSheetAddTaskEvent.ChangeIsFromDateSelectorState(
+            isFromDateSelector = false
+        ))
+
         //focus edit text when open bottomSheet
         binding.textFieldTaskDescription.editText?.isFocusableInTouchMode = true
         binding.textFieldTaskDescription.editText?.requestFocus()
@@ -153,6 +157,8 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             }
         }
 
+
+
         //collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -166,6 +172,9 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
                                     uiEvent.time ?: BottomSheetTaskDateSelectorFragment
                                         .WITHOUT_TIME
                                 )
+                            viewModel.onEvent(BottomSheetAddTaskEvent.ChangeIsFromDateSelectorState(
+                                isFromDateSelector = true
+                            ))
                             navigateToDestination(
                                 direction = directions
                             )

@@ -51,7 +51,7 @@ class CalendarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val cal = Calendar.getInstance(Locale.getDefault())
-        val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss", Locale.getDefault())
+        val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss",Locale.ENGLISH)
         cal.time = data[position]
 
         val calClone = cal.clone() as Calendar
@@ -63,7 +63,7 @@ class CalendarAdapter(
 
         try {
             val dayInWeek = sdf.parse(cal.time.toString())!!
-            val sdfWeekDays = SimpleDateFormat("EEE", Locale.getDefault())
+            val sdfWeekDays = SimpleDateFormat("EEE", Locale.ENGLISH)
             holder.txtDayInWeek.text = sdfWeekDays.format(dayInWeek).toString()
         } catch (ex: ParseException) {
             Log.v("Exception", ex.localizedMessage!!)

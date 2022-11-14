@@ -18,18 +18,21 @@ class AddCategoryDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
-            val builder = AlertDialog.Builder(it)
+            val builder = AlertDialog.Builder(it, R.style.CustomAlertDialog)
             binding = DialogFragmentAddCategoryBinding.inflate(layoutInflater)
             binding.etDialogCategoryText.editText?.setText(viewModel.addCategoryDescriptionState.value)
-            builder.setView(binding.root)
-                .setPositiveButton(R.string.save) { _, _ ->
-                    viewModel.onEvent(
-                        AddCategoryDialogEvent.AddCategory(
-                            binding.etDialogCategoryText.editText?.text.toString()
-                        )
+            binding.btnCategorySave.setOnClickListener {
+                viewModel.onEvent(
+                    AddCategoryDialogEvent.AddCategory(
+                        categoryText = binding.etDialogCategoryText.editText?.text.toString()
                     )
-                }
-                .setNegativeButton(R.string.cancel, null)
+                )
+                dialog?.dismiss()
+            }
+            binding.btnCategoryCancel.setOnClickListener {
+                dialog?.dismiss()
+            }
+            builder.setView(binding.root)
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

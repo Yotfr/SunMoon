@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskDao {
 
-    @Upsert(entity = TaskEntity::class)
+    @Insert(entity = TaskEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertTask(taskEntity: TaskEntity): Long
 
     @Delete(entity = TaskEntity::class)

@@ -1,6 +1,7 @@
 package com.yotfr.sunmoon.presentation.task.task_date_selector
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -239,8 +240,10 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         currentTimePattern: String,
         time: Long?
     ): String {
+        Log.d("TEST","dateSelPat $currentTimePattern")
+        val timePattern = viewModel.timePattern.value
         val calendar = Calendar.getInstance(Locale.getDefault())
-        val sdfTime = SimpleDateFormat(currentTimePattern, Locale.getDefault())
+        val sdfTime = SimpleDateFormat(timePattern, Locale.getDefault())
         time?.let {
             calendar.timeInMillis = time
             return sdfTime.format(calendar.time)

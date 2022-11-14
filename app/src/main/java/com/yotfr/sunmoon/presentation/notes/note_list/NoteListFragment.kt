@@ -230,7 +230,6 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         null,R.attr.PrimaryChipStyle)
         chip.apply {
             text = getString(R.string.all)
-            id = -1
             tag = CHIP_HEADER_TAG
             isChecked = true
         }
@@ -243,7 +242,6 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             null,R.attr.PrimaryChipStyle)
         chip.apply {
             setText(text)
-            id = categoryId.toInt()
             tag = categoryId
         }
         return chip
@@ -262,7 +260,12 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     //get current selected category to open addNoteFragment with it
     fun getCurrentSelectedCategory():Long{
-        return binding.fragmentNoteListCategoriesGroup.checkedChipId.toLong()
+        val selectedCategory = binding.fragmentNoteListCategoriesGroup.findViewById<Chip>(
+            binding.fragmentNoteListCategoriesGroup.checkedChipId
+        )
+        Log.d("TEST","selCattext -> ${selectedCategory.text}")
+        Log.d("TEST","selCattag -> ${selectedCategory.tag}")
+        return selectedCategory.tag as Long
     }
 
     private fun showUndoTrashNoteSnackbar(onAction: () -> Unit) {

@@ -1,5 +1,6 @@
 package com.yotfr.sunmoon.presentation.notes.add_edit_note
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import com.yotfr.sunmoon.presentation.notes.add_edit_note.mapper.AddEditNoteCate
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.mapper.AddEditNoteMapper
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.model.AddEditNoteCategoryModel
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.model.AddEditNoteModel
+import com.yotfr.sunmoon.presentation.notes.add_edit_note.model.SavedState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -30,6 +32,8 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
     //categoryId state coming from note list
     private val categoryId = state.get<Long>("categoryId")
 
+    private val _textFieldState = MutableStateFlow(SavedState())
+
     private val _addEditNoteUiState = MutableStateFlow(AddEditNoteModel())
     val addEditNoteUiState = _addEditNoteUiState.asStateFlow()
 
@@ -45,8 +49,10 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        Log.d("TEST"," 1 $categoryId")
         //update selected category state if navigated from noteListFragment
         if (categoryId != BottomSheetAddEditNoteFragment.WITHOUT_CATEGORY_ID) {
+            Log.d("TEST"," 2 $categoryId")
             viewModelScope.launch {
                 noteUseCase.getCategoryById(
                     categoryId = categoryId ?: throw IllegalArgumentException(
@@ -102,7 +108,8 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
                             _addEditNoteUiState.value.copy(
                                 title = event.title,
                                 text = event.text,
-                                categoryId = _uiStateSelectedCategory.value?.id
+                                categoryId = _uiStateSelectedCategory.value?.id,
+                                created = _addEditNoteUiState.value.created ?: System.currentTimeMillis()
                             )
                         )
                     )
@@ -116,14 +123,26 @@ class BottomSheetAddEditNoteViewModel @Inject constructor(
                 _uiStateSelectedCategory.value = null
             }
             is AddEditNoteEvent.SaveNewNoteText -> {
-                _addEditNoteUiState.value = _addEditNoteUiState.value.copy(
-                    text = event.newText
-                )
+                _textFieldState.update {
+                    it.copy(
+                        text = event.newText
+                    )
+                }
             }
             is AddEditNoteEvent.SaveNewNoteTitle -> {
-                _addEditNoteUiState.value = _addEditNoteUiState.value.copy(
-                    title = event.newTitle
-                )
+                _textFieldState.update {
+                    it.copy(
+                        title = event.newTitle
+                    )
+                }
+            }
+            AddEditNoteEvent.ApplySavedTextFields -> {
+                _addEditNoteUiState.update {
+                    it.copy(
+                        text = _textFieldState.value.text,
+                        title = _textFieldState.value.title
+                    )
+                }
             }
         }
     }

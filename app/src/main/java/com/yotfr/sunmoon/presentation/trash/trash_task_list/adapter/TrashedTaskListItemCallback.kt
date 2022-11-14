@@ -84,7 +84,7 @@ class TrashedTaskListItemCallback(
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
         val typedValueInactive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorPrimaryVariant,
+            com.google.android.material.R.attr.colorPrimaryContainer,
             typedValueInactive,
             true
         )
@@ -108,7 +108,7 @@ class TrashedTaskListItemCallback(
 
         val typedValueActiveArchive = TypedValue()
         itemView.context.theme.resolveAttribute(
-            com.google.android.material.R.attr.colorSecondaryVariant,
+            com.google.android.material.R.attr.colorSecondaryContainer,
             typedValueActiveArchive,
             true
         )
@@ -142,8 +142,9 @@ class TrashedTaskListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
+        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
+
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 
@@ -182,6 +183,7 @@ class TrashedTaskListItemCallback(
         IllegalArgumentException("Not found icon")
 
         val tint  = itemView.context.getColorFromAttr(androidx.appcompat.R.attr.colorPrimary)
+        icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 

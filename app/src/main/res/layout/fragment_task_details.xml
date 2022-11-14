@@ -51,7 +51,9 @@
                     android:layout_marginEnd="@dimen/large_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Something" />
+                    tools:text="Something"
+                    android:importantForAutofill="no"
+                    tools:ignore="LabelFor" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/fragment_task_details_recyclerview"
@@ -103,7 +105,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/default_margin"
                     android:drawablePadding="@dimen/small_padding"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.SunMoon.LabelLarge"
                     android:textColor="?attr/colorSecondary"
                     app:drawableLeftCompat="@drawable/ic_calendar"
@@ -111,11 +113,12 @@
                     tools:text="08.05.22" />
 
                 <Button
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
                     android:id="@+id/fragment_task_details_date_time_date_clear_btn"
                     style="@style/Widget.SunMoon.Button.IconButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/small_margin"
                     app:icon="@drawable/ic_close"
                     app:iconTint="?attr/colorSecondary" />
 
@@ -152,7 +155,7 @@
                     style="@style/Widget.SunMoon.Button.IconButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="@dimen/small_margin"
                     app:icon="@drawable/ic_close"
                     app:iconTint="?attr/colorSecondary" />
@@ -223,6 +226,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
+                    android:layout_marginTop="4dp"
                     android:id="@+id/fragment_task_details_remind_clear_btn"
                     style="@style/Widget.SunMoon.Button.IconButton"
                     android:layout_width="wrap_content"
@@ -266,9 +270,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/schedule"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_task_detail_make_unplanned"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            app:layout_constraintBottom_toBottomOf="@id/fragment_task_detail_make_unplanned"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fragment_task_details_subtask_card" />
 
@@ -277,13 +282,12 @@
             style="@style/Widget.SunMoon.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/default_margin"
             android:text="@string/make_unplanned"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/fragment_task_detail_schedule"
-            app:layout_constraintTop_toBottomOf="@id/fragment_task_details_subtask_card" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_task_detail_schedule" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

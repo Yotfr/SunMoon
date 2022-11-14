@@ -54,14 +54,9 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //request focus on textFields
-        if (binding.etNoteTitle.editText?.text?.isEmpty() == true) {
-            binding.etNoteTitle.editText?.isFocusableInTouchMode = true
-            binding.etNoteTitle.editText?.requestFocus()
-        } else {
-            binding.etNoteDescription.editText?.isFocusableInTouchMode = true
-            binding.etNoteTitle.editText?.clearFocus()
-            binding.etNoteDescription.editText?.requestFocus()
-        }
+        binding.etNoteTitle.editText?.isFocusableInTouchMode = true
+        binding.etNoteTitle.editText?.requestFocus()
+        binding.etNoteTitle.editText?.placeCursorToEnd()
 
         //initPopUpAdapter for listPopUpWindow menu
         popUpMenuAdapter = PopUpMenuAdapter()
@@ -108,14 +103,9 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.addEditNoteUiState.collect { state ->
-                    state.let {
-                        binding.apply {
-                            //TODO
-                            etNoteTitle.editText?.setText(it.title)
-                            etNoteTitle.editText?.placeCursorToEnd()
-                            etNoteDescription.editText?.setText(it.text)
-                            etNoteDescription.editText?.placeCursorToEnd()
-                        }
+                    binding.apply {
+                        etNoteTitle.editText?.setText(state.title)
+                        etNoteDescription.editText?.setText(state.text)
                     }
                 }
             }
@@ -193,6 +183,11 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
                 )
             )
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.onEvent(AddEditNoteEvent.ApplySavedTextFields)
     }
 
     private fun navigateToAddCategoryDialog() {

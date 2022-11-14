@@ -1,5 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.add_task
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +27,9 @@ class BottomSheetAddTaskViewModel @Inject constructor(
 
     //get date selected in horizontal calendar from scheduledTaskList fragment
     private val selectedDate = state.get<Long>("selectedDate")
+
+    //is recently popped from dateSelector or not
+    private val isFromDateSelector = MutableStateFlow(false)
 
     //timePattern from dataStore
     private val _timePattern = MutableStateFlow("HH:mm")
@@ -100,11 +104,13 @@ class BottomSheetAddTaskViewModel @Inject constructor(
                 }
             }
             is BottomSheetAddTaskEvent.ChangeDate -> {
-                viewModelScope.launch {
-                    _uiState.update {
-                        it.copy(
-                            selectedDate = event.newDate
-                        )
+                if (isFromDateSelector.value) {
+                    viewModelScope.launch {
+                        _uiState.update {
+                            it.copy(
+                                selectedDate = event.newDate
+                            )
+                        }
                     }
                 }
             }
@@ -113,6 +119,11 @@ class BottomSheetAddTaskViewModel @Inject constructor(
                     selectedDate = null,
                     selectedTime = null
                 )
+            }
+            is BottomSheetAddTaskEvent.ChangeIsFromDateSelectorState -> {
+                isFromDateSelector.update {
+                    event.isFromDateSelector
+                }
             }
         }
     }
@@ -125,6 +136,7 @@ class BottomSheetAddTaskViewModel @Inject constructor(
     }
 
     private fun initState(selectedDate: Long?): Long? {
+        Log.d("TEST", "$selectedDate")
         return if (selectedDate == BottomSheetAddTaskFragment.WITHOUT_SELECTED_DATE) null
         else selectedDate
     }

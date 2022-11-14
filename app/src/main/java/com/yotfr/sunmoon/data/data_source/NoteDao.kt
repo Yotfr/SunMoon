@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NoteDao {
 
-    @Upsert(entity = NoteEntity::class)
+    @Insert(entity = NoteEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertNote(noteEntity: NoteEntity):Long
 
     @Delete(entity = NoteEntity::class)

@@ -41,15 +41,15 @@ android {
 
 dependencies {
 
-    implementation("androidx.room:room-runtime:2.5.0-alpha03")
-    kapt("androidx.room:room-compiler:2.5.0-alpha03")
+    implementation("androidx.room:room-runtime:2.4.3")
+    kapt("androidx.room:room-compiler:2.4.3")
 
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-    implementation("androidx.room:room-ktx:2.5.0-alpha03")
+    implementation("androidx.room:room-ktx:2.4.3")
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
     //Fragment

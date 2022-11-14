@@ -1,5 +1,10 @@
 package com.yotfr.sunmoon.presentation.task.unplanned_task_list
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -26,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_12H
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
+import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentUnplannedTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
@@ -238,11 +244,16 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         is UnplannedTaskListUiEvent.UndoTrashUnplannedTask -> {
-                            showUndoTrashSnackbar {
-                                viewModel.onEvent(UnplannedTaskListEvent.UndoTrashItem(
-                                    task = uiEvent.task
-                                ))
-                            }
+                            showUndoTrashSnackbar(
+                                onAction = {
+                                    viewModel.onEvent(UnplannedTaskListEvent.UndoTrashItem(
+                                        task = uiEvent.task
+                                    ))
+                                },
+                                onDismiss = {
+                                    cancelAlarm(uiEvent.task.taskId)
+                                }
+                            )
                         }
                         is UnplannedTaskListUiEvent.NavigateToScheduledTask -> {
                             (parentFragment as TaskRootFragment).changeTabFromChildFragment(
@@ -281,7 +292,10 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         ItemTouchHelper(unplannedTaskListItemCallback).attachToRecyclerView(binding.fragmentUnplannedTaskRvTaskList)
     }
 
-    private fun showUndoTrashSnackbar(onAction: () -> Unit) {
+    private fun showUndoTrashSnackbar(
+        onAction: () -> Unit,
+        onDismiss: () -> Unit
+    ) {
         Snackbar.make(
             requireView(),
             getString(R.string.task_trashed),
@@ -289,7 +303,16 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         )
             .setAction(getString(R.string.undo)) {
                 onAction()
-            }.show()
+            }
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (event == DISMISS_EVENT_TIMEOUT) {
+                        onDismiss()
+                    }
+                }
+            })
+            .show()
     }
 
     private fun showDateTimePicker(
@@ -391,6 +414,17 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                 }
             }
             .show()
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun cancelAlarm(taskId: Long) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireActivity().applicationContext,
+            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
     }
 
     private fun showConfirmationDialog(

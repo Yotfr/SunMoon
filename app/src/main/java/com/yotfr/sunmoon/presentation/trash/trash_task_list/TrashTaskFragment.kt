@@ -1,5 +1,10 @@
 package com.yotfr.sunmoon.presentation.trash.trash_task_list
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -23,6 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentTrashTaskBinding
 import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
@@ -160,8 +166,16 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
-                        TrashTaskUiEvent.ShowRestoreSnackbar -> {
-                            showRestoreTaskSnackbar()
+                        is TrashTaskUiEvent.ShowRestoreSnackbar -> {
+                            showRestoreTaskSnackbar{
+                                uiEvent.task.remindDelayTime?.let {
+                                    setAlarm(
+                                        taskTitle = uiEvent.task.taskDescription,
+                                        taskId = uiEvent.task.taskId,
+                                        remindTime = it
+                                    )
+                                }
+                            }
                         }
                         is TrashTaskUiEvent.ShowUndoDeleteSnackbar -> {
                             showUndoDeleteTaskSnackBar(
@@ -322,7 +336,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
     }
 
     private fun showConfirmationDialog(
-        onPositive:() -> Unit
+        onPositive: () -> Unit
     ) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.delete_tasks))
@@ -332,6 +346,22 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                 onPositive()
             }.show()
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun setAlarm(
+        taskTitle: String, taskId: Long, remindTime: Long
+    ) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        intent.putExtra("taskTitle", taskTitle)
+        intent.putExtra("taskId", taskId)
+        intent.putExtra("destination",0)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireActivity().applicationContext,
+            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, remindTime, pendingIntent)
     }
 
     private fun showUndoDeleteTaskSnackBar(
@@ -349,7 +379,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
-                    if (event == DISMISS_EVENT_TIMEOUT){
+                    if (event == DISMISS_EVENT_TIMEOUT) {
                         onDismiss()
                     }
                 }
@@ -357,12 +387,23 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             .show()
     }
 
-    private fun showRestoreTaskSnackbar() {
+    private fun showRestoreTaskSnackbar(
+        onDismiss: () -> Unit
+    ) {
         Snackbar.make(
             requireView(),
             getString(R.string.task_restored),
             Snackbar.LENGTH_LONG
-        ).show()
+        )
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (event == DISMISS_EVENT_TIMEOUT) {
+                        onDismiss()
+                    }
+                }
+            })
+            .show()
     }
 
     //initialize itemTouchCallback

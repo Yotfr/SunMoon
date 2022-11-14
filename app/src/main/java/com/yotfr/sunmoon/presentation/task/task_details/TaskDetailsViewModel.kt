@@ -74,9 +74,9 @@ class TaskDetailsViewModel @Inject constructor(
         }
         //get date&time patterns and formats from dataStore
         viewModelScope.launch {
-            dataStoreRepository.getDateTimeSettings().collect{
+            dataStoreRepository.getDateTimeSettings().collect {
                 _dateTimeSettings.value = DateTimeSettings(
-                    datePattern = it.first ?: "yyyy/MM/dd" ,
+                    datePattern = it.first ?: "yyyy/MM/dd",
                     timePattern = it.second,
                     timeFormat = it.third ?: 2
                 )
@@ -186,6 +186,13 @@ class TaskDetailsViewModel @Inject constructor(
                     )
                 }
                 _state.value = State.UNPLANNED
+                _uiState.value.taskId?.let {
+                    sendUiEvents(
+                        TaskDetailsUiEvent.ClearAlarm(
+                            taskId = it
+                        )
+                    )
+                }
             }
             is TaskDetailsEvent.UndoDeleteSubTask -> {
                 viewModelScope.launch {
@@ -209,7 +216,7 @@ class TaskDetailsViewModel @Inject constructor(
                 _state.value = State.SCHEDULED
             }
             TaskDetailsEvent.GetTaskId -> {
-                if (!_uiState.value.completionStatus){
+                if (!_uiState.value.completionStatus) {
                     sendUiEvents(
                         TaskDetailsUiEvent.NavigateToAddSubTask(
                             taskId = _uiState.value.taskId!!
@@ -255,15 +262,17 @@ class TaskDetailsViewModel @Inject constructor(
                         remindDelayTime = event.remindInMillis
                     )
                 }
-                sendUiEvents(TaskDetailsUiEvent.SetAlarm(
-                    alarmTime = event.remindInMillis,
-                    taskId = _uiState.value.taskId!!,
-                    taskDescription = _uiState.value.taskDescription,
-                    destination = destination ?: throw IllegalArgumentException(
-                        "not found destination"
-                    ),
-                    isNewAlarm = true
-                ))
+                sendUiEvents(
+                    TaskDetailsUiEvent.SetAlarm(
+                        alarmTime = event.remindInMillis,
+                        taskId = _uiState.value.taskId!!,
+                        taskDescription = _uiState.value.taskDescription,
+                        destination = destination ?: throw IllegalArgumentException(
+                            "not found destination"
+                        ),
+                        isNewAlarm = true
+                    )
+                )
             }
             is TaskDetailsEvent.ChangeTaskRemindDateTime -> {
                 viewModelScope.launch {
@@ -278,15 +287,17 @@ class TaskDetailsViewModel @Inject constructor(
                         remindDelayTime = event.remindInMillis
                     )
                 }
-                sendUiEvents(TaskDetailsUiEvent.SetAlarm(
-                    alarmTime = event.remindInMillis,
-                    taskId = _uiState.value.taskId!!,
-                    taskDescription = _uiState.value.taskDescription,
-                    destination = destination ?: throw IllegalArgumentException(
-                        "not found destination"
-                    ),
-                    isNewAlarm = false
-                ))
+                sendUiEvents(
+                    TaskDetailsUiEvent.SetAlarm(
+                        alarmTime = event.remindInMillis,
+                        taskId = _uiState.value.taskId!!,
+                        taskDescription = _uiState.value.taskDescription,
+                        destination = destination ?: throw IllegalArgumentException(
+                            "not found destination"
+                        ),
+                        isNewAlarm = false
+                    )
+                )
             }
             TaskDetailsEvent.ClearTaskRemindDateTime -> {
                 viewModelScope.launch {
@@ -301,9 +312,11 @@ class TaskDetailsViewModel @Inject constructor(
                         remindDelayTime = null
                     )
                 }
-                sendUiEvents(TaskDetailsUiEvent.ClearAlarm(
-                    taskId = _uiState.value.taskId!!
-                ))
+                sendUiEvents(
+                    TaskDetailsUiEvent.ClearAlarm(
+                        taskId = _uiState.value.taskId!!
+                    )
+                )
             }
         }
     }

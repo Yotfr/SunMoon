@@ -41,14 +41,15 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
         viewModelScope.launch {
             dataStoreRepository.getTimePattern().collect {
                 _timePattern.value = it
+                initState()
             }
         }
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect{
                 _timeFormat.value = it ?: 2
+                initState()
             }
         }
-        initState()
     }
 
 

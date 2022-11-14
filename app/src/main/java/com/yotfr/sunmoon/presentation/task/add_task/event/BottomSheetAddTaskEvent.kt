@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.add_task.event
 
-
 sealed interface BottomSheetAddTaskEvent {
 
     data class AddTask(val taskDescription: String) : BottomSheetAddTaskEvent
@@ -11,6 +10,9 @@ sealed interface BottomSheetAddTaskEvent {
         val newDate: Long?
     ) : BottomSheetAddTaskEvent
 
+    data class ChangeIsFromDateSelectorState(
+        val isFromDateSelector:Boolean
+    ) : BottomSheetAddTaskEvent
 
     object ClearDateTime : BottomSheetAddTaskEvent
 

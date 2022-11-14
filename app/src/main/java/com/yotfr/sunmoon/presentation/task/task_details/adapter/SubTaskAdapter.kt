@@ -112,6 +112,7 @@ class SubTaskAdapter : ListAdapter<SubTaskModel, RecyclerView.ViewHolder>(
                 itemNestedTitle.setOnFocusChangeListener { _, isFocused ->
                     if (!isFocused) {
                         fragmentItemSubtaskCb.isEnabled = true
+                        fragmentItemSubtaskCb.alpha = 1F
                         if (listener.changedText.isEmpty()) {
                             delegate?.removeEmptySubTask(subTask)
                         } else {
@@ -120,6 +121,7 @@ class SubTaskAdapter : ListAdapter<SubTaskModel, RecyclerView.ViewHolder>(
                         listener.changedText = ""
                     } else {
                         fragmentItemSubtaskCb.isEnabled = false
+                        fragmentItemSubtaskCb.alpha = 0.5F
                     }
                 }
             }

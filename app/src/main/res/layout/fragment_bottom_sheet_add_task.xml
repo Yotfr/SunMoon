@@ -25,31 +25,45 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/chipScheduledDate"
-        style="@style/Widget.SunMoon.Button.OutlinedButton"
-        android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/small_margin"
-        app:icon="@drawable/ic_empty_calendar"
+        app:layout_constraintTop_toBottomOf="@id/textFieldTaskDescription"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textFieldTaskDescription"
-        tools:ignore="TextContrastCheck"
-        tools:text="Без даты" />
+        app:layout_constraintEnd_toStartOf="@id/btnAddTask">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/chipScheduledDate"
+                style="@style/Widget.SunMoon.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_empty_calendar"
+                tools:ignore="TextContrastCheck"
+                tools:text="Без даты" />
+
+            <Button
+                android:id="@+id/chipScheduledTime"
+                style="@style/Widget.SunMoon.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                app:icon="@drawable/ic_clock"
+                tools:ignore="TextContrastCheck"
+                tools:text="Без времени" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <Button
-        android:id="@+id/chipScheduledTime"
-        style="@style/Widget.SunMoon.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        app:icon="@drawable/ic_clock"
-        app:layout_constraintStart_toEndOf="@+id/chipScheduledDate"
-        app:layout_constraintTop_toTopOf="@+id/chipScheduledDate"
-        tools:ignore="TextContrastCheck"
-        tools:text="Без времени" />
-
-    <Button
+        android:layout_marginTop="@dimen/default_margin"
         android:id="@+id/btnAddTask"
         style="@style/Widget.SunMoon.Button.IconButton.Filled"
         android:layout_width="wrap_content"
@@ -57,9 +71,8 @@
         app:icon="@drawable/ic_send"
         android:enabled="false"
         android:contentDescription="@string/save"
-        app:layout_constraintBottom_toBottomOf="@+id/chipScheduledDate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/chipScheduledDate" />
+        app:layout_constraintTop_toBottomOf="@id/textFieldTaskDescription" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

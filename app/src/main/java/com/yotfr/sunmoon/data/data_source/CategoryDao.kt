@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CategoryDao {
 
-    @Upsert(entity = CategoryEntity::class)
+    @Insert(entity = CategoryEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertCategory(categoryEntity: CategoryEntity)
 
     @Delete(entity = CategoryEntity::class)

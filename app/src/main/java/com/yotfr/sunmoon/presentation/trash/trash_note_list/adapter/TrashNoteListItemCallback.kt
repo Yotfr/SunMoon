@@ -126,8 +126,7 @@ class TrashNoteListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.resources.getColor(R.color.background_color, itemView.context.theme)
-        icon.setTint(tint)
+        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 
@@ -166,6 +165,8 @@ class TrashNoteListItemCallback(
         IllegalArgumentException("Not found icon")
 
         val tint  = itemView.context.getColorFromAttr(androidx.appcompat.R.attr.colorPrimary)
+        icon.setTint(tint)
+
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 

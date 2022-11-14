@@ -1,5 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.unplanned_task_list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
@@ -68,6 +69,8 @@ class UnplannedTaskListViewModel @Inject constructor(
             ) { tasks, headerState ->
                 Triple(tasks.first, tasks.second, headerState)
             }.collect { state ->
+                Log.d("STRANGE","state -> ${state.first}")
+                Log.d("STRANGE","stateMapped -> ${unplannedTaskListMapper.fromDomainList(state.first)}")
                 changeHeaderVisibility(state.second.isNotEmpty())
                 _uiState.value = UnplannedTaskListUiStateModel(
                     uncompletedTasks = unplannedTaskListMapper.fromDomainList(state.first),

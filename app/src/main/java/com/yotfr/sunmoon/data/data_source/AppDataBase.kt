@@ -14,8 +14,7 @@ import com.yotfr.sunmoon.data.data_source.model.task.TaskEntity
         NoteEntity::class,
         SubTaskEntity::class,
         CategoryEntity::class
-    ],
-    exportSchema = false
+    ]
 )
 abstract class AppDataBase : RoomDatabase() {
     abstract val taskDao: TaskDao

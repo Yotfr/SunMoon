@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scheduled_footer"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,7 +12,8 @@
         android:src="@drawable/sun"
         android:scaleType="fitCenter"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"/>
+        android:layout_height="200dp"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:textColor="?attr/colorSecondary"
@@ -21,11 +22,5 @@
         android:text="@string/no_note_in_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <TextView
-        android:textColor="?attr/colorSecondary"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.SunMoon.TitleMedium"
-        android:text="@string/click_add_to_create_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+
 </LinearLayout>
