@@ -14,13 +14,15 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddSubTaskDialogFragment : DialogFragment() {
 
     private val viewModel by viewModels<AddSubTaskDialogViewModel>()
-    private lateinit var binding: DialogFragmentAddSubtaskBinding
+
+    private var _binding: DialogFragmentAddSubtaskBinding? = null
+    private val binding get() = _binding!!
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it, R.style.CustomAlertDialog)
-            binding = DialogFragmentAddSubtaskBinding.inflate(layoutInflater)
+            _binding = DialogFragmentAddSubtaskBinding.inflate(layoutInflater)
             binding.btnSubTaskSave.setOnClickListener {
                 viewModel.onEvent(
                     AddSubTaskDialogEvent.AddSubTask(
@@ -35,6 +37,11 @@ class AddSubTaskDialogFragment : DialogFragment() {
             builder.setView(binding.root)
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 

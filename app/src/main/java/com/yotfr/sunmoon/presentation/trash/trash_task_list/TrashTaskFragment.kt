@@ -46,9 +46,10 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
 
     private val viewModel by viewModels<TrashTaskViewModel>()
 
-    private lateinit var binding: FragmentTrashTaskBinding
+    private var _binding: FragmentTrashTaskBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var searchView: SearchView
+    private var searchView: SearchView? = null
 
     private lateinit var uncompletedTrashTaskAdapter: TrashedUncompletedTaskListAdapter
     private lateinit var completedTrashTaskAdapter: TrashedCompletedTaskAdapter
@@ -57,7 +58,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentTrashTaskBinding.bind(view)
+        _binding = FragmentTrashTaskBinding.bind(view)
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -71,10 +72,10 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
                 val pendingQuery = viewModel.searchQuery.value
                 if (pendingQuery.isNotEmpty()) {
                     searchItem.expandActionView()
-                    searchView.setQuery(pendingQuery, false)
+                    searchView?.setQuery(pendingQuery, false)
                 }
 
-                searchView.onQueryTextChanged {
+                searchView?.onQueryTextChanged {
                     viewModel.onEvent(
                         TrashTaskEvent.UpdateSearchQuery(
                             searchQuery = it
@@ -452,5 +453,12 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
     //enum for delete dialog options
     enum class DeleteOption {
         ALL_TRASHED, COMPLETED_TRASHED
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.fragmentTrashTaskRv.adapter = null
+        _binding = null
+        searchView = null
     }
 }

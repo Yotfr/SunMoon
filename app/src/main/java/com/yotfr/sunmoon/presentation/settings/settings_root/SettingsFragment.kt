@@ -27,13 +27,14 @@ import java.util.*
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
-    private lateinit var binding: FragmentSettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModels<SettingsViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentSettingsBinding.bind(view)
+        _binding = FragmentSettingsBinding.bind(view)
 
         //navigate to change theme fragment
         binding.btnChangeTheme.setOnClickListener {
@@ -234,6 +235,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val sdf = SimpleDateFormat(pattern, Locale.getDefault())
         val calendar = Calendar.getInstance(Locale.getDefault())
         return sdf.format(calendar.time)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 

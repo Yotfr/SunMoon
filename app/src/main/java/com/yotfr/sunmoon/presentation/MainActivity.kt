@@ -5,10 +5,8 @@ import android.content.ContextWrapper
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
@@ -19,7 +17,6 @@ import com.yotfr.sunmoon.data.repository.DataStoreRepositoryImpl
 import com.yotfr.sunmoon.databinding.ActivityMainBinding
 import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.*
 import javax.inject.Inject
@@ -78,13 +75,11 @@ class MainActivity : AppCompatActivity() {
             R.id.noteRootFragment, R.id.taskRootFragment, R.id.trashRootFragment,
             R.id.settingsFragment
         )
-
-
         val navHostFragment =
             supportFragmentManager.findFragmentById(
                 R.id.activity_main_fragment_container
             ) as NavHostFragment
-        navController = navHostFragment.findNavController()
+        navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(topLevelDestinations, binding.activityMainDrawer)
         NavigationUI.setupWithNavController(binding.activityMainNavView, navController)
 

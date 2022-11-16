@@ -21,7 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
 
-    private lateinit var binding: FragmentNoteRootBinding
+    private var _binding: FragmentNoteRootBinding ? = null
+    private val binding get() = _binding!!
 
     private lateinit var noteListFragment: NoteListFragment
     private lateinit var archiveNoteFragment: ArchiveNoteFragment
@@ -81,7 +82,7 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentNoteRootBinding.bind(view)
+        _binding = FragmentNoteRootBinding.bind(view)
 
         //setUpActionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentNoteRootToolbar)
@@ -213,5 +214,10 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
     //enum for navigation destination
     enum class Destination {
         ADD_NOTE, ADD_CATEGORY
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

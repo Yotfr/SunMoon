@@ -19,13 +19,14 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SettingsThemeFragment : Fragment(R.layout.fragment_theme_picker) {
 
-    private lateinit var binding: FragmentThemePickerBinding
+    private var _binding: FragmentThemePickerBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModels<SettingsThemeViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentThemePickerBinding.bind(view)
+        _binding = FragmentThemePickerBinding.bind(view)
 
         binding.radioGroup.findViewWithTag<RadioButton>(viewModel.themeState.value).isChecked = true
 
@@ -54,5 +55,10 @@ class SettingsThemeFragment : Fragment(R.layout.fragment_theme_picker) {
         }
 
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

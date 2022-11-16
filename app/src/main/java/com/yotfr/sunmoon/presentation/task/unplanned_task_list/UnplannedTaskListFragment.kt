@@ -56,7 +56,8 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
 
     private var searchView: SearchView? = null
 
-    private lateinit var binding: FragmentUnplannedTaskListBinding
+    private var _binding: FragmentUnplannedTaskListBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var unplannedUncompletedTaskListAdapter: UnplannedUncompletedTaskListAdapter
     private lateinit var unplannedCompletedTaskListAdapter: UnplannedCompletedTaskListAdapter
@@ -65,7 +66,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentUnplannedTaskListBinding.bind(view)
+        _binding = FragmentUnplannedTaskListBinding.bind(view)
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -453,7 +454,9 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.fragmentUnplannedTaskRvTaskList.adapter = null
         searchView = null
+        _binding = null
     }
 
 

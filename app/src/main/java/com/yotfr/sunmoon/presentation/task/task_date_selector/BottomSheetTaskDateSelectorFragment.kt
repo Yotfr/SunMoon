@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +32,9 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         const val WITHOUT_TIME = -1L
     }
 
-    private lateinit var binding: FragmentBottomSheetDateTimeSelectorBinding
+    private var _binding: FragmentBottomSheetDateTimeSelectorBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by viewModels<BottomSheetTaskDateSelectorViewModel>()
 
     override fun onCreateView(
@@ -41,7 +42,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentBottomSheetDateTimeSelectorBinding.inflate(
+        _binding = FragmentBottomSheetDateTimeSelectorBinding.inflate(
             inflater,
             container,
             false
@@ -381,5 +382,10 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         IN_TWO_DAYS,
         NEXT_WEEK,
         ON_WEEKEND
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

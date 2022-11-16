@@ -14,12 +14,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddCategoryDialogFragment : DialogFragment() {
 
     private val viewModel by viewModels<AddCategoryDialogViewModel>()
-    private lateinit var binding: DialogFragmentAddCategoryBinding
+
+    private var _binding: DialogFragmentAddCategoryBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it, R.style.CustomAlertDialog)
-            binding = DialogFragmentAddCategoryBinding.inflate(layoutInflater)
+            _binding = DialogFragmentAddCategoryBinding.inflate(layoutInflater)
             binding.etDialogCategoryText.editText?.setText(viewModel.addCategoryDescriptionState.value)
             binding.btnCategorySave.setOnClickListener {
                 viewModel.onEvent(
@@ -40,6 +42,11 @@ class AddCategoryDialogFragment : DialogFragment() {
     companion object{
         const val WITHOUT_CATEGORY_ID = -1L
         const val WITHOUT_CATEGORY_TEXT = ""
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

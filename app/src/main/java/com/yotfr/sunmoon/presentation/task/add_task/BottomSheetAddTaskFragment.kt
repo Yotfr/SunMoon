@@ -35,7 +35,9 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         const val WITHOUT_SELECTED_TIME = -1L
     }
 
-    private lateinit var binding: FragmentBottomSheetAddTaskBinding
+    private var _binding: FragmentBottomSheetAddTaskBinding? =null
+    private val binding get() = _binding!!
+
     private val viewModel by viewModels<BottomSheetAddTaskViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +57,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentBottomSheetAddTaskBinding.inflate(
+        _binding = FragmentBottomSheetAddTaskBinding.inflate(
             inflater,
             container,
             false
@@ -281,5 +283,10 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         } else {
             findNavController().navigate(direction)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

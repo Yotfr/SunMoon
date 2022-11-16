@@ -36,16 +36,17 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
 
     private val viewModel by viewModels<TrashNoteViewModel>()
 
-    private lateinit var searchView: SearchView
+    private var searchView: SearchView? = null
 
-    private lateinit var binding: FragmentTrashNoteBinding
+    private var _binding: FragmentTrashNoteBinding ? = null
+    private val binding get() = _binding!!
 
     private lateinit var trashNotesAdapter: TrashNotesAdapter
     private lateinit var trashNotesFooterAdapter: TrashNoteFooterAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentTrashNoteBinding.bind(view)
+        _binding = FragmentTrashNoteBinding.bind(view)
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -59,10 +60,10 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
                 val pendingQuery = viewModel.searchQuery.value
                 if (pendingQuery.isNotEmpty()) {
                     searchItem.expandActionView()
-                    searchView.setQuery(pendingQuery, false)
+                    searchView?.setQuery(pendingQuery, false)
                 }
 
-                searchView.onQueryTextChanged {
+                searchView?.onQueryTextChanged {
                     viewModel.onEvent(
                         TrashNoteEvent.UpdateSearchQuery(
                             searchQuery = it
@@ -196,5 +197,13 @@ class TrashNoteFragment : Fragment(R.layout.fragment_trash_note) {
             onItemRestore = onItemRestored
         )
         ItemTouchHelper(trashedNoteListItemCallback).attachToRecyclerView(binding.fragmentTrashNoteRv)
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.fragmentTrashNoteRv.adapter = null
+        _binding = null
+        searchView = null
     }
 }

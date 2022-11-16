@@ -65,7 +65,9 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
     private val args: TaskDetailsFragmentArgs by navArgs()
 
-    private lateinit var binding: FragmentTaskDetailsBinding
+    private var _binding: FragmentTaskDetailsBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var subTaskAdapter: SubTaskAdapter
 
     private var hasPermission:Boolean = false
@@ -87,7 +89,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentTaskDetailsBinding.bind(view)
+        _binding = FragmentTaskDetailsBinding.bind(view)
 
         //setUpToolbar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTaskDetailsMaterialToolbar)
@@ -822,5 +824,11 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         this.forEach {
             it.show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.fragmentTaskDetailsRecyclerview.adapter = null
+        _binding = null
     }
 }

@@ -39,16 +39,17 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
 
     private val viewModel by viewModels<ArchiveNoteViewModel>()
 
-    private lateinit var searchView: SearchView
+    private var searchView: SearchView? = null
 
-    private lateinit var binding: FragmentArchiveNoteBinding
+    private var _binding: FragmentArchiveNoteBinding ? = null
+    private val binding get() = _binding!!
 
     private lateinit var archiveNoteListAdapter: ArchiveNoteAdapter
     private lateinit var archiveNoteListFooterAdapter: ArchiveNoteListFooterAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentArchiveNoteBinding.bind(view)
+        _binding = FragmentArchiveNoteBinding.bind(view)
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -62,10 +63,10 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
                 val pendingQuery = viewModel.searchQuery.value
                 if (pendingQuery.isNotEmpty()) {
                     searchItem.expandActionView()
-                    searchView.setQuery(pendingQuery, false)
+                    searchView?.setQuery(pendingQuery, false)
                 }
 
-                searchView.onQueryTextChanged {
+                searchView?.onQueryTextChanged {
                     viewModel.onEvent(
                         ArchiveNoteEvent.UpdateSearchQuery(
                             searchQuery = it
@@ -215,5 +216,12 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
                 categoryId = BottomSheetAddEditNoteFragment.WITHOUT_CATEGORY_ID
             )
         findNavController().navigate(direction)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.rvArchiveNote.adapter = null
+        _binding = null
+        searchView = null
     }
 }

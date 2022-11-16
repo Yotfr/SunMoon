@@ -13,7 +13,8 @@ import com.yotfr.sunmoon.presentation.trash.trash_task_list.TrashTaskFragment
 
 class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
 
-    private lateinit var binding: FragmentTrashRootBinding
+    private var _binding: FragmentTrashRootBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var noteFragment: TrashNoteFragment
     private lateinit var taskFragment: TrashTaskFragment
@@ -46,7 +47,7 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentTrashRootBinding.bind(view)
+        _binding = FragmentTrashRootBinding.bind(view)
 
         //setUpActionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTrashRootToolbar)
@@ -88,5 +89,10 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
         childFragmentManager.beginTransaction()
             .selectFragment(indexToSelect)
             .commit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

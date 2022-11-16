@@ -28,14 +28,15 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
 
     private val viewModel by viewModels<ManageCategoriesViewModel>()
 
-    private lateinit var binding: FragmentManageCategoriesBinding
+    private var _binding: FragmentManageCategoriesBinding? = null
+    private val binding get()= _binding!!
 
     private lateinit var adapter: ManageCategoriesAdapter
     private lateinit var footerAdapter: ManageCategoriesFooterAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentManageCategoriesBinding.bind(view)
+        _binding = FragmentManageCategoriesBinding.bind(view)
 
         //initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
@@ -116,5 +117,11 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
             categoryDescription = categoryDescription
         )
         findNavController().navigate(direction)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.rvCategoryListManage.adapter = null
+        _binding = null
     }
 }

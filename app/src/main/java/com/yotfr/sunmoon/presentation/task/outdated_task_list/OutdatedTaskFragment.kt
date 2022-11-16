@@ -55,7 +55,8 @@ import java.util.*
 @AndroidEntryPoint
 class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
 
-    private lateinit var binding: FragmentOutdatedTaskListBinding
+    private var _binding: FragmentOutdatedTaskListBinding ? =null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModels<OutdatedTaskViewModel>()
 
@@ -68,7 +69,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentOutdatedTaskListBinding.bind(view)
+        _binding = FragmentOutdatedTaskListBinding.bind(view)
 
         //inflateMenu
         val menuHost: MenuHost = requireActivity()
@@ -439,7 +440,9 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvOutdatedTask.adapter = null
         searchView = null
+        _binding = null
     }
 
 }

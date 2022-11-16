@@ -32,7 +32,8 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
         const val WITHOUT_TASK_DATE = 0L
     }
 
-    private lateinit var binding: FragmentTaskRootBinding
+    private var _binding: FragmentTaskRootBinding? =null
+    private val binding get() = _binding!!
 
     private lateinit var scheduledTaskListFragment: ScheduledTaskListFragment
     private lateinit var unplannedTaskListFragment: UnplannedTaskListFragment
@@ -97,7 +98,7 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentTaskRootBinding.bind(view)
+        _binding = FragmentTaskRootBinding.bind(view)
 
         //setUpActionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTaskRootToolbar)
@@ -240,6 +241,11 @@ class TaskRootFragment : Fragment(R.layout.fragment_task_root) {
                 selectedDate = selectedDate ?: BottomSheetAddTaskFragment.WITHOUT_SELECTED_DATE
             )
         findNavController().navigate(direction)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 

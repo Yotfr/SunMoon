@@ -58,7 +58,8 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     private var searchView: SearchView? = null
 
-    private lateinit var binding: FragmentScheduledTaskListBinding
+    private var _binding: FragmentScheduledTaskListBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var uncompletedTaskListAdapter: ScheduledUncompletedTaskListAdapter
     private lateinit var completedTaskListAdapter: ScheduledCompletedTaskAdapter
@@ -82,7 +83,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentScheduledTaskListBinding.bind(view)
+        _binding = FragmentScheduledTaskListBinding.bind(view)
 
         //Calendar
         val snapHelper = LinearSnapHelper()
@@ -611,6 +612,9 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.scheduledTaskListFragmentRvTasks.adapter = null
+        binding.scheduledTaskListFragmentRvCalendar.adapter = null
         searchView = null
+        _binding = null
     }
 }
