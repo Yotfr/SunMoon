@@ -2,5 +2,36 @@
     <!-- Base application theme. -->
     <style name="Theme.SunMoon" parent="Theme.Material3.DayNight.NoActionBar">
 
+        <item name="colorPrimary">@color/primary_color_sunMoon_night</item>
+        <item name="colorOnPrimary">@color/on_primary_color_sunMoon_night</item>
+        <item name="colorPrimaryContainer">@color/primary_container_color_sunMoon_night</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container_color_sunMoon_night</item>
+        <item name="colorSecondary">@color/secondary_color_sunMoon_night</item>
+        <item name="colorOnSecondary">@color/on_secondary_color_sunMoon_night</item>
+        <item name="colorSecondaryContainer">@color/secondary_container_color_sunMoon_night</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container_color_sunMoon_night</item>
+        <item name="colorSurface">@color/surface_color_sunMoon_night</item>
+        <item name="colorOnSurface">@color/on_surface_color_sunMoon_night</item>
+        <item name="backgroundColor">@color/background_color_sunMoon_night</item>
+        <item name="colorOnBackground">@color/on_background_color_sunMoon_night</item>
+
+        <item name="toolbarStyle">@style/Widget.SunMoon.Toolbar</item>
+        <item name="floatingActionButtonStyle">@style/Widget.SunMoon.FloatingActionButton</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.SunMoon.BottomSheetDialog</item>
+        <item name="tabStyle">@style/Widget.SunMoon.TabLayout</item>
+        <item name="textInputStyle">@style/Widget.SunMoon.TextInputLayout</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.SunMoon.MaterialAlertDialog</item>
+        <item name="materialCalendarTheme">@style/ThemeOverlay.SunMoon.DatePicker</item>
+        <item name="snackbarStyle">@style/Widget.SunMoon.Snackbar</item>
+        <item name="snackbarButtonStyle">@style/Widget.SunMoon.SnackbarButton</item>
+
+        <item name="navigationViewStyle">@style/Widget.SunMoon.NavigationView</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorControlNormal">?attr/colorPrimary</item>
+
+        <item name="PrimaryChipStyle">@style/Widget.SunMoon.Chip.Suggestion.Primary</item>
+
     </style>
 </resources>
