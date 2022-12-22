@@ -25,35 +25,35 @@ class BottomSheetAddTaskViewModel @Inject constructor(
 
     private val addTaskMapper = AddTaskMapper()
 
-    //get date selected in horizontal calendar from scheduledTaskList fragment
+    // get date selected in horizontal calendar from scheduledTaskList fragment
     private val selectedDate = state.get<Long>("selectedDate")
 
-    //is recently popped from dateSelector or not
+    // is recently popped from dateSelector or not
     private val isFromDateSelector = MutableStateFlow(false)
 
-    //timePattern from dataStore
+    // timePattern from dataStore
     private val _timePattern = MutableStateFlow("HH:mm")
     val timePattern = _timePattern.asStateFlow()
 
-    //timeFormat from dataStore
+    // timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(2)
     val timeFormat = _timeFormat.asStateFlow()
 
     private val _uiState = MutableStateFlow(AddTaskUiState())
     val uiState = _uiState.asStateFlow()
 
-    //channel for uiEvents
+    // channel for uiEvents
     private val _uiEvents = Channel<BottomSheetAddTaskUiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
     init {
-        //get TimePattern from dataStore
+        // get TimePattern from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimePattern().collect {
                 _timePattern.value = it
             }
         }
-        //get TimeFormat from dataStore
+        // get TimeFormat from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
@@ -65,7 +65,7 @@ class BottomSheetAddTaskViewModel @Inject constructor(
         )
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: BottomSheetAddTaskEvent) {
         when (event) {
             is BottomSheetAddTaskEvent.AddTask -> {
@@ -128,7 +128,7 @@ class BottomSheetAddTaskViewModel @Inject constructor(
         }
     }
 
-    //send uiEvents to uiEvent channel
+    // send uiEvents to uiEvent channel
     private fun sendToUi(event: BottomSheetAddTaskUiEvent) {
         viewModelScope.launch {
             _uiEvents.send(event)

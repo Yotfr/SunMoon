@@ -1,5 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.*
@@ -16,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -27,44 +29,44 @@ class ScheduledTaskListViewModel @Inject constructor(
 
     private val scheduledTaskListMapper = ScheduledTaskListMapper()
 
-    //selected date in horizontal calendar
+    // selected date in horizontal calendar
     private val _selectedCalendarDate = MutableStateFlow(getCurrentDay())
     val selectedCalendarDate = _selectedCalendarDate.asStateFlow()
 
-    //timeFormat from dataStore
+    // timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
-    //state for expand/collapse header in list
+    // state for expand/collapse header in list
     private val completedTasksHeaderState = MutableStateFlow(
         ScheduledCompletedHeaderStateModel()
     )
-    //state for hide/show footer in list
+
+    // state for hide/show footer in list
     private val scheduledFooterState = MutableStateFlow(
         ScheduledFooterModel()
     )
 
-    //state for search view
+    // state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    //state for taskList
+    // state for taskList
     private val _uiState = MutableStateFlow<ScheduledTaskListUiStateModel?>(null)
     val uiState = _uiState.asStateFlow()
 
-    //uiEvents channel
+    // uiEvents channel
     private val _uiEvent = Channel<ScheduledTaskListUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-
     init {
-        //collect time format from dataStore
+        // collect time format from dataStore
         viewModelScope.launch {
-            dataStoreRepository.getTimeFormat().collect{
+            dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
             }
         }
-        //get data for taskList state
+        // get data for taskList state
         viewModelScope.launch {
             combine(
                 taskUseCase.getScheduledTaskList(
@@ -73,10 +75,13 @@ class ScheduledTaskListViewModel @Inject constructor(
                     currentDate = getCurrentDay()
                 ),
                 completedTasksHeaderState,
-               dataStoreRepository.getTimePattern()
+                dataStoreRepository.getTimePattern()
             ) { tasks, headerState, timeFormat ->
-                Quadruple(tasks.first,tasks.second,headerState,timeFormat)
+                Quadruple(tasks.first, tasks.second, headerState, timeFormat)
             }.collect { state ->
+                Log.d("TEST", "collected $state")
+                val sdfTest = SimpleDateFormat("yyyy dd MM", Locale.getDefault())
+                Log.d("TEST", "curDate ${selectedCalendarDate.value}")
                 changeHeaderVisibility(state.second.isNotEmpty())
                 _uiState.value = ScheduledTaskListUiStateModel(
                     uncompletedTasks = scheduledTaskListMapper.fromDomainList(
@@ -95,14 +100,14 @@ class ScheduledTaskListViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: ScheduledTaskListEvent) {
         when (event) {
             is ScheduledTaskListEvent.ChangeTaskCompletionStatus -> {
                 viewModelScope.launch {
                     taskUseCase.changeTaskCompletionState(
                         task = scheduledTaskListMapper.toDomain(
-                            event.task,
+                            event.task
                         )
                     )
                 }
@@ -156,7 +161,6 @@ class ScheduledTaskListViewModel @Inject constructor(
             is ScheduledTaskListEvent.DeleteTasks -> {
                 viewModelScope.launch {
                     when (event.deleteOption) {
-
                         ScheduledTaskDeleteOption.ALL_SCHEDULED -> {
                             taskUseCase.deleteScheduledTasks()
                         }
@@ -186,32 +190,34 @@ class ScheduledTaskListViewModel @Inject constructor(
                 }
             }
             is ScheduledTaskListEvent.SelectCalendarDate -> {
-                sendToUi(ScheduledTaskListUiEvent.SelectCalendarDate(
-                    selectedDate = event.selectedDate
-                ))
+                sendToUi(
+                    ScheduledTaskListUiEvent.SelectCalendarDate(
+                        selectedDate = event.selectedDate
+                    )
+                )
             }
         }
     }
 
-    //send uiEvents to uiEvent channel
+    // send uiEvents to uiEvent channel
     private fun sendToUi(event: ScheduledTaskListUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
 
-    //collapse/expand header
+    // collapse/expand header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
-    //get beginning of current date
+    // get beginning of current date
     private fun getCurrentDay(): Long {
         val currentDayCalendar = Calendar.getInstance(Locale.getDefault())
         currentDayCalendar.apply {
-            set(Calendar.HOUR, 0)
+            set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 class GetScheduledTaskList(
-    private val taskRepository: TaskRepository,
+    private val taskRepository: TaskRepository
 ) {
     private val taskWithSubTasksMapper = TaskMapper()
 

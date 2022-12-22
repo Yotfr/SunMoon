@@ -35,7 +35,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         const val WITHOUT_SELECTED_TIME = -1L
     }
 
-    private var _binding: FragmentBottomSheetAddTaskBinding? =null
+    private var _binding: FragmentBottomSheetAddTaskBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<BottomSheetAddTaskViewModel>()
@@ -43,7 +43,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //remove backStack StateFlow values
+        // remove backStack StateFlow values
         findNavController().currentBackStackEntry?.savedStateHandle?.remove<Long?>(
             DATE_KEY
         )
@@ -68,25 +68,27 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.onEvent(BottomSheetAddTaskEvent.ChangeIsFromDateSelectorState(
-            isFromDateSelector = false
-        ))
+        viewModel.onEvent(
+            BottomSheetAddTaskEvent.ChangeIsFromDateSelectorState(
+                isFromDateSelector = false
+            )
+        )
 
-        //focus edit text when open bottomSheet
+        // focus edit text when open bottomSheet
         binding.textFieldTaskDescription.editText?.isFocusableInTouchMode = true
         binding.textFieldTaskDescription.editText?.requestFocus()
 
-        //enable-disable save btn
+        // enable-disable save btn
         binding.textFieldTaskDescription.editText?.doOnTextChanged { charSequence, _, _, _ ->
             binding.btnAddTask.isEnabled = !charSequence.isNullOrBlank()
         }
 
-        //get date and time from viewModel needed for navigate to dateSelector
+        // get date and time from viewModel needed for navigate to dateSelector
         binding.chipScheduledDate.setOnClickListener {
             viewModel.onEvent(BottomSheetAddTaskEvent.NavigateToDateSelector)
         }
 
-        //show time picker and change date chip text
+        // show time picker and change date chip text
         binding.chipScheduledTime.setOnClickListener {
             showTimePicker(
                 currentTimeFormat = viewModel.timeFormat.value,
@@ -100,7 +102,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //save task
+        // save task
         binding.btnAddTask.setOnClickListener {
             val taskDescription = binding.textFieldTaskDescription.editText?.text.toString()
             viewModel.onEvent(
@@ -110,7 +112,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             )
         }
 
-        //collectUiState
+        // collectUiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
@@ -125,12 +127,13 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //collect date from dateSelector
+        // collect date from dateSelector
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val navController = findNavController()
                 navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<Long?>(
-                    DATE_KEY, null
+                    DATE_KEY,
+                    null
                 )?.collect { date ->
                     val selectedDate = if (date == WITHOUT_SELECTED_DATE) null else date
                     viewModel.onEvent(
@@ -142,12 +145,13 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //collect time from dateSelector
+        // collect time from dateSelector
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val navController = findNavController()
                 navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<Long?>(
-                    TIME_KEY, null
+                    TIME_KEY,
+                    null
                 )?.collect { time ->
                     val selectedTime = if (time == WITHOUT_SELECTED_TIME) null else time
                     viewModel.onEvent(
@@ -159,9 +163,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
             }
         }
 
-
-
-        //collect uiEvents
+        // collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvents.collect { uiEvent ->
@@ -174,9 +176,11 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
                                     uiEvent.time ?: BottomSheetTaskDateSelectorFragment
                                         .WITHOUT_TIME
                                 )
-                            viewModel.onEvent(BottomSheetAddTaskEvent.ChangeIsFromDateSelectorState(
-                                isFromDateSelector = true
-                            ))
+                            viewModel.onEvent(
+                                BottomSheetAddTaskEvent.ChangeIsFromDateSelectorState(
+                                    isFromDateSelector = true
+                                )
+                            )
                             navigateToDestination(
                                 direction = directions
                             )
@@ -225,7 +229,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //format Long date
+    // format Long date
     private fun parseSelectedDateToChipText(selectedDateInMillis: Long?): String {
         val sdf = SimpleDateFormat("MMM d", Locale.getDefault())
         val currentDate = Calendar.getInstance(Locale.getDefault())
@@ -260,7 +264,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //parse Long time
+    // parse Long time
     private fun parseSelectedTimeToChipText(
         currentTimePattern: String,
         selectedTimeInMillis: Long?
@@ -274,7 +278,7 @@ class BottomSheetAddTaskFragment : BottomSheetDialogFragment() {
         return getString(R.string.without_time)
     }
 
-    //navigate to dateSelector or popBackStack
+    // navigate to dateSelector or popBackStack
     private fun navigateToDestination(
         direction: NavDirections? = null
     ) {

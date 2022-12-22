@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "DATA_STORE")
 
 class DataStoreRepositoryImpl @Inject constructor(

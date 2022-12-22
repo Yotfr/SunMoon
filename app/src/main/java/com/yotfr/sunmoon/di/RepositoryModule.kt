@@ -18,25 +18,25 @@ abstract class RepositoryModule {
     @Binds
     abstract fun bindCategoryRepository(
         categoryRepository: CategoryRepositoryImpl
-    ):CategoryRepository
+    ): CategoryRepository
 
     @Binds
     abstract fun bindNoteRepository(
         noteRepository: NoteRepositoryImpl
-    ):NoteRepository
+    ): NoteRepository
 
     @Binds
     abstract fun bindSubTaskRepository(
         subTaskRepository: SubTaskRepositoryImpl
-    ):SubTaskRepository
+    ): SubTaskRepository
 
     @Binds
     abstract fun bindTaskRepository(
         taskRepository: TaskRepositoryImpl
-    ):TaskRepository
+    ): TaskRepository
 
     @Binds
     abstract fun bindDataStoreRepository(
         dataStoreRepository: DataStoreRepositoryImpl
-    ):DataStoreRepository
+    ): DataStoreRepository
 }
