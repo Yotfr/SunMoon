@@ -28,7 +28,6 @@ sealed interface TaskDetailsEvent {
         val remindInMillis: Long
     ) : TaskDetailsEvent
 
-
     data class SetTaskRemindDateTime(
         val remindDate: Long,
         val remindTime: Long,

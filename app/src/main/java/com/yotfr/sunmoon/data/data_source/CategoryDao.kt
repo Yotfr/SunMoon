@@ -16,17 +16,17 @@ interface CategoryDao {
 
     @Transaction
     @Query(value = "SELECT * FROM categoryentity")
-    fun getAllCategories():Flow<List<CategoriesWithNotesRelation>>
+    fun getAllCategories(): Flow<List<CategoriesWithNotesRelation>>
 
     @Transaction
-    @Query(value =  "SELECT * FROM categoryentity WHERE isVisible = 1")
-    fun getAllVisibleCategories():Flow<List<CategoriesWithNotesRelation>>
+    @Query(value = "SELECT * FROM categoryentity WHERE isVisible = 1")
+    fun getAllVisibleCategories(): Flow<List<CategoriesWithNotesRelation>>
 
     @Transaction
-    @Query(value  = "SELECT * FROM categoryentity WHERE categoryId = :categoryId AND isVisible = 1")
-    fun getCategoryWithNotes(categoryId: Long):Flow<CategoriesWithNotesRelation>
+    @Query(value = "SELECT * FROM categoryentity WHERE categoryId = :categoryId AND isVisible = 1")
+    fun getCategoryWithNotes(categoryId: Long): Flow<CategoriesWithNotesRelation>
 
     @Transaction
-    @Query(value  = "SELECT * FROM categoryentity WHERE categoryId = :categoryId")
-    fun getCategoryById(categoryId:Long):Flow<CategoriesWithNotesRelation?>
+    @Query(value = "SELECT * FROM categoryentity WHERE categoryId = :categoryId")
+    fun getCategoryById(categoryId: Long): Flow<CategoriesWithNotesRelation?>
 }

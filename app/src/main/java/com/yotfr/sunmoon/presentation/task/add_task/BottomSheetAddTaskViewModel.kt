@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.add_task
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -136,7 +135,6 @@ class BottomSheetAddTaskViewModel @Inject constructor(
     }
 
     private fun initState(selectedDate: Long?): Long? {
-        Log.d("TEST", "$selectedDate")
         return if (selectedDate == BottomSheetAddTaskFragment.WITHOUT_SELECTED_DATE) null
         else selectedDate
     }

@@ -7,8 +7,8 @@ import kotlinx.coroutines.withContext
 class DeleteAllUnarchivedNotes(
     private val notesRepository: NoteRepository
 ) {
-    suspend operator fun invoke(){
-        withContext(Dispatchers.IO){
+    suspend operator fun invoke() {
+        withContext(Dispatchers.IO) {
             notesRepository.deleteAllUnarchivedNotes()
         }
     }

@@ -4,5 +4,5 @@ import com.yotfr.sunmoon.presentation.task.scheduled_task_list.model.ScheduledTa
 
 sealed interface ScheduledTaskListUiEvent {
     data class UndoTrashScheduledTask(val task: ScheduledTaskListModel) : ScheduledTaskListUiEvent
-    data class SelectCalendarDate(val selectedDate:Long) : ScheduledTaskListUiEvent
+    data class SelectCalendarDate(val selectedDate: Long) : ScheduledTaskListUiEvent
 }

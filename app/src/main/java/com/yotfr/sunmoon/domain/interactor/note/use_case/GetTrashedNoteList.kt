@@ -19,7 +19,7 @@ class GetTrashedNoteList(
     ): Flow<List<Note>> {
         return searchQuery.flatMapLatest {
             withContext(Dispatchers.IO) {
-                noteRepository.getTrashedUserNotes(it).map { notes ->
+                noteRepository.getTrashedNotes(it).map { notes ->
                     noteMapper.mapFromEntityList(notes)
                 }
             }

@@ -23,7 +23,6 @@ class NoteListFooterAdapter :
         return R.layout.item_note_list_footer
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteListFooterViewHolder {
         return NoteListFooterViewHolder(
             ItemNoteListFooterBinding.inflate(
@@ -45,7 +44,6 @@ class NoteListFooterAdapter :
             binding.scheduledFooter.visibility = if (
                 headerState.isVisible
             ) View.VISIBLE else View.GONE
-
         }
     }
 }

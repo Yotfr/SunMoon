@@ -28,32 +28,32 @@ class TaskDetailsViewModel @Inject constructor(
     private val taskDetailsMapper = TaskDetailsMapper()
     private val subTaskMapper = SubTaskMapper()
 
-    //task id coming from task list
+    // task id coming from task list
     private val taskId = state.get<Long>("taskId")
 
-    //from where navigated
+    // from where navigated
     private val destination = state.get<Int>("destination")
 
-    //date&time formats and patterns from dataStore
+    // date&time formats and patterns from dataStore
     private val _dateTimeSettings = MutableStateFlow(DateTimeSettings())
     val dateTimeSettings = _dateTimeSettings.asStateFlow()
 
-    //state for destination
+    // state for destination
     private val _state = MutableStateFlow(State.SCHEDULED)
     val state = _state.asStateFlow()
 
-    //state for task description edit text (value of this state will be saved after editText will lose focus
+    // state for task description edit text (value of this state will be saved after editText will lose focus
     private val changedEtText = MutableStateFlow("")
 
     private val _uiState = MutableStateFlow(TaskDetailsModel())
     val uiState = _uiState.asStateFlow()
 
-    //channel for uiEvents
+    // channel for uiEvents
     private val _uiEvents = Channel<TaskDetailsUiEvent>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
     init {
-        //parse destination
+        // parse destination
         val stateDestination = when (destination) {
             TaskDetailsFragment.FROM_SCHEDULED -> State.SCHEDULED
             TaskDetailsFragment.FROM_UNPLANNED -> State.UNPLANNED
@@ -61,7 +61,7 @@ class TaskDetailsViewModel @Inject constructor(
             else -> throw IllegalArgumentException("unknown state")
         }
         _state.value = stateDestination
-        //get task
+        // get task
         viewModelScope.launch {
             taskUseCase.getTaskById(
                 taskId = taskId ?: throw IllegalArgumentException("can't find taskId")
@@ -72,7 +72,7 @@ class TaskDetailsViewModel @Inject constructor(
                 }
             }
         }
-        //get date&time patterns and formats from dataStore
+        // get date&time patterns and formats from dataStore
         viewModelScope.launch {
             dataStoreRepository.getDateTimeSettings().collect {
                 _dateTimeSettings.value = DateTimeSettings(
@@ -84,7 +84,7 @@ class TaskDetailsViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: TaskDetailsEvent) {
         when (event) {
             is TaskDetailsEvent.SaveTask -> {
@@ -321,7 +321,7 @@ class TaskDetailsViewModel @Inject constructor(
         }
     }
 
-    //send uiEvents to uiEvent channel
+    // send uiEvents to uiEvent channel
     private fun sendUiEvents(event: TaskDetailsUiEvent) {
         viewModelScope.launch {
             _uiEvents.send(event)

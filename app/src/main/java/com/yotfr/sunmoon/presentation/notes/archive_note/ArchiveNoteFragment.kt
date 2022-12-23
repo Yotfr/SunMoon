@@ -21,7 +21,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentArchiveNoteBinding
-import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import com.yotfr.sunmoon.presentation.notes.NoteRootFragmentDirections
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.BottomSheetAddEditNoteFragment
 import com.yotfr.sunmoon.presentation.notes.archive_note.adapter.ArchiveNoteAdapter
@@ -31,6 +30,7 @@ import com.yotfr.sunmoon.presentation.notes.archive_note.adapter.ArchiveNoteList
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteUiEvent
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
+import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -51,44 +51,48 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentArchiveNoteBinding.bind(view)
 
-        //inflateMenu
+        // inflateMenu
         val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.app_bar_menu_list, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.app_bar_menu_list, menu)
 
-                val searchItem = menu.findItem(R.id.mi_action_search)
-                searchView = searchItem.actionView as SearchView
+                    val searchItem = menu.findItem(R.id.mi_action_search)
+                    searchView = searchItem.actionView as SearchView
 
-                val pendingQuery = viewModel.searchQuery.value
-                if (pendingQuery.isNotEmpty()) {
-                    searchItem.expandActionView()
-                    searchView?.setQuery(pendingQuery, false)
-                }
-
-                searchView?.onQueryTextChanged {
-                    viewModel.onEvent(
-                        ArchiveNoteEvent.UpdateSearchQuery(
-                            searchQuery = it
-                        )
-                    )
-                }
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.mi_delete_all_tasks -> {
-                        showDeleteAllDialog {
-                            viewModel.onEvent(ArchiveNoteEvent.DeleteAllUnarchivedNote)
-                        }
-                        true
+                    val pendingQuery = viewModel.searchQuery.value
+                    if (pendingQuery.isNotEmpty()) {
+                        searchItem.expandActionView()
+                        searchView?.setQuery(pendingQuery, false)
                     }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        //initRvAdapter
+                    searchView?.onQueryTextChanged {
+                        viewModel.onEvent(
+                            ArchiveNoteEvent.UpdateSearchQuery(
+                                searchQuery = it
+                            )
+                        )
+                    }
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.mi_delete_all_tasks -> {
+                            showDeleteAllDialog {
+                                viewModel.onEvent(ArchiveNoteEvent.DeleteAllUnarchivedNote)
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
+
+        // initRvAdapter
         val archiveNoteLayoutManager = LinearLayoutManager(requireContext())
         archiveNoteListAdapter = ArchiveNoteAdapter()
         archiveNoteListAdapter.attachDelegate(object : ArchiveNoteListDelegate {
@@ -119,7 +123,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
 
         initSwipeToDelete()
 
-        //collect uiState
+        // collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
@@ -131,7 +135,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
             }
         }
 
-        //collect uiEvents
+        // collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { event ->
@@ -145,7 +149,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
                                 )
                             }
                         }
-                        ArchiveNoteUiEvent.ShowUnarchiveSnackbar ->  {
+                        ArchiveNoteUiEvent.ShowUnarchiveSnackbar -> {
                             showUnarchiveNoteSnackbar()
                         }
                     }
@@ -165,7 +169,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
             }.show()
     }
 
-    //initialize itemTouchCallback
+    // initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onTrashItem = { positionToRemove: Int ->
             val note = archiveNoteListAdapter.currentList[positionToRemove]
@@ -190,7 +194,7 @@ class ArchiveNoteFragment : Fragment(R.layout.fragment_archive_note) {
         ItemTouchHelper(archiveNoteListItemCallBack).attachToRecyclerView(binding.rvArchiveNote)
     }
 
-    private fun showUnarchiveNoteSnackbar(){
+    private fun showUnarchiveNoteSnackbar() {
         Snackbar.make(
             requireView(),
             getString(R.string.note_unarchived),

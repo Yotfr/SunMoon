@@ -1,5 +1,4 @@
 package com.yotfr.sunmoon
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -10,38 +9,45 @@ import com.yotfr.sunmoon.presentation.utils.NotificationHelper
 import com.yotfr.sunmoon.presentation.utils.goAsync
 import javax.inject.Inject
 
-class AlarmReceiver:BroadcastReceiver() {
+class AlarmReceiver : BroadcastReceiver() {
 
     @Inject lateinit var taskUseCase: TaskUseCase
 
-    @SuppressLint("UnspecifiedImmutableFlag")
+    // receive tasks notifications
     override fun onReceive(context: Context, intent: Intent) {
-        if ((Intent.ACTION_BOOT_COMPLETED) == intent.action){
+        if ((Intent.ACTION_BOOT_COMPLETED) == intent.action) {
+            // recreate all notification when device rebooted
             goAsync {
-               val tasks = taskUseCase.getAllRemindedTasks()
+                val tasks = taskUseCase.getAllRemindedTasks()
                 tasks.forEach {
                     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                     val newIntent = Intent(context, AlarmReceiver::class.java)
                     newIntent.putExtra("taskTitle", it.taskDescription)
                     newIntent.putExtra("taskId", it.taskId)
-                    newIntent.putExtra("destination",0)
+                    // destination 0 means scheduled task list and used to navigate correctly with deeplink
+                    newIntent.putExtra("destination", 0)
                     val pendingIntent = it.taskId?.let { it1 ->
                         PendingIntent.getBroadcast(
                             context,
-                            it1.toInt(), newIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                            it1.toInt(),
+                            newIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                         )
                     }
                     it.remindDelayTime?.let { it1 ->
-                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                            it1, pendingIntent)
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            it1,
+                            pendingIntent
+                        )
                     }
                 }
             }
-
-        }else {
+        } else {
             val taskTitle = intent.getStringExtra("taskTitle")
             val taskId = intent.getLongExtra("taskId", 0)
-            val destination = intent.getIntExtra("destination",0)
+            // destination 0 means scheduled task list and used to navigate correctly with deeplink
+            val destination = intent.getIntExtra("destination", 0)
             taskTitle?.let {
                 NotificationHelper(context).createNotification(
                     title = it,

@@ -12,7 +12,6 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemOutdatedTaskBinding
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTaskListModel
 
-
 interface OutdatedUncompletedTaskDelegate {
     fun taskPressed(taskId: Long, transitionView: View)
     fun schedulePressed(task: OutdatedTaskListModel)
@@ -36,17 +35,15 @@ class OutdatedUncompletedTaskDiffCallback : DiffUtil.ItemCallback<OutdatedTaskLi
 
 class OutdatedUncompletedTaskAdapter :
     ListAdapter<OutdatedTaskListModel,
-            OutdatedUncompletedTaskAdapter.OutdatedTaskViewHolder>(
+        OutdatedUncompletedTaskAdapter.OutdatedTaskViewHolder>(
         OutdatedUncompletedTaskDiffCallback()
     ) {
 
     private var delegate: OutdatedUncompletedTaskDelegate? = null
 
-
     fun attachDelegate(delegate: OutdatedUncompletedTaskDelegate) {
         this.delegate = delegate
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OutdatedTaskViewHolder {
         return OutdatedTaskViewHolder(
@@ -54,14 +51,14 @@ class OutdatedUncompletedTaskAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 
     override fun onBindViewHolder(holder: OutdatedTaskViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 
     class OutdatedTaskViewHolder(
         private val binding: ItemOutdatedTaskBinding,
@@ -93,9 +90,7 @@ class OutdatedUncompletedTaskAdapter :
                         task = outdatedTask
                     )
                 }
-
             }
         }
     }
-
 }

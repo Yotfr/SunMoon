@@ -30,43 +30,43 @@ class OutdatedTaskViewModel @Inject constructor(
 
     private val outdatedTaskListMapper = OutdatedTaskListMapper()
 
-    //state for search view
+    // state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    //timeFormat from dataStore
+    // timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
-    //state for expand/collapse header in list
+    // state for expand/collapse header in list
     private val completedTasksHeaderState = MutableStateFlow(
         OutdatedCompletedHeaderStateModel()
     )
 
-    //state for hide/show footer in list
+    // state for hide/show footer in list
     private val outdatedFooterState = MutableStateFlow(
         OutdatedFooterModel()
     )
 
-    //beginning of the current day
+    // beginning of the current day
     private val currentDate = getCurrentDate()
 
-    //state for taskList
+    // state for taskList
     private val _uiState = MutableStateFlow<OutdatedTaskListUiStateModel?>(null)
     val uiState = _uiState.asStateFlow()
 
-    //uiEvents channel
+    // uiEvents channel
     private val _uiEvent = Channel<OutdatedTaskUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        //collect time format from dataStore
+        // collect time format from dataStore
         viewModelScope.launch {
             dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
             }
         }
-        //get data for taskList state
+        // get data for taskList state
         viewModelScope.launch {
             combine(
                 taskUseCase.getOutdatedTaskList(
@@ -74,7 +74,7 @@ class OutdatedTaskViewModel @Inject constructor(
                     currentDate = getCurrentDate()
                 ),
                 completedTasksHeaderState,
-                dataStoreRepository.getTimePattern(),
+                dataStoreRepository.getTimePattern()
             ) { tasks, headerState, timePattern ->
                 Quadruple(tasks.first, tasks.second, headerState, timePattern)
             }.collect { state ->
@@ -87,7 +87,8 @@ class OutdatedTaskViewModel @Inject constructor(
                     ),
                     completedTasks = if (completedTasksHeaderState.value.isExpanded) {
                         outdatedTaskListMapper.fromDomainList(
-                            state.second, state.fourth,
+                            state.second,
+                            state.fourth,
                             currentDate
                         )
                     } else emptyList(),
@@ -100,7 +101,7 @@ class OutdatedTaskViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: OutdatedTaskEvent) {
         when (event) {
             is OutdatedTaskEvent.UpdateSearchQuery -> {
@@ -119,9 +120,11 @@ class OutdatedTaskViewModel @Inject constructor(
                         newTime = event.time
                     )
                 }
-                sendToUi(OutdatedTaskUiEvent.NavigateToScheduledTask(
-                    taskDate = event.date
-                ))
+                sendToUi(
+                    OutdatedTaskUiEvent.NavigateToScheduledTask(
+                        taskDate = event.date
+                    )
+                )
             }
             is OutdatedTaskEvent.TrashOutdatedTask -> {
                 viewModelScope.launch {
@@ -168,7 +171,7 @@ class OutdatedTaskViewModel @Inject constructor(
         }
     }
 
-    //get beginning of current date
+    // get beginning of current date
     private fun getCurrentDate(): Long {
         val currentDayCalendar = Calendar.getInstance(Locale.getDefault())
         currentDayCalendar.apply {
@@ -180,14 +183,14 @@ class OutdatedTaskViewModel @Inject constructor(
         return currentDayCalendar.timeInMillis
     }
 
-    //collapse/expand header
+    // collapse/expand header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
-    //send uiEvents to uiEvent channel
+    // send uiEvents to uiEvent channel
     private fun sendToUi(uiEvent: OutdatedTaskUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(uiEvent)

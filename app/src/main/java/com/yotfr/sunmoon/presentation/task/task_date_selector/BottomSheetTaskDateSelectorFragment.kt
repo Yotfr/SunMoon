@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation.task.task_date_selector
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +52,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //add constraints to calendarView
+        // add constraints to calendarView
         binding.calendarView.minDate = getCurrentDate()
         binding.calendarView.maxDate = getMaxCalendardate()
 
@@ -72,7 +71,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
 
         binding.chipDateHelpers.setOnCheckedStateChangeListener { btn, _ ->
             if (btn.checkedChipId == View.NO_ID) {
-                //if unselect chip clear date&time
+                // if unselect chip clear date&time
                 viewModel.onEvent(
                     BottomSheetTaskDateSelectorEvent.ClearDateTime
                 )
@@ -81,18 +80,17 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //collect uiState
+        // collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    //update time chip text
+                    // update time chip text
                     binding.btnSelectedTime.text = parseTimeToTimeButtonText(
-                        currentTimePattern = viewModel.timePattern.value,
                         state.selectedTime
                     )
-                    //select chip in chipGroup if one of chips match collected date
+                    // select chip in chipGroup if one of chips match collected date
                     parseDateAndSelectChip(state.selectedDate)
-                    //select date in calendarView that matches collected date
+                    // select date in calendarView that matches collected date
                     state.selectedDate?.let { date ->
                         binding.calendarView.setDate(
                             date,
@@ -100,7 +98,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
                             false
                         )
                     }
-                    //show withoutDate btn if collected date is null
+                    // show withoutDate btn if collected date is null
                     changeBtnWithoutDateVisibility(
                         isVisible = state.selectedDate == null
                     )
@@ -108,7 +106,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //collect uiEvents
+        // collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
@@ -129,19 +127,19 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //save selected date and time and pop to addTask
+        // save selected date and time and pop to addTask
         binding.btnReschedule.setOnClickListener {
             changeBtnWithoutDateVisibility(true)
             viewModel.onEvent(BottomSheetTaskDateSelectorEvent.SaveDateTimePressed)
         }
 
-        //pop to add task without selected date and time
+        // pop to add task without selected date and time
         binding.btnCancel.setOnClickListener {
             changeBtnWithoutDateVisibility(true)
             findNavController().popBackStack()
         }
 
-        //show time picker
+        // show time picker
         binding.btnSelectedTime.setOnClickListener {
             showTimePicker(
                 currentTimeFormat = viewModel.timeFormat.value
@@ -154,7 +152,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
             }
         }
     }
-
 
     private fun showTimePicker(
         currentTimeFormat: Int,
@@ -184,7 +181,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //parse pressed date chip, change date and show withoutDate btn if needed
+    // parse pressed date chip, change date and show withoutDate btn if needed
     private fun parseSelectedChipAndChangeDate(tag: String) {
         when (tag) {
             "today" -> {
@@ -214,7 +211,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //send new date to viewModel
+    // send new date to viewModel
     private fun changeViewModelDate(dateTemplates: DateTemplates) {
         viewModel.onEvent(
             BottomSheetTaskDateSelectorEvent.DateTimeChanged(
@@ -223,7 +220,7 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         )
     }
 
-    //hide/show withoutDate btn
+    // hide/show withoutDate btn
     private fun changeBtnWithoutDateVisibility(isVisible: Boolean) {
         if (isVisible) {
             binding.btnWithoutDate.visibility = View.VISIBLE
@@ -236,12 +233,10 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //format time
+    // format time
     private fun parseTimeToTimeButtonText(
-        currentTimePattern: String,
         time: Long?
     ): String {
-        Log.d("TEST","dateSelPat $currentTimePattern")
         val timePattern = viewModel.timePattern.value
         val calendar = Calendar.getInstance(Locale.getDefault())
         val sdfTime = SimpleDateFormat(timePattern, Locale.getDefault())
@@ -252,9 +247,8 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         return getString(R.string.without_time)
     }
 
-    //select chip in chipGroup if one of chips match collected date
+    // select chip in chipGroup if one of chips match collected date
     private fun parseDateAndSelectChip(date: Long?) {
-
         if (date == null) {
             viewModel.onEvent(
                 BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
@@ -278,7 +272,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
         val currentWeekDay = currentDate.get(Calendar.DAY_OF_WEEK)
         val currentWeek = currentDate.get(Calendar.WEEK_OF_MONTH)
-
 
         val selectedDate = Calendar.getInstance(Locale.getDefault())
         selectedDate.timeInMillis = date
@@ -315,7 +308,6 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
                     binding.chipOnWeekend.isChecked = true
                     return
                 } else {
-
                     viewModel.onEvent(
                         BottomSheetTaskDateSelectorEvent.ChangeClearNeeded(
                             isNeeded = false
@@ -327,9 +319,8 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //parse dateTemplates to Long date
+    // parse dateTemplates to Long date
     private fun parseDateTemplatesToDate(dateTemplates: DateTemplates): Long {
-
         val calendar = Calendar.getInstance(Locale.getDefault())
         calendar.apply {
             set(Calendar.HOUR_OF_DAY, 0)
@@ -363,19 +354,19 @@ class BottomSheetTaskDateSelectorFragment : BottomSheetDialogFragment() {
         }
     }
 
-    //get current date
+    // get current date
     private fun getCurrentDate(): Long {
         return Calendar.getInstance(Locale.getDefault()).timeInMillis
     }
 
-    //set maxDate for calendarView six months from the current one
+    // set maxDate for calendarView six months from the current one
     private fun getMaxCalendardate(): Long {
         val calendar = Calendar.getInstance(Locale.getDefault())
         calendar.add(Calendar.MONTH, 6)
         return calendar.timeInMillis
     }
 
-    //enum for chipTemplates
+    // enum for chipTemplates
     enum class DateTemplates {
         TODAY,
         TOMORROW,

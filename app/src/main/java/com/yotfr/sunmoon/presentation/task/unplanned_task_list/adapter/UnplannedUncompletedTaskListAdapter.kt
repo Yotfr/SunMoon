@@ -36,12 +36,11 @@ class UnplannedUncompletedTaskDiffCallback : DiffUtil.ItemCallback<UnplannedTask
 
 class UnplannedUncompletedTaskListAdapter :
     ListAdapter<UnplannedTaskListModel,
-            UnplannedUncompletedTaskListAdapter.UnplannedTaskViewHolder>(
+        UnplannedUncompletedTaskListAdapter.UnplannedTaskViewHolder>(
         UnplannedUncompletedTaskDiffCallback()
     ) {
 
     private var delegate: UnplannedUncompletedTaskDelegate? = null
-
 
     fun attachDelegate(delegate: UnplannedUncompletedTaskDelegate) {
         this.delegate = delegate
@@ -53,7 +52,8 @@ class UnplannedUncompletedTaskListAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 
@@ -67,7 +67,7 @@ class UnplannedUncompletedTaskListAdapter :
 
     inner class UnplannedTaskViewHolder(
         private val binding: ItemUnplannedTaskBinding,
-        private val delegate: UnplannedUncompletedTaskDelegate?,
+        private val delegate: UnplannedUncompletedTaskDelegate?
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(task: UnplannedTaskListModel) {

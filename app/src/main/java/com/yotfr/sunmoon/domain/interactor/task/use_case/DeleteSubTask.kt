@@ -11,9 +11,11 @@ class DeleteSubTask(
 ) {
     private val suBTaskMapper = SubTaskMapper()
 
-    suspend operator fun invoke(subTask:SubTask) = withContext(Dispatchers.IO){
-        subTaskRepository.deleteSubTask(suBTaskMapper.mapToEntity(
-            subTask
-        ))
+    suspend operator fun invoke(subTask: SubTask) = withContext(Dispatchers.IO) {
+        subTaskRepository.deleteSubTask(
+            suBTaskMapper.mapToEntity(
+                subTask
+            )
+        )
     }
 }

@@ -9,7 +9,7 @@ class DeleteScheduledTasks(
 ) {
     suspend operator fun invoke() {
         withContext(Dispatchers.IO) {
-                taskRepository.deleteAllScheduledTasks()
+            taskRepository.deleteAllScheduledTasks()
         }
     }
 }

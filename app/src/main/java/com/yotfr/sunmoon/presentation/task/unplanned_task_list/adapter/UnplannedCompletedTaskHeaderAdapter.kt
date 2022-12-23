@@ -32,14 +32,14 @@ class UnplannedCompletedTaskHeaderAdapter : RecyclerView.Adapter<UnplannedComple
         return R.layout.item_unplanned_completed_task_header
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompletedTaskHeaderViewHolder {
         return CompletedTaskHeaderViewHolder(
             ItemUnplannedCompletedTaskHeaderBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 
@@ -49,7 +49,7 @@ class UnplannedCompletedTaskHeaderAdapter : RecyclerView.Adapter<UnplannedComple
 
     class CompletedTaskHeaderViewHolder(
         private val binding: ItemUnplannedCompletedTaskHeaderBinding,
-        private val delegate:UnplannedCompletedHeaderDelegate?
+        private val delegate: UnplannedCompletedHeaderDelegate?
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(headerState: UnplannedCompletedHeaderStateModel) {
             binding.llUnplannedCompletedHeader.visibility = if (headerState.isVisible) View.VISIBLE

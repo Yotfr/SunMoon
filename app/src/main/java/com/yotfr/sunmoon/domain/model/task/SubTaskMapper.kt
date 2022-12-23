@@ -2,7 +2,7 @@ package com.yotfr.sunmoon.domain.model.task
 
 import com.yotfr.sunmoon.data.data_source.model.task.SubTaskEntity
 
-class SubTaskMapper{
+class SubTaskMapper {
 
     fun mapFromEntity(entity: SubTaskEntity): SubTask {
         return SubTask(
@@ -22,8 +22,7 @@ class SubTaskMapper{
         )
     }
 
-     fun mapFromEntityList(initial: List<SubTaskEntity>): List<SubTask> {
+    fun mapFromEntityList(initial: List<SubTaskEntity>): List<SubTask> {
         return initial.map { mapFromEntity(it) }
     }
-
 }

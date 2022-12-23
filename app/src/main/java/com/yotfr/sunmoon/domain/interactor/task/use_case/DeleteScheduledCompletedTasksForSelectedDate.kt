@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 class DeleteScheduledCompletedTasksForSelectedDate(
     private val taskRepository: TaskRepository
 ) {
-    suspend operator fun invoke(selectedDate:Long) {
+    suspend operator fun invoke(selectedDate: Long) {
         withContext(Dispatchers.IO) {
             taskRepository.deleteScheduledCompletedTasksOfSelectedDay(selectedDate)
         }

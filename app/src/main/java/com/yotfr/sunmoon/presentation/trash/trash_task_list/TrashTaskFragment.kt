@@ -31,15 +31,14 @@ import com.google.android.material.timepicker.TimeFormat
 import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentTrashTaskBinding
-import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.adapter.*
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.event.TrashTaskEvent
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.event.TrashTaskUiEvent
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
+import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
-
 
 @AndroidEntryPoint
 class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
@@ -60,59 +59,61 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentTrashTaskBinding.bind(view)
 
-        //inflateMenu
+        // inflateMenu
         val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.app_bar_menu_list, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.app_bar_menu_list, menu)
 
-                val searchItem = menu.findItem(R.id.mi_action_search)
-                searchView = searchItem.actionView as SearchView
+                    val searchItem = menu.findItem(R.id.mi_action_search)
+                    searchView = searchItem.actionView as SearchView
 
-                val pendingQuery = viewModel.searchQuery.value
-                if (pendingQuery.isNotEmpty()) {
-                    searchItem.expandActionView()
-                    searchView?.setQuery(pendingQuery, false)
-                }
+                    val pendingQuery = viewModel.searchQuery.value
+                    if (pendingQuery.isNotEmpty()) {
+                        searchItem.expandActionView()
+                        searchView?.setQuery(pendingQuery, false)
+                    }
 
-                searchView?.onQueryTextChanged {
-                    viewModel.onEvent(
-                        TrashTaskEvent.UpdateSearchQuery(
-                            searchQuery = it
+                    searchView?.onQueryTextChanged {
+                        viewModel.onEvent(
+                            TrashTaskEvent.UpdateSearchQuery(
+                                searchQuery = it
+                            )
                         )
-                    )
+                    }
                 }
-            }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.mi_delete_all_tasks -> {
-                        showDeleteAllDialog { deleteOption ->
-                            showConfirmationDialog {
-                                when (deleteOption) {
-                                    DeleteOption.ALL_TRASHED -> {
-                                        viewModel.onEvent(
-                                            TrashTaskEvent.DeleteAllTrashedTask
-                                        )
-
-                                    }
-                                    DeleteOption.COMPLETED_TRASHED -> {
-                                        viewModel.onEvent(
-                                            TrashTaskEvent.DeleteAllTrashedCompletedTask
-                                        )
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.mi_delete_all_tasks -> {
+                            showDeleteAllDialog { deleteOption ->
+                                showConfirmationDialog {
+                                    when (deleteOption) {
+                                        DeleteOption.ALL_TRASHED -> {
+                                            viewModel.onEvent(
+                                                TrashTaskEvent.DeleteAllTrashedTask
+                                            )
+                                        }
+                                        DeleteOption.COMPLETED_TRASHED -> {
+                                            viewModel.onEvent(
+                                                TrashTaskEvent.DeleteAllTrashedCompletedTask
+                                            )
+                                        }
                                     }
                                 }
                             }
+                            true
                         }
-                        true
+                        else -> false
                     }
-                    else -> false
                 }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
 
-
-        //initRvAdapters
+        // initRvAdapters
         val linearLayoutManager = LinearLayoutManager(requireContext())
         uncompletedTrashTaskAdapter = TrashedUncompletedTaskListAdapter()
 
@@ -148,7 +149,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
 
         initSwipeToDelete()
 
-        //collect uiState
+        // collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { taskState ->
@@ -162,13 +163,13 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             }
         }
 
-        //collect uiEvents
+        // collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         is TrashTaskUiEvent.ShowRestoreSnackbar -> {
-                            showRestoreTaskSnackbar{
+                            showRestoreTaskSnackbar {
                                 uiEvent.task.remindDelayTime?.let {
                                     setAlarm(
                                         taskTitle = uiEvent.task.taskDescription,
@@ -228,7 +229,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
         }
     }
 
-    //show date time change dialog in case restoring deleted task is outdated
+    // show date time change dialog in case restoring deleted task is outdated
     private fun showDateTimeChangeDialog(
         onNeutral: () -> Unit,
         onPositive: () -> Unit
@@ -246,7 +247,8 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
     private fun showDateTimePicker(
         currentTimeFormat: Int,
         onResult: (
-            selectedDate: Long?, selectedTime: Long?
+            selectedDate: Long?,
+            selectedTime: Long?
         ) -> Unit
     ) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
@@ -351,16 +353,20 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
 
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun setAlarm(
-        taskTitle: String, taskId: Long, remindTime: Long
+        taskTitle: String,
+        taskId: Long,
+        remindTime: Long
     ) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra("taskTitle", taskTitle)
         intent.putExtra("taskId", taskId)
-        intent.putExtra("destination",0)
+        intent.putExtra("destination", 0)
         val pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
-            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+            taskId.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, remindTime, pendingIntent)
     }
@@ -407,7 +413,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
             .show()
     }
 
-    //initialize itemTouchCallback
+    // initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemRemoved = { positionToRemove: Int ->
             val task = uncompletedTrashTaskAdapter.currentList[positionToRemove]
@@ -450,7 +456,7 @@ class TrashTaskFragment : Fragment(R.layout.fragment_trash_task) {
         ItemTouchHelper(trashedTaskListItemCallback).attachToRecyclerView(binding.fragmentTrashTaskRv)
     }
 
-    //enum for delete dialog options
+    // enum for delete dialog options
     enum class DeleteOption {
         ALL_TRASHED, COMPLETED_TRASHED
     }

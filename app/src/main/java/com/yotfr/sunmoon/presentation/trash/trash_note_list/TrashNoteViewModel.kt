@@ -23,28 +23,28 @@ class TrashNoteViewModel @Inject constructor(
 
     private val trashNoteMapper = TrashNoteMapper()
 
-    //state for search view
+    // state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
     private val _uiState = MutableStateFlow<TrashNoteUiState?>(null)
     val uiState = _uiState.asStateFlow()
 
-    //uiEvents channel
+    // uiEvents channel
     private val _uiEvent = Channel<TrashNoteUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        //get trashed notes
+        // get trashed notes
         viewModelScope.launch {
             combine(
                 dataStoreRepository.getDateFormat(),
                 noteUseCase.getTrashedNoteList(
                     searchQuery = _searchQuery
                 )
-            ){ dateFormat, notes ->
-                Pair(dateFormat,notes)
-            }.collect{
+            ) { dateFormat, notes ->
+                Pair(dateFormat, notes)
+            }.collect {
                 _uiState.value = TrashNoteUiState(
                     notes = it.second.map { note ->
                         trashNoteMapper.fromDomain(note, it.first ?: "yyyy/MM/dd")
@@ -57,7 +57,7 @@ class TrashNoteViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: TrashNoteEvent) {
         when (event) {
             is TrashNoteEvent.DeleteTrashedNote -> {
@@ -68,9 +68,11 @@ class TrashNoteViewModel @Inject constructor(
                         )
                     )
                 }
-                sendToUi(TrashNoteUiEvent.ShowUndoDeleteSnackbar(
-                    note = event.note
-                ))
+                sendToUi(
+                    TrashNoteUiEvent.ShowUndoDeleteSnackbar(
+                        note = event.note
+                    )
+                )
             }
             is TrashNoteEvent.RestoreTrashedNote -> {
                 viewModelScope.launch {
@@ -102,11 +104,10 @@ class TrashNoteViewModel @Inject constructor(
         }
     }
 
-    //send uiEvents to uiEvent channel
+    // send uiEvents to uiEvent channel
     private fun sendToUi(event: TrashNoteUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
-
 }

@@ -28,8 +28,8 @@ class GetCategoryWithNotes(
                 categoryRepository.getCategoryWithNotes(selectedCategory ?: -1L)
                     .map { catWithNotes ->
                         val filteredNotes = catWithNotes.notes.filter { note ->
-                            (note.title.contains(searchQuery) || note.text.contains(searchQuery))
-                                    && !note.archived && !note.trashed
+                            (note.title.contains(searchQuery) || note.text.contains(searchQuery)) &&
+                                !note.archived && !note.trashed
                         }
                         val sortedNotes = filteredNotes.sortedByDescending { it.isPinned }
                         categoryMapper.mapFromEntity(

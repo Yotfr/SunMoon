@@ -6,13 +6,13 @@ import com.yotfr.sunmoon.domain.repository.note.CategoryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AddCategory (
+class AddCategory(
     private val categoryRepository: CategoryRepository
 ) {
     private val categoryMapper = CategoryMapper()
 
-    suspend operator fun invoke(category:Category){
-        withContext(Dispatchers.IO){
+    suspend operator fun invoke(category: Category) {
+        withContext(Dispatchers.IO) {
             categoryRepository.upsertCategory(categoryMapper.mapToEntity(category))
         }
     }

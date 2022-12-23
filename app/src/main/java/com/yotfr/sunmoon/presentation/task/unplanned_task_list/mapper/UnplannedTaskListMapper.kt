@@ -6,7 +6,6 @@ import java.lang.IllegalArgumentException
 
 class UnplannedTaskListMapper {
     fun fromDomain(domainModel: Task): UnplannedTaskListModel {
-
         return UnplannedTaskListModel(
             taskId = domainModel.taskId ?: throw IllegalArgumentException("Not found taskId"),
             taskDescription = domainModel.taskDescription,
@@ -39,13 +38,17 @@ class UnplannedTaskListMapper {
         )
     }
 
-    fun fromDomainList(initial:List<Task>):List<UnplannedTaskListModel>{
+    fun fromDomainList(initial: List<Task>): List<UnplannedTaskListModel> {
         return initial.map { fromDomain(it) }
     }
 
-    private fun calculateProgress(domainModel: Task):Int {
+    private fun calculateProgress(domainModel: Task): Int {
         if (domainModel.isCompleted) return 100
-        return ((domainModel.subTasks.count { it.completionStatus }.toDouble() /
-                domainModel.subTasks.size) * 100).toInt()
+        return (
+            (
+                domainModel.subTasks.count { it.completionStatus }.toDouble() /
+                    domainModel.subTasks.size
+                ) * 100
+            ).toInt()
     }
 }

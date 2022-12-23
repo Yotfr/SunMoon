@@ -45,17 +45,15 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            dataStoreRepository.getTimeFormat().collect{
+            dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
                 initState()
             }
         }
     }
 
-
-
     fun onEvent(event: BottomSheetTaskDateSelectorEvent) {
-        when(event){
+        when (event) {
             is BottomSheetTaskDateSelectorEvent.DateTimeChanged -> {
                 _uiState.value
                 event.date?.let {
@@ -76,9 +74,10 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
             is BottomSheetTaskDateSelectorEvent.SaveDateTimePressed -> {
                 sendToUi(
                     BottomSheetDateSelectorUiEvent.SaveDateTime(
-                    date = _uiState.value.selectedDate ?: BottomSheetAddTaskFragment.WITHOUT_SELECTED_DATE,
-                    time = _uiState.value.selectedTime ?: BottomSheetAddTaskFragment.WITHOUT_SELECTED_TIME
-                ))
+                        date = _uiState.value.selectedDate ?: BottomSheetAddTaskFragment.WITHOUT_SELECTED_DATE,
+                        time = _uiState.value.selectedTime ?: BottomSheetAddTaskFragment.WITHOUT_SELECTED_TIME
+                    )
+                )
             }
             is BottomSheetTaskDateSelectorEvent.ClearDateTime -> {
                 if (isClearNeeded.value) {
@@ -95,21 +94,20 @@ class BottomSheetTaskDateSelectorViewModel @Inject constructor(
         }
     }
 
-    private fun sendToUi(uiEvent: BottomSheetDateSelectorUiEvent){
+    private fun sendToUi(uiEvent: BottomSheetDateSelectorUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(uiEvent)
         }
     }
 
     private fun initState() {
-        val date =  if (selectedDate == BottomSheetTaskDateSelectorFragment.WITHOUT_DATE) null
+        val date = if (selectedDate == BottomSheetTaskDateSelectorFragment.WITHOUT_DATE) null
         else selectedDate
-        val time =  if (selectedTime == BottomSheetTaskDateSelectorFragment.WITHOUT_TIME) null
+        val time = if (selectedTime == BottomSheetTaskDateSelectorFragment.WITHOUT_TIME) null
         else selectedTime
         _uiState.value = _uiState.value.copy(
             selectedDate = date,
             selectedTime = time
         )
     }
-
 }

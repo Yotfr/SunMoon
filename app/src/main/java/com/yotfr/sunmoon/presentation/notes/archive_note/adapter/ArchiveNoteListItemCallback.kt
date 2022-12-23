@@ -20,9 +20,9 @@ class ArchiveNoteListItemCallback(
     val onUnarchiveItemNote: (Int) -> Unit
 ) : ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE,
-    ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT,
+    ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
 
-    ) {
+) {
     private val iconBounds = Rect()
     private val backgroundRect = RectF()
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -42,7 +42,6 @@ class ArchiveNoteListItemCallback(
             ItemTouchHelper.LEFT -> {
                 onUnarchiveItemNote(viewHolder.bindingAdapterPosition)
             }
-
         }
     }
 
@@ -105,20 +104,20 @@ class ArchiveNoteListItemCallback(
         val activeColorArchive = typedValueActiveArchive.data
 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            if (abs(dX) > layoutMargin && dX > 0 ){
-                if (abs(dX) < (itemView.width*0.4f) ) {
+            if (abs(dX) > layoutMargin && dX > 0) {
+                if (abs(dX) < (itemView.width * 0.4f)) {
                     drawDeleteBackground(c, itemView, inactiveColor)
                     drawDeleteIcon(c, itemView)
-                }else {
-                    drawDeleteBackground(c,itemView,activeColor)
+                } else {
+                    drawDeleteBackground(c, itemView, activeColor)
                     drawDeleteIcon(c, itemView)
                 }
-            }else if (abs(dX) > layoutMargin && dX < 0 ) {
-                if (abs(dX) > (itemView.width*0.4f) ) {
+            } else if (abs(dX) > layoutMargin && dX < 0) {
+                if (abs(dX) > (itemView.width * 0.4f)) {
                     drawUnarchiveBackground(c, itemView, inactiveColorArchive)
                     drawUnarchiveIcon(c, itemView)
-                }else {
-                    drawUnarchiveBackground(c,itemView,activeColorArchive)
+                } else {
+                    drawUnarchiveBackground(c, itemView, activeColorArchive)
                     drawUnarchiveIcon(c, itemView)
                 }
             }
@@ -126,14 +125,14 @@ class ArchiveNoteListItemCallback(
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    private fun drawDeleteIcon(canvas: Canvas, itemView: View){
+    private fun drawDeleteIcon(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
         val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
 
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -162,17 +161,18 @@ class ArchiveNoteListItemCallback(
         icon.draw(canvas)
     }
 
-    private fun drawUnarchiveIcon(canvas: Canvas, itemView: View){
+    private fun drawUnarchiveIcon(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
         val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin_)
 
         val icon = ResourcesCompat.getDrawable(
-            itemView.resources, R.drawable.ic_archive_gesture,
+            itemView.resources,
+            R.drawable.ic_archive_gesture,
             itemView.context.theme
         ) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -228,5 +228,4 @@ class ArchiveNoteListItemCallback(
         }
         canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
-
 }

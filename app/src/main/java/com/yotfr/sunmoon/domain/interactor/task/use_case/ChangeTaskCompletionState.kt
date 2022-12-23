@@ -11,7 +11,7 @@ class ChangeTaskCompletionState(
 ) {
     private val taskMapper = TaskMapper()
 
-    //complete/undone task
+    // complete/undone task
     suspend operator fun invoke(task: Task) {
         withContext(Dispatchers.IO) {
             taskRepository.upsertTask(

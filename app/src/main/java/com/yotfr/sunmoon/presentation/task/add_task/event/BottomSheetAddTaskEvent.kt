@@ -11,11 +11,10 @@ sealed interface BottomSheetAddTaskEvent {
     ) : BottomSheetAddTaskEvent
 
     data class ChangeIsFromDateSelectorState(
-        val isFromDateSelector:Boolean
+        val isFromDateSelector: Boolean
     ) : BottomSheetAddTaskEvent
 
     object ClearDateTime : BottomSheetAddTaskEvent
 
     object NavigateToDateSelector : BottomSheetAddTaskEvent
-
 }

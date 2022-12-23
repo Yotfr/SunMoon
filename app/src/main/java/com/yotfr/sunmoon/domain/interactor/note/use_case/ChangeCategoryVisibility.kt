@@ -11,7 +11,7 @@ class ChangeCategoryVisibility(
 ) {
     private val categoryMapper = CategoryMapper()
 
-    //change category visibility from noteList fragment
+    // change category visibility from noteList fragment
     suspend operator fun invoke(category: Category) {
         withContext(Dispatchers.IO) {
             categoryRepository.upsertCategory(

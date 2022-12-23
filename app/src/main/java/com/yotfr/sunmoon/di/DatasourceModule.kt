@@ -10,14 +10,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 class DatasourceModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabases(@ApplicationContext appContext:Context):AppDataBase {
+    fun provideAppDatabases(@ApplicationContext appContext: Context): AppDataBase {
         return Room.databaseBuilder(
             appContext,
             AppDataBase::class.java,
@@ -26,25 +25,22 @@ class DatasourceModule {
     }
 
     @Provides
-    fun provideCategoryDao(appDataBase: AppDataBase):CategoryDao{
+    fun provideCategoryDao(appDataBase: AppDataBase): CategoryDao {
         return appDataBase.categoryDao
     }
 
     @Provides
-    fun provideNoteDao(appDataBase: AppDataBase):NoteDao{
+    fun provideNoteDao(appDataBase: AppDataBase): NoteDao {
         return appDataBase.noteDao
     }
 
     @Provides
-    fun provideSubTaskDao(appDataBase: AppDataBase):SubTaskDao{
+    fun provideSubTaskDao(appDataBase: AppDataBase): SubTaskDao {
         return appDataBase.subTaskDao
     }
 
     @Provides
-    fun provideTaskDao(appDataBase: AppDataBase):TaskDao{
+    fun provideTaskDao(appDataBase: AppDataBase): TaskDao {
         return appDataBase.taskDao
     }
-
-
-
 }

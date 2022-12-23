@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class AddCategoryDialogViewModel @Inject constructor(
     private val noteUseCase: NoteUseCase,
@@ -24,20 +23,21 @@ class AddCategoryDialogViewModel @Inject constructor(
 
     private val addCategoryDialogMapper = AddCategoryDialogMapper()
 
-    //state for categoryId coming from manageCategories
+    // state for categoryId coming from manageCategories
     private val categoryId = state.get<Long>("categoryId")
-    //state for categoryDescription coming from manageCategories
+
+    // state for categoryDescription coming from manageCategories
     private val categoryDescription = state.get<String>("categoryDescription")
 
-    //state for categoryDescription
+    // state for categoryDescription
     private val _addCategoryDescriptionState = MutableStateFlow("")
     val addCategoryDescriptionState = _addCategoryDescriptionState.asStateFlow()
 
     private val _addCategoryUiState = MutableStateFlow(AddCategoryDialogModel())
 
     init {
-        //update categoryDescription state text and uiState if editing an existing category
-        _addCategoryDescriptionState.value  = categoryDescription ?: ""
+        // update categoryDescription state text and uiState if editing an existing category
+        _addCategoryDescriptionState.value = categoryDescription ?: ""
         if (categoryId != AddCategoryDialogFragment.WITHOUT_CATEGORY_ID) {
             viewModelScope.launch {
                 noteUseCase.getCategoryById(
@@ -51,7 +51,7 @@ class AddCategoryDialogViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: AddCategoryDialogEvent) {
         when (event) {
             is AddCategoryDialogEvent.AddCategory -> {

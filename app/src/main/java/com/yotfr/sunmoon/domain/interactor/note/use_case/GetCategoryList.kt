@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class GetCategoryList (
+class GetCategoryList(
     private val categoryRepository: CategoryRepository
 ) {
     private val categoryMapper = CategoryMapper()
 
-    suspend operator fun invoke():Flow<List<Category>> = withContext(Dispatchers.IO){
-       categoryRepository.getAllCategories().map { categoryMapper.mapFromEntityList(it) }
+    suspend operator fun invoke(): Flow<List<Category>> = withContext(Dispatchers.IO) {
+        categoryRepository.getAllCategories().map { categoryMapper.mapFromEntityList(it) }
     }
 }

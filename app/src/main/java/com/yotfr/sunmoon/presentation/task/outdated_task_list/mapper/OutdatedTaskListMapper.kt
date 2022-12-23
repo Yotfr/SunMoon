@@ -11,7 +11,6 @@ class OutdatedTaskListMapper {
         sdfPattern: String,
         currentTime: Long
     ): OutdatedTaskListModel {
-
         return OutdatedTaskListModel(
             taskId = domainModel.taskId ?: throw IllegalArgumentException("Not found taskId"),
             taskDescription = domainModel.taskDescription,
@@ -59,8 +58,12 @@ class OutdatedTaskListMapper {
 
     private fun calculateProgress(domainModel: Task): Int {
         if (domainModel.isCompleted) return 100
-        return ((domainModel.subTasks.count { it.completionStatus }.toDouble() /
-                domainModel.subTasks.size) * 100).toInt()
+        return (
+            (
+                domainModel.subTasks.count { it.completionStatus }.toDouble() /
+                    domainModel.subTasks.size
+                ) * 100
+            ).toInt()
     }
 
     private fun formatTime(time: Long?, sdfPattern: String): String {
@@ -78,5 +81,4 @@ class OutdatedTaskListMapper {
         val overDueTime = currentDate - scheduledDate
         return sdf.format(overDueTime)
     }
-
 }

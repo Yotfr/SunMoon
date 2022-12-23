@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 class GetUnplannedTaskList(
-    private val taskRepository: TaskRepository,
+    private val taskRepository: TaskRepository
 ) {
     private val taskMapper = TaskMapper()
 
@@ -17,10 +17,10 @@ class GetUnplannedTaskList(
     suspend operator fun invoke(searchQuery: MutableStateFlow<String>): Flow<Pair<List<Task>, List<Task>>> =
         withContext(Dispatchers.IO) {
             searchQuery.flatMapLatest { searchQuery ->
-                val uncompletedTasks = taskRepository.getUnplannedUserTasks(
+                val uncompletedTasks = taskRepository.getUnplannedTasks(
                     searchQuery = searchQuery
                 ).map { taskMapper.mapFromEntityList(it) }
-                val completedTasks = taskRepository.getUnplannedCompletedUserTasks(
+                val completedTasks = taskRepository.getUnplannedCompletedTasks(
                     searchQuery = searchQuery
                 ).map { taskMapper.mapFromEntityList(it) }
                 combine(
@@ -32,4 +32,3 @@ class GetUnplannedTaskList(
             }
         }
 }
-

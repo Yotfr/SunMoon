@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.settings.settings_root
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
@@ -17,35 +16,33 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
-    //state for settings
+    // state for settings
     private val _dateTimeUiState = MutableStateFlow(SettingsUiStateModel())
     val dateTimeUiState = _dateTimeUiState.asStateFlow()
 
     private val _languageUiState = MutableStateFlow(LanguageCode.ENGLISH)
     val languageUiState = _languageUiState.asStateFlow()
 
-    //uiEvents channel
+    // uiEvents channel
     private val _uiEvent = Channel<SettingsUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        //get language
+        // get language
         viewModelScope.launch {
             val language = dataStoreRepository.getLanguage()
-            _languageUiState.value = when(language){
-                "en" -> {LanguageCode.ENGLISH}
-                "ru" -> {LanguageCode.RUSSIAN}
-                else -> {LanguageCode.ENGLISH}
+            _languageUiState.value = when (language) {
+                "en" -> { LanguageCode.ENGLISH }
+                "ru" -> { LanguageCode.RUSSIAN }
+                else -> { LanguageCode.ENGLISH }
             }
-            Log.d("TEST","collected ${_languageUiState.value}")
         }
-        //get date&time format
+        // get date&time format
         viewModelScope.launch {
             combine(
                 dataStoreRepository.getDateFormat(),
@@ -67,7 +64,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: SettingsEvent) {
         when (event) {
             is SettingsEvent.ChangeDateFormat -> {
@@ -96,20 +93,14 @@ class SettingsViewModel @Inject constructor(
                     result.await()
                     sendToUi(SettingsUiEvent.RestartActivity)
                 }
-
-                Log.d("TEST","changed ${event.language.code}")
-
             }
         }
     }
 
-    //send uiEvents to uiEvent channel
-    //TODO:useless
+    // send uiEvents to uiEvent channel
     private fun sendToUi(uiEvent: SettingsUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(uiEvent)
         }
     }
-
-
 }

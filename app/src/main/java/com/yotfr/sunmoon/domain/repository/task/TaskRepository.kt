@@ -6,38 +6,38 @@ import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
 
-    suspend fun upsertTask(taskEntity: TaskEntity):Long
+    suspend fun upsertTask(taskEntity: TaskEntity): Long
 
-    suspend fun getTaskById(taskId:Long): Flow<TaskWithSubTasksRelation?>
+    suspend fun getTaskById(taskId: Long): Flow<TaskWithSubTasksRelation?>
 
     suspend fun deleteTask(taskEntity: TaskEntity)
 
-    fun getScheduledUserTasks(
-        selectedDate:Long,
+    fun getScheduledTasks(
+        selectedDate: Long,
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>>
 
-    fun getScheduledCompletedUserTasks(
-        selectedDate:Long,
+    fun getScheduledCompletedTasks(
+        selectedDate: Long,
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>>
 
-    fun getUnplannedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getUnplannedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
-    fun getUnplannedCompletedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getUnplannedCompletedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
-    fun getTrashedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getTrashedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
-    fun getTrashedCompletedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getTrashedCompletedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
-    fun getOutdatedUserTasks(
+    fun getOutdatedTasks(
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>>
 
-    fun getOutdatedCompletedUserTasks(
+    fun getOutdatedCompletedTasks(
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>>
@@ -52,9 +52,9 @@ interface TaskRepository {
 
     suspend fun deleteAllScheduledCompletedTasks()
 
-    suspend fun deleteScheduledTasksOfSelectedDay(scheduledDate:Long)
+    suspend fun deleteScheduledTasksOfSelectedDay(scheduledDate: Long)
 
-    suspend fun deleteScheduledCompletedTasksOfSelectedDay(scheduledDate:Long)
+    suspend fun deleteScheduledCompletedTasksOfSelectedDay(scheduledDate: Long)
 
     suspend fun deleteAllOutdatedTasks(expDate: Long)
 
@@ -64,5 +64,5 @@ interface TaskRepository {
 
     suspend fun deleteAllUnplannedCompletedTasks()
 
-    suspend fun getAllremindedTasks():List<TaskEntity>
+    suspend fun getAllRemindedTasks(): List<TaskEntity>
 }

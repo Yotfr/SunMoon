@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class CategoryEntity(
-    @PrimaryKey(autoGenerate = true) val categoryId:Long?,
-    val categoryDescription:String,
-    val isVisible:Boolean
+    @PrimaryKey(autoGenerate = true) val categoryId: Long?,
+    val categoryDescription: String,
+    val isVisible: Boolean
 )

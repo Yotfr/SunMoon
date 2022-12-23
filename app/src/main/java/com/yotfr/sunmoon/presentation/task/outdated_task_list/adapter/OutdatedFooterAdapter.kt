@@ -23,7 +23,6 @@ class OutdatedFooterAdapter :
         return R.layout.item_outdated_task_footer
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OutdatedFooterViewHolder {
         return OutdatedFooterViewHolder(
             ItemOutdatedTaskFooterBinding.inflate(
@@ -45,7 +44,6 @@ class OutdatedFooterAdapter :
             binding.scheduledFooter.visibility = if (
                 headerState.isVisible
             ) View.VISIBLE else View.GONE
-
         }
     }
 }

@@ -16,7 +16,7 @@ interface UnplannedCompletedTaskDelegate {
     fun taskCheckBoxPressed(task: UnplannedTaskListModel)
 }
 
-class UnplannedCompletedTaskDiffCallback: DiffUtil.ItemCallback<UnplannedTaskListModel>() {
+class UnplannedCompletedTaskDiffCallback : DiffUtil.ItemCallback<UnplannedTaskListModel>() {
 
     override fun areItemsTheSame(
         oldItem: UnplannedTaskListModel,
@@ -30,19 +30,16 @@ class UnplannedCompletedTaskDiffCallback: DiffUtil.ItemCallback<UnplannedTaskLis
         newItem: UnplannedTaskListModel
     ): Boolean {
         return oldItem == newItem
-
     }
 }
 
-
 class UnplannedCompletedTaskListAdapter :
     ListAdapter<UnplannedTaskListModel,
-            UnplannedCompletedTaskListAdapter.UnplannedCompletedTaskViewHolder>(
+        UnplannedCompletedTaskListAdapter.UnplannedCompletedTaskViewHolder>(
         UnplannedCompletedTaskDiffCallback()
-            ) {
+    ) {
 
     private var delegate: UnplannedCompletedTaskDelegate? = null
-
 
     fun attachDelegate(delegate: UnplannedCompletedTaskDelegate) {
         this.delegate = delegate
@@ -57,7 +54,8 @@ class UnplannedCompletedTaskListAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 
@@ -66,7 +64,7 @@ class UnplannedCompletedTaskListAdapter :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return  R.layout.item_unplanned_completed_task
+        return R.layout.item_unplanned_completed_task
     }
 
     class UnplannedCompletedTaskViewHolder(

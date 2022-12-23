@@ -25,7 +25,7 @@ class TaskMapper {
         )
     }
 
-  fun mapToEntity(domainModel: Task): TaskEntity {
+    fun mapToEntity(domainModel: Task): TaskEntity {
         return TaskEntity(
             taskId = domainModel.taskId,
             taskDescription = domainModel.taskDescription,
@@ -40,7 +40,7 @@ class TaskMapper {
         )
     }
 
-   fun mapFromEntityList(initial: List<TaskWithSubTasksRelation>): List<Task> {
+    fun mapFromEntityList(initial: List<TaskWithSubTasksRelation>): List<Task> {
         return initial.map { mapFromEntity(it) }
     }
 }

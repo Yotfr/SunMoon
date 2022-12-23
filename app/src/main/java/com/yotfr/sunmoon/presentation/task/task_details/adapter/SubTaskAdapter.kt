@@ -23,12 +23,10 @@ class SubTaskDiffCallback : DiffUtil.ItemCallback<SubTaskModel>() {
 
     override fun areItemsTheSame(oldItem: SubTaskModel, newItem: SubTaskModel): Boolean {
         return oldItem.taskId == newItem.taskId
-
     }
 
     override fun areContentsTheSame(oldItem: SubTaskModel, newItem: SubTaskModel): Boolean {
         return oldItem == newItem
-
     }
 }
 
@@ -50,7 +48,9 @@ class SubTaskAdapter : ListAdapter<SubTaskModel, RecyclerView.ViewHolder>(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    ), delegate, EditTextListener()
+                    ),
+                    delegate,
+                    EditTextListener()
                 )
             }
             R.layout.item_add_subtask -> {
@@ -59,7 +59,8 @@ class SubTaskAdapter : ListAdapter<SubTaskModel, RecyclerView.ViewHolder>(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    ), delegate
+                    ),
+                    delegate
                 )
             }
             else -> throw IllegalArgumentException("Invalid viewType")
@@ -82,7 +83,6 @@ class SubTaskAdapter : ListAdapter<SubTaskModel, RecyclerView.ViewHolder>(
         return if (position == currentList.size) R.layout.item_add_subtask
         else R.layout.item_subtask
     }
-
 
     override fun getItemCount(): Int {
         val count = super.getItemCount()
@@ -155,6 +155,4 @@ class SubTaskAdapter : ListAdapter<SubTaskModel, RecyclerView.ViewHolder>(
         override fun afterTextChanged(p0: Editable?) {
         }
     }
-
-
 }

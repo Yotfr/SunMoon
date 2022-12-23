@@ -25,7 +25,7 @@ class GetScheduledTaskList(
         ) { selectedDate, searchQuery ->
             Pair(selectedDate, searchQuery)
         }.flatMapLatest { (selectedDate, searchQuery) ->
-            taskRepository.getScheduledUserTasks(
+            taskRepository.getScheduledTasks(
                 selectedDate,
                 searchQuery,
                 currentDate
@@ -39,7 +39,7 @@ class GetScheduledTaskList(
         ) { selectedDate, searchQuery ->
             Pair(selectedDate, searchQuery)
         }.flatMapLatest { (selectedDate, searchQuery) ->
-            taskRepository.getScheduledCompletedUserTasks(
+            taskRepository.getScheduledCompletedTasks(
                 selectedDate,
                 searchQuery,
                 currentDate

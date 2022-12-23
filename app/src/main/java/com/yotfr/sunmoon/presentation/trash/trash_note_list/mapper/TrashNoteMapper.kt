@@ -16,7 +16,7 @@ class TrashNoteMapper {
             title = domainModel.title,
             text = domainModel.text,
             trashed = domainModel.trashed,
-            createdAt = formatDate(domainModel.created,sdfPattern),
+            createdAt = formatDate(domainModel.created, sdfPattern),
             archived = domainModel.archived,
             categoryId = domainModel.categoryId,
             createdAtLong = domainModel.created
@@ -34,11 +34,11 @@ class TrashNoteMapper {
             categoryId = uiModel.categoryId
         )
     }
-    fun fromDomainList(initial:List<Note>,sdfPattern: String):List<TrashNoteModel>{
-        return initial.map { fromDomain(it,sdfPattern) }
+    fun fromDomainList(initial: List<Note>, sdfPattern: String): List<TrashNoteModel> {
+        return initial.map { fromDomain(it, sdfPattern) }
     }
 
-    private fun formatDate(date:Long,sdfPattern:String):String {
+    private fun formatDate(date: Long, sdfPattern: String): String {
         val sdf = SimpleDateFormat(sdfPattern, Locale.getDefault())
         return sdf.format(date)
     }

@@ -40,7 +40,6 @@ class OutdatedTaskListItemCallback(
             is OutdatedCompletedTaskAdapter.OutdatedCompletedTaskViewHolder -> {
                 onCompletedItemTrashed(viewHolder.bindingAdapterPosition)
             }
-
         }
     }
 
@@ -50,7 +49,7 @@ class OutdatedTaskListItemCallback(
     ): Int {
         return if (
             viewHolder.itemViewType == R.layout.item_outdated_completed_task_header ||
-                    viewHolder.itemViewType == R.layout.item_outdated_task_footer
+            viewHolder.itemViewType == R.layout.item_outdated_task_footer
         ) {
             ItemTouchHelper.ACTION_STATE_IDLE
         } else {
@@ -89,12 +88,12 @@ class OutdatedTaskListItemCallback(
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            if (abs(dX) > layoutMargin ){
-                if (abs(dX) < (itemView.width*0.4f) ) {
+            if (abs(dX) > layoutMargin) {
+                if (abs(dX) < (itemView.width * 0.4f)) {
                     drawBackground(c, itemView, inactiveColor)
                     drawIconWithText(c, itemView)
-                }else {
-                    drawBackground(c,itemView,activeColor)
+                } else {
+                    drawBackground(c, itemView, activeColor)
                     drawIconWithText(c, itemView)
                 }
             }
@@ -109,7 +108,7 @@ class OutdatedTaskListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -133,7 +132,6 @@ class OutdatedTaskListItemCallback(
             (itemView.top + itemView.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
         val textX = itemView.left + icon.intrinsicWidth + layoutTextMargin
 
-
         canvas.drawText(text, textX.toFloat(), textY, textPaint)
         icon.bounds = iconBounds
         icon.draw(canvas)
@@ -152,5 +150,4 @@ class OutdatedTaskListItemCallback(
         }
         canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
-
 }

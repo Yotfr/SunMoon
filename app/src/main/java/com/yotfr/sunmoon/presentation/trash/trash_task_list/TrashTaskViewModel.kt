@@ -26,15 +26,15 @@ class TrashTaskViewModel @Inject constructor(
 
     private val trashedTaskListMapper = TrashedTaskListMapper()
 
-    //state for search view
+    // state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    //state for timeFormat from dataStore
+    // state for timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
-    //state for header
+    // state for header
     private val completedTasksHeaderState = MutableStateFlow(
         TrashedCompletedHeaderStateModel()
     )
@@ -42,18 +42,18 @@ class TrashTaskViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<TrashedTaskUiStateModel?>(null)
     val uiState = _uiState.asSharedFlow()
 
-    //channel for uiEvents
+    // channel for uiEvents
     private val _uiEvent = Channel<TrashTaskUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        //get timeFormat from data store
+        // get timeFormat from data store
         viewModelScope.launch {
-            dataStoreRepository.getTimeFormat().collect{
+            dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
             }
         }
-        //get trashed task
+        // get trashed task
         viewModelScope.launch {
             combine(
                 taskUseCase.getTrashedTaskListUseCase(
@@ -85,7 +85,7 @@ class TrashTaskViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: TrashTaskEvent) {
         when (event) {
             is TrashTaskEvent.ChangeCompletedTasksVisibility -> {
@@ -110,16 +110,17 @@ class TrashTaskViewModel @Inject constructor(
                         task = event.task
                     )
                 )
-
             }
             is TrashTaskEvent.RestoreTrashedTask -> {
                 if (
                     event.task.scheduledDate != null && event.task.scheduledDate < getCurrentDay()
                 ) {
-                    sendToUi(TrashTaskUiEvent.ShowDateTimeChangeDialog(
-                        task = event.task
-                    ))
-                }else {
+                    sendToUi(
+                        TrashTaskUiEvent.ShowDateTimeChangeDialog(
+                            task = event.task
+                        )
+                    )
+                } else {
                     viewModelScope.launch {
                         taskUseCase.trashUntrashTask(
                             task = trashedTaskListMapper.toDomain(
@@ -127,9 +128,11 @@ class TrashTaskViewModel @Inject constructor(
                             )
                         )
                     }
-                    sendToUi(TrashTaskUiEvent.ShowRestoreSnackbar(
-                        task = event.task
-                    ))
+                    sendToUi(
+                        TrashTaskUiEvent.ShowRestoreSnackbar(
+                            task = event.task
+                        )
+                    )
                 }
             }
             is TrashTaskEvent.UndoDeleteTrashedTask -> {
@@ -173,21 +176,21 @@ class TrashTaskViewModel @Inject constructor(
         }
     }
 
-    //send uiEvents to uiEvent channel
+    // send uiEvents to uiEvent channel
     private fun sendToUi(event: TrashTaskUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
 
-    //expand or collapse header
+    // expand or collapse header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
-    //get beginning of current day
+    // get beginning of current day
     private fun getCurrentDay(): Long {
         val currentDayCalendar = Calendar.getInstance(Locale.getDefault())
         currentDayCalendar.apply {

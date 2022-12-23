@@ -24,8 +24,8 @@ class NoteRepositoryImpl @Inject constructor(
         return noteDao.findNoteById(id)
     }
 
-    override fun getTrashedUserNotes(searchQuery: String): Flow<List<NoteEntity>> {
-        return noteDao.getTrashedUserNotes(searchQuery)
+    override fun getTrashedNotes(searchQuery: String): Flow<List<NoteEntity>> {
+        return noteDao.getTrashedNotes(searchQuery)
     }
 
     override fun getAllNotes(searchQuery: String): Flow<List<NoteEntity>> {

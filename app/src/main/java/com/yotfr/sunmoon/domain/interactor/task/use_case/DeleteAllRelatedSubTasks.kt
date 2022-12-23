@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 class DeleteAllRelatedSubTasks(
     private val subTaskRepository: SubTaskRepository
 ) {
-    suspend operator fun invoke(taskId:Long) {
+    suspend operator fun invoke(taskId: Long) {
         withContext(Dispatchers.IO) {
             subTaskRepository.deleteAllRelatedSubTasks(
                 taskId = taskId

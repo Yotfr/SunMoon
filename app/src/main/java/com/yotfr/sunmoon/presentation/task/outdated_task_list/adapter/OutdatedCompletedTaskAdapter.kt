@@ -35,7 +35,7 @@ class OutdatedCompletedTaskDiffCallback : DiffUtil.ItemCallback<OutdatedTaskList
 
 class OutdatedCompletedTaskAdapter :
     ListAdapter<OutdatedTaskListModel,
-            OutdatedCompletedTaskAdapter.OutdatedCompletedTaskViewHolder>(
+        OutdatedCompletedTaskAdapter.OutdatedCompletedTaskViewHolder>(
         OutdatedCompletedTaskDiffCallback()
     ) {
 
@@ -54,7 +54,8 @@ class OutdatedCompletedTaskAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 
@@ -72,7 +73,6 @@ class OutdatedCompletedTaskAdapter :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(outdatedTask: OutdatedTaskListModel) {
             binding.apply {
-
                 itemOutdatedCompletedTaskTaskProgress.progress = outdatedTask.completionProgress
                 itemOutdatedCompletedTaskTvScheduledTime.text = outdatedTask.scheduledFormattedTime
                 itemOutdatedCompletedTaskTvScheduledTime.isVisible =

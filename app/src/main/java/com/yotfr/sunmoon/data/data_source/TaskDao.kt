@@ -20,7 +20,7 @@ interface TaskDao {
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isCompleted = 0 AND isTrashed = 0  AND scheduledDate = :selectedDate AND taskDescription LIKE '%' || :searchQuery || '%' AND scheduledDate >= :expDate ORDER BY importance DESC, scheduledTime")
-    fun getUserScheduledTasks(
+    fun getScheduledTasks(
         selectedDate: Long,
         searchQuery: String,
         expDate: Long
@@ -28,7 +28,7 @@ interface TaskDao {
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isCompleted = 1 AND isTrashed = 0  AND scheduledDate = :selectedDate AND taskDescription LIKE '%' || :searchQuery || '%' AND scheduledDate >= :expDate ORDER BY scheduledTime")
-    fun getUserScheduledCompletedTasks(
+    fun getScheduledCompletedTasks(
         selectedDate: Long,
         searchQuery: String,
         expDate: Long
@@ -36,31 +36,31 @@ interface TaskDao {
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isCompleted = 0 AND isTrashed = 0  AND scheduledDate is null AND scheduledTime is null AND taskDescription LIKE '%' || :searchQuery || '%' ORDER BY importance DESC")
-    fun getUserUnplannedTasks(
+    fun getUnplannedTasks(
         searchQuery: String
     ): Flow<List<TaskWithSubTasksRelation>>
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isCompleted = 1 AND isTrashed = 0  AND scheduledDate is null AND scheduledTime is null AND taskDescription LIKE '%' || :searchQuery || '%'")
-    fun getUserUnplannedCompletedTasks(
+    fun getUnplannedCompletedTasks(
         searchQuery: String
     ): Flow<List<TaskWithSubTasksRelation>>
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isTrashed = 1 AND isCompleted = 0 AND taskDescription LIKE '%' || :searchQuery || '%'")
-    fun getTrashedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getTrashedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isTrashed = 1 AND isCompleted = 1 AND taskDescription LIKE '%' || :searchQuery || '%'")
-    fun getTrashedCompletedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getTrashedCompletedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isCompleted = 0 AND isTrashed = 0 AND scheduledDate < :expDate AND taskDescription LIKE '%' || :searchQuery || '%'")
-    fun getOutdatedUserTasks(expDate: Long, searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getOutdatedTasks(expDate: Long, searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
     @Transaction
     @Query(value = "SELECT * FROM task WHERE isCompleted = 1 AND isTrashed = 0 AND scheduledDate < :expDate AND taskDescription LIKE '%' || :searchQuery || '%'")
-    fun getOutdatedCompletedUserTasks(expDate: Long, searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
+    fun getOutdatedCompletedTasks(expDate: Long, searchQuery: String): Flow<List<TaskWithSubTasksRelation>>
 
     @Query(value = "DELETE FROM task WHERE isTrashed = 1")
     suspend fun deleteAllTrashed()

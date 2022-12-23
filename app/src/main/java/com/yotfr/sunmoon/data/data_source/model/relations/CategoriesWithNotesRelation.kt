@@ -11,5 +11,5 @@ data class CategoriesWithNotesRelation(
         parentColumn = "categoryId",
         entityColumn = "categoryId"
     )
-    val notes:List<NoteEntity>
+    val notes: List<NoteEntity>
 )

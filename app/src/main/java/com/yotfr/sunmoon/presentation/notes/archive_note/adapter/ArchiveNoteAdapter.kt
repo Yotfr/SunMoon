@@ -13,20 +13,18 @@ interface ArchiveNoteListDelegate {
     fun noteDetailsClicked(id: Long)
 }
 
-class ArchiveNoteListDiffCallBack: DiffUtil.ItemCallback<ArchiveNoteModel>() {
+class ArchiveNoteListDiffCallBack : DiffUtil.ItemCallback<ArchiveNoteModel>() {
 
     override fun areItemsTheSame(oldItem: ArchiveNoteModel, newItem: ArchiveNoteModel): Boolean {
         return oldItem.id == newItem.id
-
     }
 
     override fun areContentsTheSame(oldItem: ArchiveNoteModel, newItem: ArchiveNoteModel): Boolean {
         return oldItem == newItem
-
     }
 }
 
-class ArchiveNoteAdapter : ListAdapter<ArchiveNoteModel,ArchiveNoteAdapter.ArchiveNoteViewHolder>(
+class ArchiveNoteAdapter : ListAdapter<ArchiveNoteModel, ArchiveNoteAdapter.ArchiveNoteViewHolder>(
     ArchiveNoteListDiffCallBack()
 ) {
 
@@ -42,7 +40,8 @@ class ArchiveNoteAdapter : ListAdapter<ArchiveNoteModel,ArchiveNoteAdapter.Archi
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 

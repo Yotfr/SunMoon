@@ -20,9 +20,9 @@ class NoteListItemCallback(
     val onArchiveItemNote: (Int) -> Unit
 ) : ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE,
-    ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT,
+    ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
 
-    ) {
+) {
     private val iconBounds = Rect()
     private val backgroundRect = RectF()
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -42,7 +42,6 @@ class NoteListItemCallback(
             ItemTouchHelper.LEFT -> {
                 onArchiveItemNote(viewHolder.bindingAdapterPosition)
             }
-
         }
     }
 
@@ -135,7 +134,7 @@ class NoteListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -169,12 +168,13 @@ class NoteListItemCallback(
         val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
 
         val icon = ResourcesCompat.getDrawable(
-            itemView.resources, R.drawable.ic_archive_gesture,
+            itemView.resources,
+            R.drawable.ic_archive_gesture,
             itemView.context.theme
         ) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -230,5 +230,4 @@ class NoteListItemCallback(
         }
         canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
-
 }

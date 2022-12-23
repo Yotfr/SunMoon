@@ -5,7 +5,7 @@ import com.yotfr.sunmoon.presentation.task.add_task.model.AddTaskUiState
 
 class AddTaskMapper {
 
-    fun toDomain(addTaskUiState: AddTaskUiState):Task{
+    fun toDomain(addTaskUiState: AddTaskUiState): Task {
         return Task(
             taskId = addTaskUiState.taskId,
             taskDescription = addTaskUiState.taskDescription ?: throw IllegalArgumentException(

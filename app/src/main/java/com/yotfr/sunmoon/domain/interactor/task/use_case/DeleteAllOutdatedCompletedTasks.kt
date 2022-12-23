@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 class DeleteAllOutdatedCompletedTasks(
     private val taskRepository: TaskRepository
 ) {
-    suspend operator fun invoke(expDate:Long) {
+    suspend operator fun invoke(expDate: Long) {
         withContext(Dispatchers.IO) {
             taskRepository.deleteAllOutdatedCompletedTasks(expDate)
         }

@@ -14,7 +14,7 @@ class GetAllRemindedTasks(
 
     suspend operator fun invoke(): List<Task> =
         withContext(Dispatchers.IO) {
-            taskRepository.getAllremindedTasks().map {
+            taskRepository.getAllRemindedTasks().map {
                 taskMapper.mapFromEntity(
                     TaskWithSubTasksRelation(
                         taskEntity = it,

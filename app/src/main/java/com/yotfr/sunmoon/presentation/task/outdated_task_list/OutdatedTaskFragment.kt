@@ -38,7 +38,6 @@ import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentOutdatedTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
-import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import com.yotfr.sunmoon.presentation.task.TaskRootFragmentDirections
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.adapter.*
 import com.yotfr.sunmoon.presentation.task.outdated_task_list.event.OutdatedTaskEvent
@@ -48,6 +47,7 @@ import com.yotfr.sunmoon.presentation.task.outdated_task_list.model.OutdatedTask
 import com.yotfr.sunmoon.presentation.task.task_details.TaskDetailsFragment
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
 import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
+import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -55,7 +55,7 @@ import java.util.*
 @AndroidEntryPoint
 class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
 
-    private var _binding: FragmentOutdatedTaskListBinding ? =null
+    private var _binding: FragmentOutdatedTaskListBinding ? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<OutdatedTaskViewModel>()
@@ -71,54 +71,58 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentOutdatedTaskListBinding.bind(view)
 
-        //inflateMenu
+        // inflateMenu
         val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.app_bar_menu_list, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.app_bar_menu_list, menu)
 
-                val searchItem = menu.findItem(R.id.mi_action_search)
-                searchView = searchItem.actionView as SearchView
+                    val searchItem = menu.findItem(R.id.mi_action_search)
+                    searchView = searchItem.actionView as SearchView
 
-                val etSearch =
-                    searchView?.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
-                etSearch?.setTextColor(requireContext().getColorFromAttr(androidx.appcompat.R.attr.colorPrimary))
+                    val etSearch =
+                        searchView?.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+                    etSearch?.setTextColor(requireContext().getColorFromAttr(androidx.appcompat.R.attr.colorPrimary))
 
-                val pendingQuery = viewModel.searchQuery.value
-                if (pendingQuery.isNotEmpty()) {
-                    searchItem.expandActionView()
-                    searchView?.setQuery(pendingQuery, false)
-                }
-
-                searchView?.onQueryTextChanged {
-                    viewModel.onEvent(
-                        OutdatedTaskEvent.UpdateSearchQuery(
-                            searchQuery = it
-                        )
-                    )
-                }
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.mi_delete_all_tasks -> {
-                        showDeleteAllDialog { deleteOption ->
-                            showConfirmationDialog {
-                                viewModel.onEvent(
-                                    OutdatedTaskEvent.DeleteTasks(
-                                        deleteOption = deleteOption
-                                    )
-                                )
-                            }
-                        }
-                        true
+                    val pendingQuery = viewModel.searchQuery.value
+                    if (pendingQuery.isNotEmpty()) {
+                        searchItem.expandActionView()
+                        searchView?.setQuery(pendingQuery, false)
                     }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        //initRvAdapters
+                    searchView?.onQueryTextChanged {
+                        viewModel.onEvent(
+                            OutdatedTaskEvent.UpdateSearchQuery(
+                                searchQuery = it
+                            )
+                        )
+                    }
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.mi_delete_all_tasks -> {
+                            showDeleteAllDialog { deleteOption ->
+                                showConfirmationDialog {
+                                    viewModel.onEvent(
+                                        OutdatedTaskEvent.DeleteTasks(
+                                            deleteOption = deleteOption
+                                        )
+                                    )
+                                }
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
+
+        // initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
         outdatedUncompletedTaskAdapter = OutdatedUncompletedTaskAdapter()
         outdatedUncompletedTaskAdapter.attachDelegate(object : OutdatedUncompletedTaskDelegate {
@@ -130,7 +134,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
                     )
                 val extras = FragmentNavigatorExtras(
                     transitionView to
-                            transitionView.transitionName
+                        transitionView.transitionName
                 )
                 navigateToDestination(
                     direction = direction,
@@ -163,7 +167,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
                     )
                 val extras = FragmentNavigatorExtras(
                     transitionView to
-                            transitionView.transitionName
+                        transitionView.transitionName
                 )
                 navigateToDestination(
                     direction = direction,
@@ -214,7 +218,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         )
         initSwipeToDelete()
 
-        //collectUiState
+        // collectUiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
@@ -228,7 +232,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
             }
         }
 
-        //collectUiEvents
+        // collectUiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
@@ -293,7 +297,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         }
     }
 
-    //initialize itemCallback
+    // initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
             val task = outdatedUncompletedTaskAdapter.currentList[positionToRemove]
@@ -321,7 +325,8 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     private fun showDateTimePicker(
         currentTimeFormat: Int,
         onResult: (
-            selectedDate: Long, selectedTime: Long?
+            selectedDate: Long,
+            selectedTime: Long?
         ) -> Unit
     ) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
@@ -398,7 +403,9 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
-            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+            taskId.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         alarmManager.cancel(pendingIntent)
     }
@@ -406,7 +413,7 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
     private fun showDeleteAllDialog(onPositive: (outdatedDeleteOption: OutdatedDeleteOption) -> Unit) {
         val dialogOptions = arrayOf(
             resources.getString(R.string.all_outdated),
-            resources.getString(R.string.outdated_completed),
+            resources.getString(R.string.outdated_completed)
         )
         val checkedItem = 0
         var selectedItem = 0
@@ -444,5 +451,4 @@ class OutdatedTaskFragment : Fragment(R.layout.fragment_outdated_task_list) {
         searchView = null
         _binding = null
     }
-
 }

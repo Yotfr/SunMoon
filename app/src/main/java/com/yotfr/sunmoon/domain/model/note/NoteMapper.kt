@@ -4,7 +4,7 @@ import com.yotfr.sunmoon.data.data_source.model.note.NoteEntity
 
 class NoteMapper {
 
-     fun mapFromEntity(entity: NoteEntity): Note {
+    fun mapFromEntity(entity: NoteEntity): Note {
         return Note(
             noteId = entity.noteId,
             isPinned = entity.isPinned,
@@ -30,7 +30,7 @@ class NoteMapper {
         )
     }
 
-   fun mapFromEntityList(initial: List<NoteEntity>): List<Note> {
+    fun mapFromEntityList(initial: List<NoteEntity>): List<Note> {
         return initial.map { mapFromEntity(it) }
     }
 }

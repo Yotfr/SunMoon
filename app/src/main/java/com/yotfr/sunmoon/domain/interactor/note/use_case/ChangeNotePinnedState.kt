@@ -11,13 +11,15 @@ class ChangeNotePinnedState(
 ) {
     private val noteMapper = NoteMapper()
 
-    //pin/unpin note
-    suspend operator fun invoke(note: Note){
+    // pin/unpin note
+    suspend operator fun invoke(note: Note) {
         withContext(Dispatchers.IO) {
             noteRepository.upsertNote(
-                noteMapper.mapToEntity(note.copy(
-                    isPinned = !note.isPinned
-                ))
+                noteMapper.mapToEntity(
+                    note.copy(
+                        isPinned = !note.isPinned
+                    )
+                )
             )
         }
     }

@@ -21,7 +21,7 @@ class TaskRepositoryImpl @Inject constructor(
         return taskDao.getTaskById(taskId)
     }
 
-    override suspend fun getAllremindedTasks(): List<TaskEntity> {
+    override suspend fun getAllRemindedTasks(): List<TaskEntity> {
         return taskDao.getAllRemindedTasks()
     }
 
@@ -29,52 +29,52 @@ class TaskRepositoryImpl @Inject constructor(
         taskDao.deleteTask(taskEntity)
     }
 
-    override fun getScheduledUserTasks(
+    override fun getScheduledTasks(
         selectedDate: Long,
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getUserScheduledTasks(selectedDate, searchQuery, expDate)
+        return taskDao.getScheduledTasks(selectedDate, searchQuery, expDate)
     }
 
-    override fun getScheduledCompletedUserTasks(
+    override fun getScheduledCompletedTasks(
         selectedDate: Long,
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getUserScheduledCompletedTasks(selectedDate, searchQuery, expDate)
+        return taskDao.getScheduledCompletedTasks(selectedDate, searchQuery, expDate)
     }
 
-    override fun getUnplannedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getUserUnplannedTasks(searchQuery)
+    override fun getUnplannedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>> {
+        return taskDao.getUnplannedTasks(searchQuery)
     }
 
-    override fun getUnplannedCompletedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getUserUnplannedCompletedTasks(searchQuery)
+    override fun getUnplannedCompletedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>> {
+        return taskDao.getUnplannedCompletedTasks(searchQuery)
     }
 
-    override fun getTrashedUserTasks(
+    override fun getTrashedTasks(
         searchQuery: String
     ): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getTrashedUserTasks(searchQuery)
+        return taskDao.getTrashedTasks(searchQuery)
     }
 
-    override fun getTrashedCompletedUserTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getTrashedCompletedUserTasks(searchQuery)
+    override fun getTrashedCompletedTasks(searchQuery: String): Flow<List<TaskWithSubTasksRelation>> {
+        return taskDao.getTrashedCompletedTasks(searchQuery)
     }
 
-    override fun getOutdatedUserTasks(
+    override fun getOutdatedTasks(
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getOutdatedUserTasks(expDate, searchQuery)
+        return taskDao.getOutdatedTasks(expDate, searchQuery)
     }
 
-    override fun getOutdatedCompletedUserTasks(
+    override fun getOutdatedCompletedTasks(
         searchQuery: String,
         expDate: Long
     ): Flow<List<TaskWithSubTasksRelation>> {
-        return taskDao.getOutdatedCompletedUserTasks(expDate, searchQuery)
+        return taskDao.getOutdatedCompletedTasks(expDate, searchQuery)
     }
 
     override suspend fun deleteAllTrashedTasks() {

@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation.settings.settings_root
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,7 +22,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 @AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
@@ -36,15 +34,15 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSettingsBinding.bind(view)
 
-        //navigate to change theme fragment
+        // navigate to change theme fragment
         binding.btnChangeTheme.setOnClickListener {
             navigateToThemePicker()
         }
 
-        //setUp actionBar
+        // setUp actionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentSettingsToolbar)
 
-        //show dateFormat picker dialog
+        // show dateFormat picker dialog
         binding.btnDateFormat.setOnClickListener {
             showDateFormatSelectorDialog(
                 viewModel.dateTimeUiState.value.datePattern
@@ -57,10 +55,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
 
-        //show timeFormat picker dialog
+        // show timeFormat picker dialog
         binding.btnTimeFormat.setOnClickListener {
             showTimeFormatSelectorDialog(
-                viewModel.dateTimeUiState.value.timeFormat,
+                viewModel.dateTimeUiState.value.timeFormat
             ) { timePattern, timeFormat ->
                 viewModel.onEvent(
                     SettingsEvent.ChangeTimeFormat(
@@ -71,12 +69,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
 
-        //show language picker dialog
+        // show language picker dialog
         binding.btnLanguage.setOnClickListener {
             showLanguageSelectorDialog(
                 currentLanguage = viewModel.languageUiState.value
-            ){ languageCode ->
-                Log.d("TEST","langCode -> $languageCode")
+            ) { languageCode ->
                 viewModel.onEvent(
                     SettingsEvent.ChangeLanguage(
                         language = languageCode
@@ -85,13 +82,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
 
-        //collectUiEvents
+        // collectUiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
                     when (uiEvent) {
                         SettingsUiEvent.RestartActivity -> {
-                            //restart activity when new language picked
+                            // restart activity when new language picked
                             requireActivity().recreate()
                         }
                     }
@@ -99,7 +96,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
     }
-
 
     private fun navigateToThemePicker() {
         val direction = SettingsFragmentDirections.actionSettingsFragmentToSettingsThemeFragment()
@@ -113,7 +109,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val dialogOptions = arrayOf(
             parseCurrentTimeToString(DatePattern.YEAR_FIRST),
             parseCurrentTimeToString(DatePattern.MONTH_FIRST),
-            parseCurrentTimeToString(DatePattern.DAY_FIRST),
+            parseCurrentTimeToString(DatePattern.DAY_FIRST)
         )
         val checkedItem = dialogOptions.indexOf(
             parseCurrentTimeToString(currentDatePattern)
@@ -137,16 +133,15 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private fun showLanguageSelectorDialog(
         currentLanguage: LanguageCode,
-        onResult: (languageCode:LanguageCode) -> Unit
+        onResult: (languageCode: LanguageCode) -> Unit
     ) {
-
         val languageOptions = arrayOf(
             getString(R.string.english),
             getString(R.string.russian)
         )
 
         val checkedItem = languageOptions.indexOf(
-            when(currentLanguage) {
+            when (currentLanguage) {
                 LanguageCode.RUSSIAN -> {
                     getString(R.string.russian)
                 }
@@ -171,10 +166,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }.show()
     }
 
-
     private fun showTimeFormatSelectorDialog(
         currentTimeFormat: TimeFormat,
-        onResultPattern: (timePattern: String, timeFormat:Int) -> Unit
+        onResultPattern: (timePattern: String, timeFormat: Int) -> Unit
     ) {
         val dialogOptions = arrayOf(
             resources.getString(R.string.system_default),
@@ -207,10 +201,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                     0 -> {
                         val isSystem24Hour =
                             android.text.format.DateFormat.is24HourFormat(requireContext())
-                        if (isSystem24Hour)
+                        if (isSystem24Hour) {
                             onResultPattern(sdfPattern24, TimeFormat.SYSTEM_DEFAULT.format)
-                        else onResultPattern(
-                            sdfPattern12, TimeFormat.SYSTEM_DEFAULT.format
+                        } else onResultPattern(
+                            sdfPattern12,
+                            TimeFormat.SYSTEM_DEFAULT.format
                         )
                     }
                     1 -> {
@@ -229,7 +224,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }.show()
     }
 
-
     private fun parseCurrentTimeToString(format: DatePattern): String {
         val pattern = format.pattern
         val sdf = SimpleDateFormat(pattern, Locale.getDefault())
@@ -241,6 +235,4 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

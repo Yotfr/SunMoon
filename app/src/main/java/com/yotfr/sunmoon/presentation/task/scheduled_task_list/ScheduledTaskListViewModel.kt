@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.*
@@ -17,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -79,9 +77,6 @@ class ScheduledTaskListViewModel @Inject constructor(
             ) { tasks, headerState, timeFormat ->
                 Quadruple(tasks.first, tasks.second, headerState, timeFormat)
             }.collect { state ->
-                Log.d("TEST", "collected $state")
-                val sdfTest = SimpleDateFormat("yyyy dd MM", Locale.getDefault())
-                Log.d("TEST", "curDate ${selectedCalendarDate.value}")
                 changeHeaderVisibility(state.second.isNotEmpty())
                 _uiState.value = ScheduledTaskListUiStateModel(
                     uncompletedTasks = scheduledTaskListMapper.fromDomainList(

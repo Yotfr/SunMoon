@@ -11,7 +11,7 @@ class ChangeTaskScheduledTime(
 ) {
     private val taskMapper = TaskMapper()
 
-    suspend operator fun invoke(task: Task, newTime:Long?) {
+    suspend operator fun invoke(task: Task, newTime: Long?) {
         withContext(Dispatchers.IO) {
             taskRepository.upsertTask(
                 taskMapper.mapToEntity(task).copy(

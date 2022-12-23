@@ -8,7 +8,7 @@ import java.util.*
 
 class NoteListMapper {
 
-    fun fromDomain(domainModel:Note, sdfPattern: String):NoteListModel{
+    fun fromDomain(domainModel: Note, sdfPattern: String): NoteListModel {
         return NoteListModel(
             id = domainModel.noteId ?: throw IllegalArgumentException(
                 "Not found noteId"
@@ -23,7 +23,7 @@ class NoteListMapper {
             categoryId = domainModel.categoryId
         )
     }
-    fun toDomain(uiModel:NoteListModel):Note{
+    fun toDomain(uiModel: NoteListModel): Note {
         return Note(
             noteId = uiModel.id,
             isPinned = uiModel.isPinned,
@@ -35,11 +35,11 @@ class NoteListMapper {
             categoryId = uiModel.categoryId
         )
     }
-    fun fromDomainList(initial:List<Note>, sdfPattern: String):List<NoteListModel>{
+    fun fromDomainList(initial: List<Note>, sdfPattern: String): List<NoteListModel> {
         return initial.map { fromDomain(it, sdfPattern) }
     }
 
-    private fun formatTime(date:Long,sdfPattern:String):String {
+    private fun formatTime(date: Long, sdfPattern: String): String {
         val sdf = SimpleDateFormat(sdfPattern, Locale.getDefault())
         return sdf.format(date)
     }

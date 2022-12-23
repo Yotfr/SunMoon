@@ -9,16 +9,16 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 class GetTrashedTaskListUseCase(
-    private val taskRepository: TaskRepository,
+    private val taskRepository: TaskRepository
 ) {
     private val taskWithSubTasksMapper = TaskMapper()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend operator fun invoke(
         searchQuery: MutableStateFlow<String>
-    ): Flow<Pair<List<Task>,List<Task>>> = withContext(Dispatchers.IO) {
-        val uncompletedTrashedTasks =  searchQuery.flatMapLatest {
-            taskRepository.getTrashedUserTasks(
+    ): Flow<Pair<List<Task>, List<Task>>> = withContext(Dispatchers.IO) {
+        val uncompletedTrashedTasks = searchQuery.flatMapLatest {
+            taskRepository.getTrashedTasks(
                 searchQuery = it
             ).map { tasks ->
                 taskWithSubTasksMapper.mapFromEntityList(
@@ -27,7 +27,7 @@ class GetTrashedTaskListUseCase(
             }
         }
         val completedTrashedTasks = searchQuery.flatMapLatest {
-            taskRepository.getTrashedCompletedUserTasks(
+            taskRepository.getTrashedCompletedTasks(
                 searchQuery = it
             ).map { tasks ->
                 taskWithSubTasksMapper.mapFromEntityList(
@@ -39,7 +39,7 @@ class GetTrashedTaskListUseCase(
             uncompletedTrashedTasks,
             completedTrashedTasks
         ) { uncompletedTrashedTasksOut, completedTrashedTasksOut ->
-            Pair(uncompletedTrashedTasksOut,completedTrashedTasksOut)
+            Pair(uncompletedTrashedTasksOut, completedTrashedTasksOut)
         }
     }
 }

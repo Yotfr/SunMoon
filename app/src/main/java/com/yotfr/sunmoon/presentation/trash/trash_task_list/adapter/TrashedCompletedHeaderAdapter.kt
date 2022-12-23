@@ -32,14 +32,14 @@ class TrashedCompletedHeaderAdapter : RecyclerView.Adapter<TrashedCompletedHeade
         return R.layout.item_trashed_completed_task_header
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompletedTaskHeaderViewHolder {
         return CompletedTaskHeaderViewHolder(
             ItemTrashedCompletedTaskHeaderBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 
@@ -49,7 +49,7 @@ class TrashedCompletedHeaderAdapter : RecyclerView.Adapter<TrashedCompletedHeade
 
     class CompletedTaskHeaderViewHolder(
         private val binding: ItemTrashedCompletedTaskHeaderBinding,
-        private val delegate:TrashedCompletedHeaderDelegate?
+        private val delegate: TrashedCompletedHeaderDelegate?
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(headerState: TrashedCompletedHeaderStateModel) {
             binding.llTrashedCompletedHeader.visibility = if (headerState.isVisible) View.VISIBLE

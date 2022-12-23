@@ -8,10 +8,10 @@ import android.os.Build
 import android.os.LocaleList
 import java.util.*
 
-
 class ContextUtils(base: Context) : ContextWrapper(base) {
 
     companion object {
+        // change app language
         fun updateLocale(c: Context, localeToSwitchTo: Locale): ContextWrapper {
             var context = c
             val resources: Resources = context.resources

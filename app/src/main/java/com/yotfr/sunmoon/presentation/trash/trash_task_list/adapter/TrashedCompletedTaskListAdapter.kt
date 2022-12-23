@@ -17,7 +17,6 @@ class TrashedCompletedTaskListAdapter : DiffUtil.ItemCallback<TrashedTaskListMod
         newItem: TrashedTaskListModel
     ): Boolean {
         return oldItem.taskId == newItem.taskId
-
     }
 
     override fun areContentsTheSame(
@@ -25,7 +24,6 @@ class TrashedCompletedTaskListAdapter : DiffUtil.ItemCallback<TrashedTaskListMod
         newItem: TrashedTaskListModel
     ): Boolean {
         return oldItem == newItem
-
     }
 }
 

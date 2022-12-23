@@ -21,7 +21,7 @@ class DeleteCategory(
                     "Cannot find categoryId"
                 )
             ).forEach { note ->
-                //change notes selected category to "All" category
+                // change notes selected category to "All" category
                 noteRepository.upsertNote(
                     note.copy(
                         categoryId = null

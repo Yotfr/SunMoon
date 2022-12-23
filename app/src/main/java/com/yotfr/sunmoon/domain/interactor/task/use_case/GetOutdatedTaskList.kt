@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 class GetOutdatedTaskList(
-    private val taskRepository: TaskRepository,
+    private val taskRepository: TaskRepository
 ) {
     private val taskMapper = TaskMapper()
 
@@ -19,13 +19,13 @@ class GetOutdatedTaskList(
         currentDate: Long
     ): Flow<Pair<List<Task>, List<Task>>> = withContext(Dispatchers.IO) {
         searchQuery.flatMapLatest { searchQuery ->
-            val uncompletedTasks = taskRepository.getOutdatedUserTasks(
+            val uncompletedTasks = taskRepository.getOutdatedTasks(
                 searchQuery,
                 currentDate
             ).map {
                 taskMapper.mapFromEntityList(it)
             }
-            val completedTasks = taskRepository.getOutdatedCompletedUserTasks(
+            val completedTasks = taskRepository.getOutdatedCompletedTasks(
                 searchQuery,
                 currentDate
             ).map {

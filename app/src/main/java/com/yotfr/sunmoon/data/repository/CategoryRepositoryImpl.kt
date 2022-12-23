@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryDao: CategoryDao
-):CategoryRepository {
+) : CategoryRepository {
 
     override suspend fun upsertCategory(categoryEntity: CategoryEntity) {
         categoryDao.upsertCategory(categoryEntity)
@@ -26,7 +26,7 @@ class CategoryRepositoryImpl @Inject constructor(
     }
 
     override fun getCategoryById(categoryId: Long): Flow<CategoriesWithNotesRelation?> {
-       return categoryDao.getCategoryById(categoryId)
+        return categoryDao.getCategoryById(categoryId)
     }
 
     override fun getAllCategories(): Flow<List<CategoriesWithNotesRelation>> {

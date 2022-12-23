@@ -4,7 +4,7 @@ import com.yotfr.sunmoon.domain.model.note.Note
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.model.AddEditNoteModel
 
 class AddEditNoteMapper {
-    fun fromDomain(domainModel:Note):AddEditNoteModel{
+    fun fromDomain(domainModel: Note): AddEditNoteModel {
         return AddEditNoteModel(
             id = domainModel.noteId,
             importance = domainModel.isPinned,
@@ -16,7 +16,7 @@ class AddEditNoteMapper {
             categoryId = domainModel.categoryId
         )
     }
-    fun toDomain(uiModel: AddEditNoteModel):Note{
+    fun toDomain(uiModel: AddEditNoteModel): Note {
         return Note(
             noteId = uiModel.id,
             isPinned = uiModel.importance,

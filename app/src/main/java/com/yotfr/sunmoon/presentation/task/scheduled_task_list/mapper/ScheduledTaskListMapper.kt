@@ -8,8 +8,7 @@ import java.util.*
 
 class ScheduledTaskListMapper {
 
-    fun fromDomain(domainModel: Task, sdfPattern:String): ScheduledTaskListModel {
-
+    fun fromDomain(domainModel: Task, sdfPattern: String): ScheduledTaskListModel {
         return ScheduledTaskListModel(
             taskId = domainModel.taskId ?: throw IllegalArgumentException("Not found taskId"),
             taskDescription = domainModel.taskDescription,
@@ -17,7 +16,7 @@ class ScheduledTaskListMapper {
             isTrashed = domainModel.isTrashed,
             scheduledDate = domainModel.scheduledDate,
             scheduledTime = domainModel.scheduledTime,
-            scheduledFormattedTime = formatTime(domainModel.scheduledTime,sdfPattern),
+            scheduledFormattedTime = formatTime(domainModel.scheduledTime, sdfPattern),
             isAddTimeButtonVisible = domainModel.scheduledTime == null,
             completionProgress = calculateProgress(domainModel),
             remindDate = domainModel.remindDate,
@@ -44,19 +43,22 @@ class ScheduledTaskListMapper {
     }
 
     fun fromDomainList(initial: List<Task>, sdfPattern: String): List<ScheduledTaskListModel> {
-        return initial.map { fromDomain(it,sdfPattern) }
+        return initial.map { fromDomain(it, sdfPattern) }
     }
 
-    private fun calculateProgress(domainModel: Task):Int {
+    private fun calculateProgress(domainModel: Task): Int {
         if (domainModel.isCompleted) return 100
-        return ((domainModel.subTasks.count { it.completionStatus }.toDouble() /
-                domainModel.subTasks.size) * 100).toInt()
+        return (
+            (
+                domainModel.subTasks.count { it.completionStatus }.toDouble() /
+                    domainModel.subTasks.size
+                ) * 100
+            ).toInt()
     }
 
-    private fun formatTime(time:Long?,sdfPattern:String):String {
+    private fun formatTime(time: Long?, sdfPattern: String): String {
         val sdf = SimpleDateFormat(sdfPattern, Locale.getDefault())
         if (time == null) return ""
         return sdf.format(time)
     }
-
 }

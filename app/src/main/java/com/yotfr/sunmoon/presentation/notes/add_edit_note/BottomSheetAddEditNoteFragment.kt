@@ -53,12 +53,12 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //request focus on textFields
+        // request focus on textFields
         binding.etNoteTitle.editText?.isFocusableInTouchMode = true
         binding.etNoteTitle.editText?.requestFocus()
         binding.etNoteTitle.editText?.placeCursorToEnd()
 
-        //initPopUpAdapter for listPopUpWindow menu
+        // initPopUpAdapter for listPopUpWindow menu
         popUpMenuAdapter = PopUpMenuAdapter()
         popUpMenuAdapter.attachDelegate(object : PopUpDelegate {
             override fun addCategoryPressed() {
@@ -66,7 +66,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             }
         })
 
-        //show listPopUpWindow
+        // show listPopUpWindow
         binding.fragmentAddEditNoteBtnAddCategory.setOnClickListener {
             val listPopupWindow = ListPopupWindow(
                 requireContext(),
@@ -99,7 +99,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             listPopupWindow.show()
         }
 
-        //collect note uiState
+        // collect note uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.addEditNoteUiState.collect { state ->
@@ -111,7 +111,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //collect category uiState
+        // collect category uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.addEditNoteCategoryUiState.collect { categoryState ->
@@ -131,7 +131,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //collect uiEvents
+        // collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
@@ -144,7 +144,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //collect selectedCategory
+        // collect selectedCategory
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiStateSelectedCategory.collect { selectedCategory ->
@@ -155,7 +155,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //save note
+        // save note
         binding.btnAddNote.setOnClickListener {
             viewModel.onEvent(
                 AddEditNoteEvent.SaveNotePressed(
@@ -165,7 +165,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             )
         }
 
-        //enable/disable save note button and save title text field text
+        // enable/disable save note button and save title text field text
         binding.etNoteTitle.editText?.doOnTextChanged { text, _, _, _ ->
             binding.btnAddNote.isEnabled = !text.isNullOrEmpty()
             viewModel.onEvent(
@@ -175,7 +175,7 @@ class BottomSheetAddEditNoteFragment : BottomSheetDialogFragment() {
             )
         }
 
-        //save description text field text
+        // save description text field text
         binding.etNoteDescription.editText?.doOnTextChanged { text, _, _, _ ->
             viewModel.onEvent(
                 AddEditNoteEvent.SaveNewNoteText(

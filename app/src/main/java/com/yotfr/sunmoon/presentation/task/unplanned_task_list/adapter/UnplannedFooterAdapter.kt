@@ -23,7 +23,6 @@ class UnplannedFooterAdapter :
         return R.layout.item_unplanned_task_footer
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UnplannedFooterViewHolder {
         return UnplannedFooterViewHolder(
             ItemUnplannedTaskFooterBinding.inflate(
@@ -45,7 +44,6 @@ class UnplannedFooterAdapter :
             binding.scheduledFooter.visibility = if (
                 headerState.isVisible
             ) View.VISIBLE else View.GONE
-
         }
     }
 }

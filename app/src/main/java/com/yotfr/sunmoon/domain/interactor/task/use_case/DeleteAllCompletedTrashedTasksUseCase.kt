@@ -4,11 +4,11 @@ import com.yotfr.sunmoon.domain.repository.task.TaskRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DeleteAllCompletedTrashedTasksUseCase (
+class DeleteAllCompletedTrashedTasksUseCase(
     private val taskRepository: TaskRepository
 ) {
-    suspend operator fun invoke(){
-        withContext(Dispatchers.IO){
+    suspend operator fun invoke() {
+        withContext(Dispatchers.IO) {
             taskRepository.deleteAllCompletedTrashedTasks()
         }
     }

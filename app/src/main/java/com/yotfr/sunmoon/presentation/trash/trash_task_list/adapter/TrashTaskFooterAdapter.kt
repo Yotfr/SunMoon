@@ -23,7 +23,6 @@ class TrashTaskFooterAdapter :
         return R.layout.item_trash_task_footer
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrashTaskFooterViewHolder {
         return TrashTaskFooterViewHolder(
             ItemTrashTaskFooterBinding.inflate(
@@ -45,7 +44,6 @@ class TrashTaskFooterAdapter :
             binding.scheduledFooter.visibility = if (
                 headerState.isVisible
             ) View.VISIBLE else View.GONE
-
         }
     }
 }

@@ -14,14 +14,13 @@ interface CategoriesDelegate {
     fun changeCategoryVisibility(category: ManageCategoriesModel)
 }
 
-class CategoryListDiffCallBack: DiffUtil.ItemCallback<ManageCategoriesModel>() {
+class CategoryListDiffCallBack : DiffUtil.ItemCallback<ManageCategoriesModel>() {
 
     override fun areItemsTheSame(
         oldItem: ManageCategoriesModel,
         newItem: ManageCategoriesModel
     ): Boolean {
         return oldItem.id == newItem.id
-
     }
 
     override fun areContentsTheSame(
@@ -29,12 +28,11 @@ class CategoryListDiffCallBack: DiffUtil.ItemCallback<ManageCategoriesModel>() {
         newItem: ManageCategoriesModel
     ): Boolean {
         return oldItem == newItem
-
     }
 }
 
 class ManageCategoriesAdapter :
-    ListAdapter<ManageCategoriesModel,ManageCategoriesAdapter.CategoriesViewHolder>(
+    ListAdapter<ManageCategoriesModel, ManageCategoriesAdapter.CategoriesViewHolder>(
         CategoryListDiffCallBack()
     ) {
 
@@ -50,7 +48,8 @@ class ManageCategoriesAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 

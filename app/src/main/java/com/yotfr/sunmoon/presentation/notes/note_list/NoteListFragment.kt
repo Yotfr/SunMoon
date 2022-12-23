@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation.notes.note_list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -21,7 +20,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentNoteListBinding
-import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import com.yotfr.sunmoon.presentation.notes.NoteRootFragmentDirections
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.BottomSheetAddEditNoteFragment
 import com.yotfr.sunmoon.presentation.notes.note_list.adapter.*
@@ -29,6 +27,7 @@ import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListUiEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.model.NoteListModel
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
+import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,8 +36,8 @@ import kotlinx.coroutines.withContext
 @AndroidEntryPoint
 class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
-    companion object{
-        //header category chipId
+    companion object {
+        // header category chipId
         private const val CHIP_HEADER_TAG = -1L
     }
 
@@ -46,7 +45,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
     private var searchView: SearchView? = null
 
-    private var _binding: FragmentNoteListBinding?= null
+    private var _binding: FragmentNoteListBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var noteListAdapter: NoteListAdapter
@@ -58,45 +57,48 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
         addHeaderChipAndPerformClick()
 
-        //inflateMenu
+        // inflateMenu
         val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.app_bar_menu_list, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.app_bar_menu_list, menu)
 
-                val searchItem = menu.findItem(R.id.mi_action_search)
-                searchView = searchItem.actionView as SearchView
+                    val searchItem = menu.findItem(R.id.mi_action_search)
+                    searchView = searchItem.actionView as SearchView
 
-                val pendingQuery = viewModel.searchQuery.value
-                if (pendingQuery.isNotEmpty()) {
-                    searchItem.expandActionView()
-                    searchView?.setQuery(pendingQuery, false)
-                }
-
-                searchView?.onQueryTextChanged {
-                    viewModel.onEvent(
-                        NoteListEvent.UpdateSearchQuery(
-                            searchQuery = it
-                        )
-                    )
-                }
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.mi_delete_all_tasks -> {
-                        showDeleteAllDialog {
-                            viewModel.onEvent(NoteListEvent.DeleteAllUnarchivedNote)
-                        }
-                        true
+                    val pendingQuery = viewModel.searchQuery.value
+                    if (pendingQuery.isNotEmpty()) {
+                        searchItem.expandActionView()
+                        searchView?.setQuery(pendingQuery, false)
                     }
-                    else -> false
+
+                    searchView?.onQueryTextChanged {
+                        viewModel.onEvent(
+                            NoteListEvent.UpdateSearchQuery(
+                                searchQuery = it
+                            )
+                        )
+                    }
                 }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.mi_delete_all_tasks -> {
+                            showDeleteAllDialog {
+                                viewModel.onEvent(NoteListEvent.DeleteAllUnarchivedNote)
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
 
-        //initRvAdapters
+        // initRvAdapters
         val noteLayoutManager = LinearLayoutManager(requireContext())
         noteListAdapter = NoteListAdapter()
         noteListAdapter.attachDelegate(object : NoteListDelegate {
@@ -136,16 +138,17 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
 
         initSwipeToDelete()
 
-        //on change selected chip
+        // on change selected chip
         binding.fragmentNoteListCategoriesGroup.setOnCheckedStateChangeListener { group, _ ->
-             val chipId = group.findViewById<Chip>(group.checkedChipId).tag as Long
-            Log.d("CHIP","$chipId")
-            viewModel.onEvent(NoteListEvent.ChangeSelectedCategory(
-                selectedCategoryId = chipId
-            ))
+            val chipId = group.findViewById<Chip>(group.checkedChipId).tag as Long
+            viewModel.onEvent(
+                NoteListEvent.ChangeSelectedCategory(
+                    selectedCategoryId = chipId
+                )
+            )
         }
 
-        //collect notes uiState
+        // collect notes uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.noteListUiState.collect { noteState ->
@@ -157,24 +160,28 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             }
         }
 
-        //collect category uiState
+        // collect category uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categoryListUiState.collect { categoryState ->
                     categoryState?.let { categories ->
-                        //createChip for each collected category
-                        val chips:MutableList<Chip> = mutableListOf()
-                        withContext(Dispatchers.Default){
+                        // createChip for each collected category
+                        val chips: MutableList<Chip> = mutableListOf()
+                        withContext(Dispatchers.Default) {
                             categories.forEach { category ->
-                                chips.add(createCategoryChip(
-                                    text = category.categoryDescription,
-                                    categoryId = category.id
-                                ))
+                                chips.add(
+                                    createCategoryChip(
+                                        text = category.categoryDescription,
+                                        categoryId = category.id
+                                    )
+                                )
                             }
                         }
-                        //replace chips in chipGroup
-                        binding.fragmentNoteListCategoriesGroup.removeViews(1,
-                        binding.fragmentNoteListCategoriesGroup.childCount - 1)
+                        // replace chips in chipGroup
+                        binding.fragmentNoteListCategoriesGroup.removeViews(
+                            1,
+                            binding.fragmentNoteListCategoriesGroup.childCount - 1
+                        )
                         chips.forEach { chip ->
                             binding.fragmentNoteListCategoriesGroup.addView(
                                 chip
@@ -185,7 +192,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             }
         }
 
-        //collect uiEvents
+        // collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { event ->
@@ -214,21 +221,24 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         }
     }
 
-    //add header chip in chipGroup and performClick
-    private fun addHeaderChipAndPerformClick(){
+    // add header chip in chipGroup and performClick
+    private fun addHeaderChipAndPerformClick() {
         binding.fragmentNoteListCategoriesGroup.addView(
             createHeaderChip()
         )
-        val chipHeader =  binding.fragmentNoteListCategoriesGroup.findViewWithTag<Chip>(
+        val chipHeader = binding.fragmentNoteListCategoriesGroup.findViewWithTag<Chip>(
             CHIP_HEADER_TAG
         )
         chipHeader.performClick()
     }
 
-    //create headerChip
-    private fun createHeaderChip():Chip{
-        val chip = Chip(requireContext(),
-        null,R.attr.PrimaryChipStyle)
+    // create headerChip
+    private fun createHeaderChip(): Chip {
+        val chip = Chip(
+            requireContext(),
+            null,
+            R.attr.PrimaryChipStyle
+        )
         chip.apply {
             text = getString(R.string.all)
             tag = CHIP_HEADER_TAG
@@ -237,10 +247,13 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         return chip
     }
 
-    //create categoryChip
-    private fun createCategoryChip(text:String, categoryId:Long):Chip{
-        val chip = Chip(requireContext(),
-            null,R.attr.PrimaryChipStyle)
+    // create categoryChip
+    private fun createCategoryChip(text: String, categoryId: Long): Chip {
+        val chip = Chip(
+            requireContext(),
+            null,
+            R.attr.PrimaryChipStyle
+        )
         chip.apply {
             setText(text)
             tag = categoryId
@@ -259,13 +272,11 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
             }.show()
     }
 
-    //get current selected category to open addNoteFragment with it
-    fun getCurrentSelectedCategory():Long{
+    // get current selected category to open addNoteFragment with it
+    fun getCurrentSelectedCategory(): Long {
         val selectedCategory = binding.fragmentNoteListCategoriesGroup.findViewById<Chip>(
             binding.fragmentNoteListCategoriesGroup.checkedChipId
         )
-        Log.d("TEST","selCattext -> ${selectedCategory.text}")
-        Log.d("TEST","selCattag -> ${selectedCategory.tag}")
         return selectedCategory.tag as Long
     }
 
@@ -300,7 +311,7 @@ class NoteListFragment : Fragment(R.layout.fragment_note_list) {
         findNavController().navigate(direction)
     }
 
-    //initialize itemTouchCallback
+    // initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onTrashItem = { positionToRemove: Int ->
             val note = noteListAdapter.currentList[positionToRemove]

@@ -11,16 +11,16 @@ import kotlinx.coroutines.withContext
 class GetArchiveNotes(
     private val noteRepository: NoteRepository
 ) {
-   private val noteMapper = NoteMapper()
+    private val noteMapper = NoteMapper()
 
-     @OptIn(ExperimentalCoroutinesApi::class)
-     suspend operator fun invoke(searchQuery: MutableStateFlow<String>): Flow<List<Note>>  {
-         return searchQuery.flatMapLatest {
-             withContext(Dispatchers.IO) {
-                 noteRepository.getArchiveNotes(it).map { noteEntityList ->
-                     noteMapper.mapFromEntityList(noteEntityList)
-                 }
-             }
-         }
-     }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend operator fun invoke(searchQuery: MutableStateFlow<String>): Flow<List<Note>> {
+        return searchQuery.flatMapLatest {
+            withContext(Dispatchers.IO) {
+                noteRepository.getArchiveNotes(it).map { noteEntityList ->
+                    noteMapper.mapFromEntityList(noteEntityList)
+                }
+            }
+        }
+    }
 }

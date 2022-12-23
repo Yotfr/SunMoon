@@ -23,7 +23,6 @@ class ArchiveNoteListFooterAdapter :
         return R.layout.item_archive_note_list_footer
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchiveNoteListFooterViewHolder {
         return ArchiveNoteListFooterViewHolder(
             ItemArchiveNoteListFooterBinding.inflate(
@@ -45,7 +44,6 @@ class ArchiveNoteListFooterAdapter :
             binding.scheduledFooter.visibility = if (
                 headerState.isVisible
             ) View.VISIBLE else View.GONE
-
         }
     }
 }

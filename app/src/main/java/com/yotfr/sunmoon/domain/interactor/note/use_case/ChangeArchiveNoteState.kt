@@ -11,13 +11,15 @@ class ChangeArchiveNoteState(
 ) {
     private val noteMapper = NoteMapper()
 
-    //archive/unarchive note
-    suspend operator fun invoke(note:Note){
+    // archive/unarchive note
+    suspend operator fun invoke(note: Note) {
         withContext(Dispatchers.IO) {
             noteRepository.upsertNote(
-                noteMapper.mapToEntity(note.copy(
-                    archived = !note.archived
-                ))
+                noteMapper.mapToEntity(
+                    note.copy(
+                        archived = !note.archived
+                    )
+                )
             )
         }
     }

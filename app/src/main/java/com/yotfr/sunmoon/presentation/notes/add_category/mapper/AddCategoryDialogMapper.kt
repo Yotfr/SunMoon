@@ -22,7 +22,7 @@ class AddCategoryDialogMapper {
             notes = emptyList()
         )
     }
-    fun fromDomainList(initial:List<Category>):List<AddCategoryDialogModel>{
+    fun fromDomainList(initial: List<Category>): List<AddCategoryDialogModel> {
         return initial.map { fromDomain(it) }
     }
 }

@@ -10,7 +10,6 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.ItemTrashedTaskBinding
 import com.yotfr.sunmoon.presentation.trash.trash_task_list.model.TrashedTaskListModel
 
-
 class TrashedUncompletedTaskDiffCallback : DiffUtil.ItemCallback<TrashedTaskListModel>() {
 
     override fun areItemsTheSame(
@@ -18,7 +17,6 @@ class TrashedUncompletedTaskDiffCallback : DiffUtil.ItemCallback<TrashedTaskList
         newItem: TrashedTaskListModel
     ): Boolean {
         return oldItem.taskId == newItem.taskId
-
     }
 
     override fun areContentsTheSame(
@@ -26,12 +24,10 @@ class TrashedUncompletedTaskDiffCallback : DiffUtil.ItemCallback<TrashedTaskList
         newItem: TrashedTaskListModel
     ): Boolean {
         return oldItem == newItem
-
     }
 }
 
-class TrashedUncompletedTaskListAdapter : ListAdapter
-<TrashedTaskListModel, TrashedUncompletedTaskListAdapter.TrashedTaskViewHolder>(
+class TrashedUncompletedTaskListAdapter : ListAdapter<TrashedTaskListModel, TrashedUncompletedTaskListAdapter.TrashedTaskViewHolder>(
     TrashedUncompletedTaskDiffCallback()
 ) {
 
@@ -52,7 +48,6 @@ class TrashedUncompletedTaskListAdapter : ListAdapter
     override fun getItemViewType(position: Int): Int {
         return R.layout.item_trashed_task
     }
-
 
     class TrashedTaskViewHolder(
         private val binding: ItemTrashedTaskBinding

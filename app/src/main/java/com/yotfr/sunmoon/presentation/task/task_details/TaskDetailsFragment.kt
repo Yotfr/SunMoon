@@ -1,13 +1,18 @@
 package com.yotfr.sunmoon.presentation.task.task_details
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.*
 import androidx.core.widget.doOnTextChanged
@@ -31,11 +36,6 @@ import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
 import com.google.android.material.transition.MaterialContainerTransform
 import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
-import android.Manifest
-import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.activity.result.contract.ActivityResultContracts
 import com.yotfr.sunmoon.databinding.FragmentTaskDetailsBinding
 import com.yotfr.sunmoon.presentation.MainActivity
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
@@ -70,7 +70,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
     private lateinit var subTaskAdapter: SubTaskAdapter
 
-    private var hasPermission:Boolean = false
+    private var hasPermission: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,42 +91,44 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentTaskDetailsBinding.bind(view)
 
-        //setUpToolbar
+        // setUpToolbar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTaskDetailsMaterialToolbar)
 
-        //inflateMenu
+        // inflateMenu
         val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.app_bar_menu_task_details, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.mi_delete_task -> {
-                        showDeleteTaskDialog {
-                            viewModel.onEvent(TaskDetailsEvent.DeleteTask)
-                        }
-                        true
-                    }
-                    android.R.id.home -> {
-                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                            TaskRootFragment.SELECTED_TASK_DATE,
-                            viewModel.uiState.value.scheduledDate ?: TaskRootFragment.WITHOUT_TASK_DATE
-                        )
-                        findNavController().popBackStack()
-                        true
-                    }
-                    else -> false
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.app_bar_menu_task_details, menu)
                 }
-            }
-        }, viewLifecycleOwner)
 
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.mi_delete_task -> {
+                            showDeleteTaskDialog {
+                                viewModel.onEvent(TaskDetailsEvent.DeleteTask)
+                            }
+                            true
+                        }
+                        android.R.id.home -> {
+                            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                                TaskRootFragment.SELECTED_TASK_DATE,
+                                viewModel.uiState.value.scheduledDate ?: TaskRootFragment.WITHOUT_TASK_DATE
+                            )
+                            findNavController().popBackStack()
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner
+        )
 
-        //setTransitionName
+        // setTransitionName
         ViewCompat.setTransitionName(binding.root, "task${args.taskId}")
 
-        //initRvAdapters
+        // initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
         subTaskAdapter = SubTaskAdapter()
         binding.fragmentTaskDetailsRecyclerview.adapter = subTaskAdapter
@@ -163,7 +165,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         })
         initSwipeToDelete()
 
-        //Change task text state
+        // Change task text state
         binding.fragmentTaskDetailsTaskDescription.doOnTextChanged { text, _, _, _ ->
             viewModel.onEvent(
                 TaskDetailsEvent.ChangeTaskText(
@@ -172,44 +174,44 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             )
         }
 
-        //apply task text changes and save task
+        // apply task text changes and save task
         binding.fragmentTaskDetailsTaskDescription.setOnFocusChangeListener { _, isFocused ->
             if (!isFocused) {
                 viewModel.onEvent(TaskDetailsEvent.ApplyTaskTextChange)
             }
         }
 
-        //change task completionStatus
+        // change task completionStatus
         binding.fragmentTaskDetailMarkUndone.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.MarkUndone)
         }
 
-        //clear task date&time
+        // clear task date&time
         binding.fragmentTaskDetailMakeUnplanned.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.ClearDateTime)
         }
 
-        //get date from viewModel and show datePicker
+        // get date from viewModel and show datePicker
         binding.fragmentTaskDetailsDateTimeTv.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.GetDateForDatePicker)
         }
 
-        //get time from viewModel and show timePicker
+        // get time from viewModel and show timePicker
         binding.fragmentTaskDetailsDateTimeTime.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.GetTimeForTimePicker)
         }
 
-        //get time from viewModel and show timePicker
+        // get time from viewModel and show timePicker
         binding.fragmentTaskDetailsDateTimeTvSetTime.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.GetTimeForTimePicker)
         }
 
-        //clear task date&time
+        // clear task date&time
         binding.fragmentTaskDetailsDateTimeDateClearBtn.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.ClearDateTime)
         }
 
-        //show dateTimePicker to set reminder
+        // show dateTimePicker to set reminder
         binding.fragmentTaskDetailsRemindTvSet.setOnClickListener {
             if (hasPermission) {
                 showReminderDateTimePicker(
@@ -226,7 +228,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }
         }
 
-        //show dateTimePicker to set reminder
+        // show dateTimePicker to set reminder
         binding.fragmentTaskDetailsRemindTvTime.setOnClickListener {
             if (hasPermission) {
                 showReminderDateTimePicker(
@@ -243,7 +245,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }
         }
 
-        //show dateTimePicker to set reminder
+        // show dateTimePicker to set reminder
         binding.fragmentTaskDetailsRemindTvDate.setOnClickListener {
             if (hasPermission) {
                 showReminderDateTimePicker(
@@ -260,12 +262,12 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }
         }
 
-        //clear reminder date&time
+        // clear reminder date&time
         binding.fragmentTaskDetailsRemindClearBtn.setOnClickListener {
             viewModel.onEvent(TaskDetailsEvent.ClearTaskRemindDateTime)
         }
 
-        //clear task time
+        // clear task time
         binding.fragmentTaskDetailsDateTimeTimeClearBtn.setOnClickListener {
             viewModel.onEvent(
                 TaskDetailsEvent.ChangeTaskScheduledTime(
@@ -274,7 +276,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             )
         }
 
-        //show dateTimePicker and change task date&time
+        // show dateTimePicker and change task date&time
         binding.fragmentTaskDetailSchedule.setOnClickListener {
             showDateTimePicker(
                 currentTimeFormat = viewModel.dateTimeSettings.value.timeFormat
@@ -288,7 +290,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }
         }
 
-        //collectState
+        // collectState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
@@ -356,7 +358,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }
         }
 
-        //collect uiEvents
+        // collect uiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvents.collect { uiEvent ->
@@ -422,13 +424,15 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         viewModel.onEvent(TaskDetailsEvent.ApplyTaskTextChange)
     }
 
-    //check if user have notification permission and request it if not
+    // check if user have notification permission and request it if not
     private fun checkNotificationPermission(): Boolean {
         var hasNotificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED)
+            (
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+                )
         } else true
         val permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -441,10 +445,12 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         return hasNotificationPermission
     }
 
-    //set task reminder with alarmManager
+    // set task reminder with alarmManager
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun setAlarm(
-        taskTitle: String, taskId: Long, remindTime: Long
+        taskTitle: String,
+        taskId: Long,
+        remindTime: Long
     ) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
@@ -453,23 +459,26 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         intent.putExtra("destination", 0)
         val pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
-            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+            taskId.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, remindTime, pendingIntent)
     }
 
-    //cancel task reminder
+    // cancel task reminder
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun cancelAlarm(taskId: Long) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
-            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+            taskId.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         alarmManager.cancel(pendingIntent)
     }
-
 
     private fun showDeleteTaskDialog(onPositive: () -> Unit) {
         MaterialAlertDialogBuilder(requireContext())
@@ -482,7 +491,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
             }.show()
     }
 
-    //initialize itemTouchCallback
+    // initialize itemTouchCallback
     private fun initSwipeToDelete() {
         val onSubTaskItemTrashed = { positionToRemove: Int ->
             val subTask = subTaskAdapter.currentList[positionToRemove]
@@ -610,7 +619,6 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
 
             picker.show(parentFragmentManager, "tag")
             picker.addOnPositiveButtonClickListener {
-
                 calendarDate.set(Calendar.HOUR_OF_DAY, picker.hour)
                 calendarDate.set(Calendar.MINUTE, picker.minute)
                 val remindTime =
@@ -694,7 +702,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         findNavController().navigate(direction)
     }
 
-    //get state and update ui
+    // get state and update ui
     private fun parseState(state: State, completionStatus: Boolean) {
         when (state) {
             State.SCHEDULED -> {
@@ -721,7 +729,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
     }
 
-    //format date
+    // format date
     private fun dateParser(
         currentDateFormat: String,
         date: Long?
@@ -738,7 +746,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         return returnDate
     }
 
-    //format time
+    // format time
     private fun timeParser(
         currentTimePattern: String,
         time: Long?
@@ -750,7 +758,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         return sdfDate.format(calendar.time)
     }
 
-    //update ui to make task scheduled
+    // update ui to make task scheduled
     private fun makeScheduled() {
         binding.apply {
             fragmentTaskDetailsSubtaskCard.alpha = 1f
@@ -764,7 +772,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
     }
 
-    //update ui to make task unplanned
+    // update ui to make task unplanned
     private fun makeUnplanned() {
         binding.apply {
             fragmentTaskDetailsSubtaskCard.alpha = 1f
@@ -778,7 +786,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
     }
 
-    //update ui to make task outdated
+    // update ui to make task outdated
     private fun makeOutdated() {
         binding.apply {
             fragmentTaskDetailsSubtaskCard.alpha = 0.5f
@@ -792,7 +800,7 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         }
     }
 
-    //update ui to make task uncompleted
+    // update ui to make task uncompleted
     private fun makeUndone() {
         binding.apply {
             fragmentTaskDetailsSubtaskCard.alpha = 0.5f

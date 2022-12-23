@@ -9,21 +9,18 @@ import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.*
 import com.yotfr.sunmoon.presentation.trash.trash_note_list.model.TrashNoteModel
 
-class TrashNoteListDiffCallBack: DiffUtil.ItemCallback<TrashNoteModel>() {
+class TrashNoteListDiffCallBack : DiffUtil.ItemCallback<TrashNoteModel>() {
 
     override fun areItemsTheSame(oldItem: TrashNoteModel, newItem: TrashNoteModel): Boolean {
         return oldItem.id == newItem.id
-
     }
 
     override fun areContentsTheSame(oldItem: TrashNoteModel, newItem: TrashNoteModel): Boolean {
         return oldItem == newItem
-
     }
 }
 
-
-class TrashNotesAdapter : ListAdapter<TrashNoteModel,TrashNotesAdapter.DeletedNoteViewHolder>(
+class TrashNotesAdapter : ListAdapter<TrashNoteModel, TrashNotesAdapter.DeletedNoteViewHolder>(
     TrashNoteListDiffCallBack()
 ) {
 
@@ -45,7 +42,6 @@ class TrashNotesAdapter : ListAdapter<TrashNoteModel,TrashNotesAdapter.DeletedNo
         return R.layout.item_trashed_note
     }
 
-
     class DeletedNoteViewHolder(
         private val binding: ItemTrashedNoteBinding
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -58,14 +54,3 @@ class TrashNotesAdapter : ListAdapter<TrashNoteModel,TrashNotesAdapter.DeletedNo
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-

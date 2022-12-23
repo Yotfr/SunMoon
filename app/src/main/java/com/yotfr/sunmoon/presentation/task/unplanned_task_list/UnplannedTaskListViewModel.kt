@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.unplanned_task_list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
@@ -26,51 +25,49 @@ class UnplannedTaskListViewModel @Inject constructor(
 
     private val unplannedTaskListMapper = UnplannedTaskListMapper()
 
-    //state for search view
+    // state for search view
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    //state for expand/collapse header in list
+    // state for expand/collapse header in list
     private val completedTasksHeaderState = MutableStateFlow(
         UnplannedCompletedHeaderStateModel()
     )
 
-    //timeFormat from dataStore
+    // timeFormat from dataStore
     private val _timeFormat = MutableStateFlow(0)
     val timeFormat = _timeFormat.asStateFlow()
 
-    //state for hide/show footer in list
+    // state for hide/show footer in list
     private val unplannedFooterState = MutableStateFlow(
         UnplannedFooterModel()
     )
 
-    //state for taskList
+    // state for taskList
     private val _uiState = MutableStateFlow<UnplannedTaskListUiStateModel?>(null)
     val uiState = _uiState.asStateFlow()
 
-    //uiEvents channel
+    // uiEvents channel
     private val _uiEvent = Channel<UnplannedTaskListUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        //collect time format from dataStore
+        // collect time format from dataStore
         viewModelScope.launch {
-            dataStoreRepository.getTimeFormat().collect{
+            dataStoreRepository.getTimeFormat().collect {
                 _timeFormat.value = it ?: 2
             }
         }
-        //get data for taskList state
+        // get data for taskList state
         viewModelScope.launch {
             combine(
                 taskUseCase.getUnplannedTaskList(
-                    searchQuery = _searchQuery,
+                    searchQuery = _searchQuery
                 ),
                 completedTasksHeaderState
             ) { tasks, headerState ->
                 Triple(tasks.first, tasks.second, headerState)
             }.collect { state ->
-                Log.d("STRANGE","state -> ${state.first}")
-                Log.d("STRANGE","stateMapped -> ${unplannedTaskListMapper.fromDomainList(state.first)}")
                 changeHeaderVisibility(state.second.isNotEmpty())
                 _uiState.value = UnplannedTaskListUiStateModel(
                     uncompletedTasks = unplannedTaskListMapper.fromDomainList(state.first),
@@ -86,7 +83,7 @@ class UnplannedTaskListViewModel @Inject constructor(
         }
     }
 
-    //method for fragment to communicate with viewModel
+    // method for fragment to communicate with viewModel
     fun onEvent(event: UnplannedTaskListEvent) {
         when (event) {
             is UnplannedTaskListEvent.ChangeUnplannedTaskCompletionStatus -> {
@@ -111,9 +108,11 @@ class UnplannedTaskListViewModel @Inject constructor(
                         newTime = event.selectedTime
                     )
                 }
-                sendToUi(UnplannedTaskListUiEvent.NavigateToScheduledTask(
-                    taskDate = event.selectedDate
-                ))
+                sendToUi(
+                    UnplannedTaskListUiEvent.NavigateToScheduledTask(
+                        taskDate = event.selectedDate
+                    )
+                )
             }
             is UnplannedTaskListEvent.TrashUnplannedTask -> {
                 viewModelScope.launch {
@@ -165,14 +164,14 @@ class UnplannedTaskListViewModel @Inject constructor(
         }
     }
 
-    //collapse/expand header
+    // collapse/expand header
     private fun changeHeaderVisibility(isVisible: Boolean) {
         completedTasksHeaderState.value = completedTasksHeaderState.value.copy(
             isVisible = isVisible
         )
     }
 
-    //send uiEvents to uiEvent channel
+    // send uiEvents to uiEvent channel
     private fun sendToUi(event: UnplannedTaskListUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)

@@ -40,10 +40,13 @@ class TaskDetailsMapper {
         )
     }
 
-    private fun calculateProgress(domainModel: Task):Int {
+    private fun calculateProgress(domainModel: Task): Int {
         if (domainModel.isCompleted) return 100
-        return ((domainModel.subTasks.count { it.completionStatus }.toDouble() /
-                domainModel.subTasks.size) * 100).toInt()
+        return (
+            (
+                domainModel.subTasks.count { it.completionStatus }.toDouble() /
+                    domainModel.subTasks.size
+                ) * 100
+            ).toInt()
     }
-
 }

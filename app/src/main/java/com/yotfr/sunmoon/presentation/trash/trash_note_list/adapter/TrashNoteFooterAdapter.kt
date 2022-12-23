@@ -23,7 +23,6 @@ class TrashNoteFooterAdapter :
         return R.layout.item_trash_note_footer
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrashNoteListFooterViewHolder {
         return TrashNoteListFooterViewHolder(
             ItemTrashNoteFooterBinding.inflate(
@@ -45,7 +44,6 @@ class TrashNoteFooterAdapter :
             binding.trashNoteFooter.visibility = if (
                 headerState.isVisible
             ) View.VISIBLE else View.GONE
-
         }
     }
 }

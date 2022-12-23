@@ -18,7 +18,7 @@ import javax.inject.Inject
 class AddSubTaskDialogViewModel @Inject constructor(
     private val taskUseCase: TaskUseCase,
     @AppModule.ApplicationScope private val applicationScope: CoroutineScope,
-    state:SavedStateHandle
+    state: SavedStateHandle
 ) : ViewModel() {
 
     private val addSubTaskDialogMapper = AddSubTaskDialogMapper()
@@ -28,14 +28,13 @@ class AddSubTaskDialogViewModel @Inject constructor(
     private val _addCategoryUiState = MutableStateFlow<AddSubTaskDialogModel?>(null)
     val uiState = _addCategoryUiState.asStateFlow()
 
-
     fun onEvent(event: AddSubTaskDialogEvent) {
         when (event) {
             is AddSubTaskDialogEvent.AddSubTask -> {
                 if (event.subTaskText.isNotBlank() && event.subTaskText.isNotEmpty()) {
                     applicationScope.launch {
                         taskUseCase.addSubTask(
-                            subTask =  addSubTaskDialogMapper.toDomain(
+                            subTask = addSubTaskDialogMapper.toDomain(
                                 AddSubTaskDialogModel(
                                     subTaskDescription = event.subTaskText,
                                     taskId = taskId ?: throw IllegalArgumentException(

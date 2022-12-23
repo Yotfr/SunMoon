@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DeleteNote(
-    private val noteRepository: NoteRepository,
+    private val noteRepository: NoteRepository
 ) {
     private val noteMapper = NoteMapper()
 

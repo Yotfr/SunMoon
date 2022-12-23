@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class SubTaskRepositoryImpl @Inject constructor(
     private val subTaskDao: SubTaskDao
-): SubTaskRepository {
+) : SubTaskRepository {
 
     override suspend fun createSubTask(subTask: SubTaskEntity) {
         subTaskDao.upsertSubTask(subTask)

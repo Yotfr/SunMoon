@@ -52,7 +52,6 @@ class UseCaseModule {
         )
     }
 
-
     @Provides
     fun provideTaskUseCase(
         taskRepository: TaskRepository,
@@ -109,6 +108,4 @@ class UseCaseModule {
             deleteAllRelatedSubTasks = DeleteAllRelatedSubTasks(subTaskRepository)
         )
     }
-
-
 }

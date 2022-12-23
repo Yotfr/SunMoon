@@ -6,13 +6,13 @@ import com.yotfr.sunmoon.domain.repository.task.SubTaskRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AddSubTask (
+class AddSubTask(
     private val subTaskRepository: SubTaskRepository
 ) {
     private val subTaskMapper = SubTaskMapper()
 
-    suspend operator fun invoke(subTask: SubTask){
-        withContext(Dispatchers.IO){
+    suspend operator fun invoke(subTask: SubTask) {
+        withContext(Dispatchers.IO) {
             subTaskRepository.createSubTask(subTaskMapper.mapToEntity(subTask))
         }
     }

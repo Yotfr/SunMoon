@@ -40,18 +40,17 @@ class TrashedTaskListItemCallback(
             is TrashedUncompletedTaskListAdapter.TrashedTaskViewHolder -> {
                 if (direction == ItemTouchHelper.LEFT) {
                     onUncompletedItemRestore(viewHolder.bindingAdapterPosition)
-                }else {
+                } else {
                     onUncompletedItemDelete(viewHolder.bindingAdapterPosition)
                 }
             }
             is TrashedCompletedTaskAdapter.CompletedTaskViewHolder -> {
                 if (direction == ItemTouchHelper.LEFT) {
                     onCompletedItemRestore(viewHolder.bindingAdapterPosition)
-                }else {
+                } else {
                     onCompletedItemDelete(viewHolder.bindingAdapterPosition)
                 }
             }
-
         }
     }
 
@@ -61,7 +60,7 @@ class TrashedTaskListItemCallback(
     ): Int {
         return if (
             viewHolder.itemViewType == R.layout.item_trashed_completed_task_header ||
-                    viewHolder.itemViewType == R.layout.item_trash_task_footer
+            viewHolder.itemViewType == R.layout.item_trash_task_footer
         ) {
             ItemTouchHelper.ACTION_STATE_IDLE
         } else {
@@ -114,20 +113,20 @@ class TrashedTaskListItemCallback(
         )
         val activeColorArchive = typedValueActiveArchive.data
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            if (abs(dX) > layoutMargin && dX > 0 ){
-                if (abs(dX) < (itemView.width*0.4f) ) {
+            if (abs(dX) > layoutMargin && dX > 0) {
+                if (abs(dX) < (itemView.width * 0.4f)) {
                     drawDeleteBackground(c, itemView, inactiveColor)
                     drawDeleteIcon(c, itemView)
-                }else {
-                    drawDeleteBackground(c,itemView,activeColor)
+                } else {
+                    drawDeleteBackground(c, itemView, activeColor)
                     drawDeleteIcon(c, itemView)
                 }
-            }else if (abs(dX) > layoutMargin && dX < 0 ) {
-                if (abs(dX) > (itemView.width*0.4f) ) {
+            } else if (abs(dX) > layoutMargin && dX < 0) {
+                if (abs(dX) > (itemView.width * 0.4f)) {
                     drawArchiveBackground(c, itemView, inactiveColorArchive)
                     drawRestoreIcon(c, itemView)
-                }else {
-                    drawArchiveBackground(c,itemView,activeColorArchive)
+                } else {
+                    drawArchiveBackground(c, itemView, activeColorArchive)
                     drawRestoreIcon(c, itemView)
                 }
             }
@@ -135,16 +134,15 @@ class TrashedTaskListItemCallback(
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    private fun drawDeleteIcon(canvas: Canvas, itemView: View){
+    private fun drawDeleteIcon(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
         val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
 
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
-
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 
@@ -172,17 +170,18 @@ class TrashedTaskListItemCallback(
         icon.draw(canvas)
     }
 
-    private fun drawRestoreIcon(canvas: Canvas, itemView: View){
+    private fun drawRestoreIcon(canvas: Canvas, itemView: View) {
         val layoutMargin = itemView.resources.getDimensionPixelSize(R.dimen.default_margin)
         val layoutTextMargin = itemView.resources.getDimensionPixelSize(R.dimen.huge_margin)
 
         val icon = ResourcesCompat.getDrawable(
-            itemView.resources, R.drawable.ic_restore,
+            itemView.resources,
+            R.drawable.ic_restore,
             itemView.context.theme
         ) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint  = itemView.context.getColorFromAttr(androidx.appcompat.R.attr.colorPrimary)
+        val tint = itemView.context.getColorFromAttr(androidx.appcompat.R.attr.colorPrimary)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
@@ -238,6 +237,4 @@ class TrashedTaskListItemCallback(
         }
         canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
-
-
 }

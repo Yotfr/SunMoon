@@ -16,7 +16,7 @@ class CategoryMapper {
         )
     }
 
-   fun mapToEntity(domainModel: Category): CategoryEntity {
+    fun mapToEntity(domainModel: Category): CategoryEntity {
         return CategoryEntity(
             categoryId = domainModel.categoryId,
             categoryDescription = domainModel.categoryDescription,

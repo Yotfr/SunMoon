@@ -13,8 +13,7 @@ interface PopUpDelegate {
     fun addCategoryPressed()
 }
 
-
-class PopUpMenuAdapter: BaseAdapter(){
+class PopUpMenuAdapter : BaseAdapter() {
 
     private var delegate: PopUpDelegate? = null
 
@@ -36,37 +35,37 @@ class PopUpMenuAdapter: BaseAdapter(){
     override fun getViewTypeCount(): Int = 2
 
     override fun getItemViewType(position: Int): Int {
-     return when(position) {
-         categories.size -> footer
-         else -> mainList
-     }
+        return when (position) {
+            categories.size -> footer
+            else -> mainList
+        }
     }
 
     override fun getItem(position: Int): Any = categories[position]
 
-    override fun getItemId(position: Int): Long{
-        return when(position) {
+    override fun getItemId(position: Int): Long {
+        return when (position) {
             categories.size -> FOOTER_ID
             else -> categories[position].id!!
         }
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        return when(getItemViewType(position)) {
+        return when (getItemViewType(position)) {
             mainList -> {
-                val binding = convertView?.tag as ItemPopUpMenuBinding? ?:
-                createMainListBinding(parent.context)
+                val binding = convertView?.tag as ItemPopUpMenuBinding?
+                    ?: createMainListBinding(parent.context)
                 val category = getItem(position) as AddEditNoteCategoryModel
                 binding.tvPopUpMenuItem.text = category.categoryDescription
                 binding.tvPopUpMenuNoteCount.text = if (category.notesCount != null) {
                     category.notesCount.toString()
-                }else ""
+                } else ""
                 binding.tvPopUpMenuItem.tag = category
                 binding.root
             }
             footer -> {
-                val binding = convertView?.tag as ItemPopUpMenuFooterBinding? ?:
-                createFooterBinding(parent.context)
+                val binding = convertView?.tag as ItemPopUpMenuFooterBinding?
+                    ?: createFooterBinding(parent.context)
                 binding.btnAddCategoryPopUp.setOnClickListener {
                     delegate?.addCategoryPressed()
                 }
@@ -76,20 +75,19 @@ class PopUpMenuAdapter: BaseAdapter(){
         }
     }
 
-    private fun createMainListBinding(context: Context):ItemPopUpMenuBinding {
+    private fun createMainListBinding(context: Context): ItemPopUpMenuBinding {
         val binding = ItemPopUpMenuBinding.inflate(LayoutInflater.from(context))
         binding.root.tag = binding
         return binding
     }
 
-    private fun createFooterBinding(context: Context):ItemPopUpMenuFooterBinding {
+    private fun createFooterBinding(context: Context): ItemPopUpMenuFooterBinding {
         val binding = ItemPopUpMenuFooterBinding.inflate(LayoutInflater.from(context))
         binding.root.tag = binding
         return binding
     }
 
-    companion object{
+    companion object {
         const val FOOTER_ID = -1L
     }
-
 }

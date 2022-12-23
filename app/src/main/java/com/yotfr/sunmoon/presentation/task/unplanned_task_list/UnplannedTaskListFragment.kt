@@ -35,7 +35,6 @@ import com.yotfr.sunmoon.AlarmReceiver
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentUnplannedTaskListBinding
 import com.yotfr.sunmoon.presentation.task.TaskRootFragment
-import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import com.yotfr.sunmoon.presentation.task.TaskRootFragmentDirections
 import com.yotfr.sunmoon.presentation.task.task_details.TaskDetailsFragment
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.adapter.*
@@ -45,6 +44,7 @@ import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedDe
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.model.UnplannedTaskListModel
 import com.yotfr.sunmoon.presentation.utils.MarginItemDecoration
 import com.yotfr.sunmoon.presentation.utils.getColorFromAttr
+import com.yotfr.sunmoon.presentation.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -68,103 +68,108 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentUnplannedTaskListBinding.bind(view)
 
-        //inflateMenu
+        // inflateMenu
         val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.app_bar_menu_list, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.app_bar_menu_list, menu)
 
-                val searchItem = menu.findItem(R.id.mi_action_search)
-                searchView = searchItem.actionView as SearchView
+                    val searchItem = menu.findItem(R.id.mi_action_search)
+                    searchView = searchItem.actionView as SearchView
 
-                val etSearch =
-                    searchView?.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
-                etSearch?.setTextColor(requireContext().getColorFromAttr(androidx.appcompat.R.attr.colorPrimary))
+                    val etSearch =
+                        searchView?.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+                    etSearch?.setTextColor(requireContext().getColorFromAttr(androidx.appcompat.R.attr.colorPrimary))
 
-                val pendingQuery = viewModel.searchQuery.value
-                if (pendingQuery.isNotEmpty()) {
-                    searchItem.expandActionView()
-                    searchView?.setQuery(pendingQuery, false)
-                }
-
-                searchView?.onQueryTextChanged {
-                    viewModel.onEvent(
-                        UnplannedTaskListEvent.UpdateSearchQuery(
-                            searchQuery = it
-                        )
-                    )
-                }
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.mi_delete_all_tasks -> {
-                        showDeleteAllDialog { deleteOption ->
-                            showConfirmationDialog {
-                                viewModel.onEvent(UnplannedTaskListEvent.DeleteTasks(
-                                    deleteOption = deleteOption
-                                ))
-                            }
-                        }
-                        true
+                    val pendingQuery = viewModel.searchQuery.value
+                    if (pendingQuery.isNotEmpty()) {
+                        searchItem.expandActionView()
+                        searchView?.setQuery(pendingQuery, false)
                     }
-                    else -> false
+
+                    searchView?.onQueryTextChanged {
+                        viewModel.onEvent(
+                            UnplannedTaskListEvent.UpdateSearchQuery(
+                                searchQuery = it
+                            )
+                        )
+                    }
                 }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.mi_delete_all_tasks -> {
+                            showDeleteAllDialog { deleteOption ->
+                                showConfirmationDialog {
+                                    viewModel.onEvent(
+                                        UnplannedTaskListEvent.DeleteTasks(
+                                            deleteOption = deleteOption
+                                        )
+                                    )
+                                }
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
+        )
 
-        //initAdapters
+        // initAdapters
         val layoutManager = LinearLayoutManager(requireContext())
         unplannedUncompletedTaskListAdapter = UnplannedUncompletedTaskListAdapter()
         unplannedUncompletedTaskListAdapter.attachDelegate(object :
-            UnplannedUncompletedTaskDelegate {
-            override fun taskPressed(taskId: Long, transitionView: View) {
-                val direction =
-                    TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
-                        taskId = taskId,
-                        destination = TaskDetailsFragment.FROM_UNPLANNED
-                    )
-                val extras = FragmentNavigatorExtras(
-                    transitionView to
+                UnplannedUncompletedTaskDelegate {
+                override fun taskPressed(taskId: Long, transitionView: View) {
+                    val direction =
+                        TaskRootFragmentDirections.actionTaskRootFragmentToTaskDetailsFragment(
+                            taskId = taskId,
+                            destination = TaskDetailsFragment.FROM_UNPLANNED
+                        )
+                    val extras = FragmentNavigatorExtras(
+                        transitionView to
                             transitionView.transitionName
-                )
-                navigateToDestination(
-                    direction = direction,
-                    extras = extras
-                )
-            }
-
-            override fun taskCheckBoxPressed(task: UnplannedTaskListModel) {
-                viewModel.onEvent(
-                    UnplannedTaskListEvent.ChangeUnplannedTaskCompletionStatus(
-                        task = task
                     )
-                )
-            }
+                    navigateToDestination(
+                        direction = direction,
+                        extras = extras
+                    )
+                }
 
-            override fun scheduleTaskPressed(task: UnplannedTaskListModel) {
-                showDateTimePicker(
-                    currentTimeFormat = viewModel.timeFormat.value
-                ) { selectedDate, selectedTime ->
+                override fun taskCheckBoxPressed(task: UnplannedTaskListModel) {
                     viewModel.onEvent(
-                        UnplannedTaskListEvent.ScheduleTask(
-                            task = task,
-                            selectedDate = selectedDate,
-                            selectedTime = selectedTime
+                        UnplannedTaskListEvent.ChangeUnplannedTaskCompletionStatus(
+                            task = task
                         )
                     )
                 }
-            }
 
-            override fun taskStarPressed(task: UnplannedTaskListModel) {
-                viewModel.onEvent(
-                    UnplannedTaskListEvent.ChangeUnplannedTaskImportance(
-                        task = task
+                override fun scheduleTaskPressed(task: UnplannedTaskListModel) {
+                    showDateTimePicker(
+                        currentTimeFormat = viewModel.timeFormat.value
+                    ) { selectedDate, selectedTime ->
+                        viewModel.onEvent(
+                            UnplannedTaskListEvent.ScheduleTask(
+                                task = task,
+                                selectedDate = selectedDate,
+                                selectedTime = selectedTime
+                            )
+                        )
+                    }
+                }
+
+                override fun taskStarPressed(task: UnplannedTaskListModel) {
+                    viewModel.onEvent(
+                        UnplannedTaskListEvent.ChangeUnplannedTaskImportance(
+                            task = task
+                        )
                     )
-                )
-            }
-        })
+                }
+            })
 
         unplannedCompletedTaskListAdapter = UnplannedCompletedTaskListAdapter()
         unplannedCompletedTaskListAdapter.attachDelegate(object : UnplannedCompletedTaskDelegate {
@@ -176,7 +181,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                     )
                 val extras = FragmentNavigatorExtras(
                     transitionView to
-                            transitionView.transitionName
+                        transitionView.transitionName
                 )
                 navigateToDestination(
                     direction = direction,
@@ -195,11 +200,11 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
 
         unplannedCompletedTaskHeaderAdapter = UnplannedCompletedTaskHeaderAdapter()
         unplannedCompletedTaskHeaderAdapter.attachDelegate(object :
-            UnplannedCompletedHeaderDelegate {
-            override fun hideCompleted() {
-                viewModel.onEvent(UnplannedTaskListEvent.ChangeCompletedTasksVisibility)
-            }
-        })
+                UnplannedCompletedHeaderDelegate {
+                override fun hideCompleted() {
+                    viewModel.onEvent(UnplannedTaskListEvent.ChangeCompletedTasksVisibility)
+                }
+            })
 
         unplannedFooterAdapter = UnplannedFooterAdapter()
 
@@ -224,7 +229,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         )
         initSwipeToDelete()
 
-        //CollectUiState
+        // CollectUiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
@@ -238,8 +243,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
             }
         }
 
-
-        //CollectUiEvents
+        // CollectUiEvents
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiEvent.collect { uiEvent ->
@@ -247,9 +251,11 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
                         is UnplannedTaskListUiEvent.UndoTrashUnplannedTask -> {
                             showUndoTrashSnackbar(
                                 onAction = {
-                                    viewModel.onEvent(UnplannedTaskListEvent.UndoTrashItem(
-                                        task = uiEvent.task
-                                    ))
+                                    viewModel.onEvent(
+                                        UnplannedTaskListEvent.UndoTrashItem(
+                                            task = uiEvent.task
+                                        )
+                                    )
                                 },
                                 onDismiss = {
                                     cancelAlarm(uiEvent.task.taskId)
@@ -268,7 +274,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         }
     }
 
-    //initialize itemCallback
+    // initialize itemCallback
     private fun initSwipeToDelete() {
         val onUncompletedItemTrashed = { positionToRemove: Int ->
             val task = unplannedUncompletedTaskListAdapter.currentList[positionToRemove]
@@ -317,9 +323,10 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
     }
 
     private fun showDateTimePicker(
-        currentTimeFormat:Int,
+        currentTimeFormat: Int,
         onResult: (
-            selectedDate: Long, selectedTime: Long?
+            selectedDate: Long,
+            selectedTime: Long?
         ) -> Unit
     ) {
         val calendarDate = Calendar.getInstance(Locale.getDefault())
@@ -351,7 +358,7 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
 
             val timeFormat = if (currentTimeFormat != 2) {
                 currentTimeFormat
-            }else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
+            } else if (isSystem24Hour) CLOCK_24H else CLOCK_12H
 
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(timeFormat)
@@ -405,11 +412,11 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
             .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
             }
             .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
-                when(selectedItem) {
+                when (selectedItem) {
                     0 -> {
                         onPositive(UnplannedDeleteOption.ALL_UNPLANNED)
                     }
-                    1-> {
+                    1 -> {
                         onPositive(UnplannedDeleteOption.ALL_UNPLANNED_COMPLETED)
                     }
                 }
@@ -423,13 +430,15 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext,
-            taskId.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT
+            taskId.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         alarmManager.cancel(pendingIntent)
     }
 
     private fun showConfirmationDialog(
-        onPositive:() -> Unit
+        onPositive: () -> Unit
     ) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.delete_tasks))
@@ -458,7 +467,4 @@ class UnplannedTaskListFragment : Fragment(R.layout.fragment_unplanned_task_list
         searchView = null
         _binding = null
     }
-
-
-
 }

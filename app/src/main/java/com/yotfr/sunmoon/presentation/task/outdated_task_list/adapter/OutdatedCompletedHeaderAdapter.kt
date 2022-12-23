@@ -34,14 +34,15 @@ class OutdatedCompletedHeaderAdapter : RecyclerView.Adapter<OutdatedCompletedHea
         return R.layout.item_outdated_completed_task_header
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OutdatedTaskHeaderViewHolder {
         return OutdatedTaskHeaderViewHolder(
             ItemOutdatedCompletedTaskHeaderBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate, notifyChanges()
+            ),
+            delegate,
+            notifyChanges()
         )
     }
 
@@ -51,10 +52,10 @@ class OutdatedCompletedHeaderAdapter : RecyclerView.Adapter<OutdatedCompletedHea
 
     class OutdatedTaskHeaderViewHolder(
         private val binding: ItemOutdatedCompletedTaskHeaderBinding,
-        private val delegate:OutdatedCompletedHeaderDelegate?,
+        private val delegate: OutdatedCompletedHeaderDelegate?,
         private val onClickListener: View.OnClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(headerState:OutdatedCompletedHeaderStateModel) {
+        fun bind(headerState: OutdatedCompletedHeaderStateModel) {
             binding.llOutdatedCompletedHeader.visibility = if (headerState.isVisible) View.VISIBLE
             else View.GONE
             binding.btnOutdatedCompletedHeaderExpand.setOnClickListener {

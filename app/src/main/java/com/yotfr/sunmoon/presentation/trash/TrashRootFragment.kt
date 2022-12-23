@@ -45,15 +45,14 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentTrashRootBinding.bind(view)
 
-        //setUpActionBar
+        // setUpActionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTrashRootToolbar)
 
-        //change fragment from selected tab
-        binding.fragmentTrashRootTabLayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
+        // change fragment from selected tab
+        binding.fragmentTrashRootTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 selectFragment(tab?.position!!)
             }
@@ -81,7 +80,6 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
         }
         return this
     }
-
 
     private fun selectFragment(indexToSelect: Int) {
         this.selectedIndex = indexToSelect

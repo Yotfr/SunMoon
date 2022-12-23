@@ -29,7 +29,7 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
     private val viewModel by viewModels<ManageCategoriesViewModel>()
 
     private var _binding: FragmentManageCategoriesBinding? = null
-    private val binding get()= _binding!!
+    private val binding get() = _binding!!
 
     private lateinit var adapter: ManageCategoriesAdapter
     private lateinit var footerAdapter: ManageCategoriesFooterAdapter
@@ -38,7 +38,7 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentManageCategoriesBinding.bind(view)
 
-        //initRvAdapters
+        // initRvAdapters
         val layoutManager = LinearLayoutManager(requireContext())
         adapter = ManageCategoriesAdapter()
         adapter.attachDelegate(object : CategoriesDelegate {
@@ -87,7 +87,7 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
             )
         )
 
-        //collect uiState
+        // collect uiState
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { categories ->
@@ -111,7 +111,7 @@ class ManageCategoriesFragment : Fragment(R.layout.fragment_manage_categories) {
             }.show()
     }
 
-    private fun navigateToEditCategory(categoryId: Long, categoryDescription:String) {
+    private fun navigateToEditCategory(categoryId: Long, categoryDescription: String) {
         val direction = NoteRootFragmentDirections.actionGlobalAddCategoryDialogFragment(
             categoryId = categoryId,
             categoryDescription = categoryDescription

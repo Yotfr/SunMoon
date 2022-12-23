@@ -11,7 +11,7 @@ class ChangeSubTaskText(
 ) {
     private val subTaskMapper = SubTaskMapper()
 
-    suspend operator fun invoke(subTask: SubTask, newText:String) {
+    suspend operator fun invoke(subTask: SubTask, newText: String) {
         withContext(Dispatchers.IO) {
             subTaskRepository.createSubTask(
                 subTaskMapper.mapToEntity(subTask).copy(

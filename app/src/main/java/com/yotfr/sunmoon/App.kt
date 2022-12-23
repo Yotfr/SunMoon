@@ -12,6 +12,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // create notification channel for Android 8 and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 "CHANNEL_ID",
@@ -19,11 +20,8 @@ class App : Application() {
                 NotificationManager.IMPORTANCE_HIGH
             )
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
-                    as NotificationManager
+                as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
-
 }
-
-

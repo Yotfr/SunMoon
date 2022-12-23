@@ -1,6 +1,5 @@
 package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -579,7 +578,6 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             }.show()
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     private fun cancelAlarm(taskId: Long) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
@@ -587,7 +585,7 @@ class ScheduledTaskListFragment : Fragment(R.layout.fragment_scheduled_task_list
             requireActivity().applicationContext,
             taskId.toInt(),
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         alarmManager.cancel(pendingIntent)
     }

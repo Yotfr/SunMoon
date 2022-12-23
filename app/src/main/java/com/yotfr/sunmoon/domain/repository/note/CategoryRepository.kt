@@ -9,11 +9,11 @@ interface CategoryRepository {
 
     suspend fun deleteCategory(categoryEntity: CategoryEntity)
 
-    fun getCategoryWithNotes(categoryId: Long):Flow<CategoriesWithNotesRelation>
+    fun getCategoryWithNotes(categoryId: Long): Flow<CategoriesWithNotesRelation>
 
-    fun getCategoryById(categoryId:Long):Flow<CategoriesWithNotesRelation?>
+    fun getCategoryById(categoryId: Long): Flow<CategoriesWithNotesRelation?>
 
-    fun getAllCategories():Flow<List<CategoriesWithNotesRelation>>
+    fun getAllCategories(): Flow<List<CategoriesWithNotesRelation>>
 
-    fun getAllVisibleCategory():Flow<List<CategoriesWithNotesRelation>>
+    fun getAllVisibleCategory(): Flow<List<CategoriesWithNotesRelation>>
 }

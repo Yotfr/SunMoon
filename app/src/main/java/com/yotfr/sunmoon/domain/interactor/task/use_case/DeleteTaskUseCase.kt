@@ -6,13 +6,13 @@ import com.yotfr.sunmoon.domain.repository.task.TaskRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DeleteTaskUseCase (
-    private val taskRepository:TaskRepository
-){
+class DeleteTaskUseCase(
+    private val taskRepository: TaskRepository
+) {
     private val taskMapper = TaskMapper()
 
-    suspend operator fun invoke(task:Task){
-        withContext(Dispatchers.IO){
+    suspend operator fun invoke(task: Task) {
+        withContext(Dispatchers.IO) {
             taskRepository.deleteTask(taskMapper.mapToEntity(task))
         }
     }

@@ -1,7 +1,6 @@
 package com.yotfr.sunmoon.presentation.notes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -30,7 +29,8 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
 
     private val fragments: Array<Fragment>
         get() = arrayOf(
-            noteListFragment, archiveNoteFragment,
+            noteListFragment,
+            archiveNoteFragment,
             manageCategoriesFragment
         )
     private var selectedIndex = 0
@@ -69,50 +69,49 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
 
             noteListFragment =
                 childFragmentManager.findFragmentByTag("noteListFragment")
-                        as NoteListFragment
+                as NoteListFragment
             archiveNoteFragment =
                 childFragmentManager.findFragmentByTag("archiveNoteFragment")
-                        as ArchiveNoteFragment
+                as ArchiveNoteFragment
             manageCategoriesFragment =
                 childFragmentManager.findFragmentByTag("manageCategoriesFragment")
-                        as ManageCategoriesFragment
+                as ManageCategoriesFragment
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentNoteRootBinding.bind(view)
 
-        //setUpActionBar
+        // setUpActionBar
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentNoteRootToolbar)
 
-        //change fragment from selected tab
+        // change fragment from selected tab
         binding.fragmentNoteRootTabLayout.addOnTabSelectedListener(object :
-            TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                selectFragment(tab?.position!!)
-                when (tab.position) {
-                    0 -> {
-                        binding.fragmentNoteRootFab.show()
-                    }
-                    1 -> {
-                        binding.fragmentNoteRootFab.hide()
-                    }
-                    2 -> {
-                        binding.fragmentNoteRootFab.show()
+                TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    selectFragment(tab?.position!!)
+                    when (tab.position) {
+                        0 -> {
+                            binding.fragmentNoteRootFab.show()
+                        }
+                        1 -> {
+                            binding.fragmentNoteRootFab.hide()
+                        }
+                        2 -> {
+                            binding.fragmentNoteRootFab.show()
+                        }
                     }
                 }
-            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
 
-        //hide/show fab on scroll  in childFragments
+        // hide/show fab on scroll  in childFragments
         binding.fragmentNoteRootScrollView.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 if (scrollY > oldScrollY && binding.fragmentNoteRootFab.isShown) {
@@ -129,11 +128,10 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
             }
         )
 
-        //choose fab click destination depends on current selected fragment
+        // choose fab click destination depends on current selected fragment
         binding.fragmentNoteRootFab.setOnClickListener {
             when (selectedIndex) {
                 0 -> {
-                    Log.d("TEST","root ${noteListFragment.getCurrentSelectedCategory()}")
                     navigateToDestination(
                         destination = Destination.ADD_NOTE,
                         selectedCategoryId = noteListFragment.getCurrentSelectedCategory()
@@ -163,7 +161,7 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
         outState.putInt("selectedIndex", selectedIndex)
     }
 
-    //change selected tab
+    // change selected tab
     private fun changeSelectedTab() {
         binding.fragmentNoteRootTabLayout.selectTab(
             binding.fragmentNoteRootTabLayout.getTabAt(selectedIndex)
@@ -180,7 +178,6 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
         }
         return this
     }
-
 
     private fun selectFragment(indexToSelect: Int) {
         this.selectedIndex = indexToSelect
@@ -211,7 +208,7 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
         findNavController().navigate(direction)
     }
 
-    //enum for navigation destination
+    // enum for navigation destination
     enum class Destination {
         ADD_NOTE, ADD_CATEGORY
     }

@@ -14,21 +14,18 @@ interface NoteListDelegate {
     fun pinPressed(note: NoteListModel)
 }
 
-class NoteListDiffCallBack: DiffUtil.ItemCallback<NoteListModel>() {
+class NoteListDiffCallBack : DiffUtil.ItemCallback<NoteListModel>() {
 
     override fun areItemsTheSame(oldItem: NoteListModel, newItem: NoteListModel): Boolean {
         return oldItem.id == newItem.id
-
     }
 
     override fun areContentsTheSame(oldItem: NoteListModel, newItem: NoteListModel): Boolean {
         return oldItem == newItem
-
     }
 }
 
-
-class NoteListAdapter : ListAdapter<NoteListModel,NoteListAdapter.NoteViewHolder>(
+class NoteListAdapter : ListAdapter<NoteListModel, NoteListAdapter.NoteViewHolder>(
     NoteListDiffCallBack()
 ) {
 
@@ -44,7 +41,8 @@ class NoteListAdapter : ListAdapter<NoteListModel,NoteListAdapter.NoteViewHolder
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), delegate
+            ),
+            delegate
         )
     }
 
@@ -53,7 +51,7 @@ class NoteListAdapter : ListAdapter<NoteListModel,NoteListAdapter.NoteViewHolder
     }
 
     override fun getItemViewType(position: Int): Int {
-        return  R.layout.item_note
+        return R.layout.item_note
     }
 
     class NoteViewHolder(
@@ -68,7 +66,7 @@ class NoteListAdapter : ListAdapter<NoteListModel,NoteListAdapter.NoteViewHolder
                 itemPinNote.isChecked = note.isPinned
                 linearLayoutItemNote.setOnClickListener {
                     delegate?.noteDetailsClicked(
-                        noteId =  note.id
+                        noteId = note.id
                     )
                 }
                 itemPinNote.setOnClickListener {
@@ -80,4 +78,3 @@ class NoteListAdapter : ListAdapter<NoteListModel,NoteListAdapter.NoteViewHolder
         }
     }
 }
-

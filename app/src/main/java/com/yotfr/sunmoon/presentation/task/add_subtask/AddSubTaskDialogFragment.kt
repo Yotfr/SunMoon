@@ -18,7 +18,6 @@ class AddSubTaskDialogFragment : DialogFragment() {
     private var _binding: DialogFragmentAddSubtaskBinding? = null
     private val binding get() = _binding!!
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it, R.style.CustomAlertDialog)
@@ -43,6 +42,4 @@ class AddSubTaskDialogFragment : DialogFragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

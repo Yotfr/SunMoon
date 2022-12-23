@@ -5,7 +5,7 @@ import com.yotfr.sunmoon.presentation.task.task_details.model.SubTaskModel
 
 class SubTaskMapper {
 
-    fun fromDomain(domainModel: SubTask, isEnabled:Boolean): SubTaskModel {
+    fun fromDomain(domainModel: SubTask, isEnabled: Boolean): SubTaskModel {
         return SubTaskModel(
             subTaskId = domainModel.subTaskId,
             subTaskDescription = domainModel.subTaskDescription,
@@ -31,5 +31,4 @@ class SubTaskMapper {
     fun toDomainList(initial: List<SubTaskModel>): List<SubTask> {
         return initial.map { toDomain(it) }
     }
-
 }
