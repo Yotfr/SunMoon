@@ -12,7 +12,7 @@ import com.yotfr.sunmoon.presentation.settings.settings_root.model.TimeFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.* // ktlint-disable no-wildcard-imports
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

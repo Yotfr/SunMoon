@@ -83,7 +83,9 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentNoteRootBinding.bind(view)
 
-        // setUpActionBar
+        // In project every fragment uses its own toolbar, but but there are fragments with tabs
+        // which contains child fragments, since tabs are included in the toolbar, i decided to
+        // use activity owned toolbar and change toolbar from fragment using this activity method
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentNoteRootToolbar)
 
         // change fragment from selected tab
@@ -216,5 +218,6 @@ class NoteRootFragment : Fragment(R.layout.fragment_note_root) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        requireActivity().setActionBar(null)
     }
 }

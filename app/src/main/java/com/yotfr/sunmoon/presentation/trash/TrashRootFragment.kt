@@ -48,7 +48,9 @@ class TrashRootFragment : Fragment(R.layout.fragment_trash_root) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentTrashRootBinding.bind(view)
 
-        // setUpActionBar
+        // In project every fragment uses its own toolbar, but but there are fragments with tabs
+        // which contains child fragments, since tabs are included in the toolbar, i decided to
+        // use activity owned toolbar and change toolbar from fragment using this activity method
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTrashRootToolbar)
 
         // change fragment from selected tab

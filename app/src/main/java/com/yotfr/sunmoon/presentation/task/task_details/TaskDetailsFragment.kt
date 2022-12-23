@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.*
 import androidx.core.widget.doOnTextChanged
@@ -21,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -91,7 +93,9 @@ class TaskDetailsFragment : Fragment(R.layout.fragment_task_details) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentTaskDetailsBinding.bind(view)
 
-        // setUpToolbar
+        // In project every fragment uses its own toolbar, but but there are fragments with tabs
+        // which contains child fragments, since tabs are included in the toolbar, i decided to
+        // use activity owned toolbar and change toolbar from fragment using this activity method
         (requireActivity() as MainActivity).setUpActionBar(binding.fragmentTaskDetailsMaterialToolbar)
 
         // inflateMenu
