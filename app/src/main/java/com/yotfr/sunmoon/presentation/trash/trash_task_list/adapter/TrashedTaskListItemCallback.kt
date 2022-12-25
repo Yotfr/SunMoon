@@ -181,7 +181,7 @@ class TrashedTaskListItemCallback(
         ) ?: throw
         IllegalArgumentException("Not found icon")
 
-        val tint = itemView.context.getColorFromAttr(androidx.appcompat.R.attr.colorPrimary)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2

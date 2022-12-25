@@ -36,7 +36,6 @@ class TaskListItemCallback(
             is ScheduledCompletedTaskAdapter.CompletedTaskViewHolder -> {
                 onCompletedItemTrashed(viewHolder.bindingAdapterPosition)
             }
-
         }
     }
 
@@ -105,16 +104,12 @@ class TaskListItemCallback(
         val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_delete) ?: throw
         IllegalArgumentException("Not found icon")
 
-
-        val tint =itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
+        val tint = itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorSurface)
         icon.setTint(tint)
 
         val margin = (itemView.bottom - itemView.top - icon.intrinsicHeight) / 2
 
         val text = itemView.resources.getString(R.string.delete)
-
-
-
 
         with(iconBounds) {
             left = itemView.left + layoutMargin
@@ -132,7 +127,6 @@ class TaskListItemCallback(
         val textY =
             (itemView.top + itemView.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
         val textX = itemView.left + icon.intrinsicWidth + layoutTextMargin
-
 
         canvas.drawText(text, textX.toFloat(), textY, textPaint)
         icon.bounds = iconBounds
@@ -152,6 +146,4 @@ class TaskListItemCallback(
         }
         canvas.drawRoundRect(backgroundRect, 32F, 32F, backgroundPaint)
     }
-
-
 }
