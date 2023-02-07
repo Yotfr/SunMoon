@@ -1,7 +1,7 @@
 package com.yotfr.sunmoon.domain.repository.task
 
-import com.yotfr.sunmoon.data.data_source.model.relations.TaskWithSubTasksRelation
-import com.yotfr.sunmoon.data.data_source.model.task.TaskEntity
+import com.yotfr.sunmoon.data.datasource.entity.relations.TaskWithSubTasksRelation
+import com.yotfr.sunmoon.data.datasource.entity.task.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {

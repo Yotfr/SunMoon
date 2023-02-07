@@ -2,8 +2,8 @@ package com.yotfr.sunmoon.presentation.notes.archive_note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.note.NoteUseCase
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.usecase.note.NoteUseCase
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.event.ArchiveNoteUiEvent
 import com.yotfr.sunmoon.presentation.notes.archive_note.mapper.ArchiveNoteMapper

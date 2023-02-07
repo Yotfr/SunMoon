@@ -1,6 +1,6 @@
 package com.yotfr.sunmoon.domain.model.note
 
-import com.yotfr.sunmoon.data.data_source.model.note.NoteEntity
+import com.yotfr.sunmoon.data.datasource.entity.note.NoteEntity
 
 class NoteMapper {
 

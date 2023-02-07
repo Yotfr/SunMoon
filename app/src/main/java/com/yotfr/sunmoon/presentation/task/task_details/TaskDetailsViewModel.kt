@@ -3,8 +3,8 @@ package com.yotfr.sunmoon.presentation.task.task_details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.usecase.task.TaskUseCase
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.task_details.event.TaskDetailsEvent
 import com.yotfr.sunmoon.presentation.task.task_details.event.TaskDetailsUiEvent
 import com.yotfr.sunmoon.presentation.task.task_details.mapper.SubTaskMapper

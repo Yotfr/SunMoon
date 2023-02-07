@@ -1,8 +1,8 @@
 package com.yotfr.sunmoon.di
 
 import com.yotfr.sunmoon.data.repository.*
-import com.yotfr.sunmoon.domain.interactor.note.*
-import com.yotfr.sunmoon.domain.interactor.task.*
+import com.yotfr.sunmoon.domain.usecase.note.*
+import com.yotfr.sunmoon.domain.usecase.task.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,5 +24,4 @@ object AppModule {
     @Retention(AnnotationRetention.RUNTIME)
     @Qualifier
     annotation class ApplicationScope
-
 }

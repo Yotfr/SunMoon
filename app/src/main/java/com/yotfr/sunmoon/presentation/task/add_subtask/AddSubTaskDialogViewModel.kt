@@ -3,7 +3,7 @@ package com.yotfr.sunmoon.presentation.task.add_subtask
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.yotfr.sunmoon.di.AppModule
-import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
+import com.yotfr.sunmoon.domain.usecase.task.TaskUseCase
 import com.yotfr.sunmoon.presentation.task.add_subtask.event.AddSubTaskDialogEvent
 import com.yotfr.sunmoon.presentation.task.add_subtask.mapper.AddSubTaskDialogMapper
 import com.yotfr.sunmoon.presentation.task.add_subtask.model.AddSubTaskDialogModel

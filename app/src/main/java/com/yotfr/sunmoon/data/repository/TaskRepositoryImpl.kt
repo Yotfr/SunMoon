@@ -1,8 +1,8 @@
 package com.yotfr.sunmoon.data.repository
 
-import com.yotfr.sunmoon.data.data_source.TaskDao
-import com.yotfr.sunmoon.data.data_source.model.relations.TaskWithSubTasksRelation
-import com.yotfr.sunmoon.data.data_source.model.task.TaskEntity
+import com.yotfr.sunmoon.data.datasource.TaskDao
+import com.yotfr.sunmoon.data.datasource.entity.relations.TaskWithSubTasksRelation
+import com.yotfr.sunmoon.data.datasource.entity.task.TaskEntity
 import com.yotfr.sunmoon.domain.repository.task.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -14,7 +14,7 @@ class TaskRepositoryImpl @Inject constructor(
 ) : TaskRepository {
 
     override suspend fun upsertTask(taskEntity: TaskEntity): Long {
-        return taskDao.upsertTask(taskEntity)
+        return taskDao.insertTask(taskEntity)
     }
 
     override suspend fun getTaskById(taskId: Long): Flow<TaskWithSubTasksRelation?> {

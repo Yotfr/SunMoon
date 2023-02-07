@@ -2,7 +2,7 @@ package com.yotfr.sunmoon.presentation.notes.manage_categories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.note.NoteUseCase
+import com.yotfr.sunmoon.domain.usecase.note.NoteUseCase
 import com.yotfr.sunmoon.presentation.notes.manage_categories.event.ManageCategoriesEvent
 import com.yotfr.sunmoon.presentation.notes.manage_categories.mapper.ManageCategoriesMapper
 import com.yotfr.sunmoon.presentation.notes.manage_categories.model.ManageCategoriesFooterModel

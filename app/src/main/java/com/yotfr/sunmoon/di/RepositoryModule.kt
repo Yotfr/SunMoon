@@ -1,7 +1,7 @@
 package com.yotfr.sunmoon.di
 
 import com.yotfr.sunmoon.data.repository.*
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.domain.repository.note.CategoryRepository
 import com.yotfr.sunmoon.domain.repository.note.NoteRepository
 import com.yotfr.sunmoon.domain.repository.task.SubTaskRepository

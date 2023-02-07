@@ -4,7 +4,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
+import com.yotfr.sunmoon.domain.usecase.task.TaskUseCase
 import com.yotfr.sunmoon.presentation.utils.NotificationHelper
 import com.yotfr.sunmoon.presentation.utils.goAsync
 import javax.inject.Inject

@@ -1,6 +1,6 @@
 package com.yotfr.sunmoon.domain.repository.task
 
-import com.yotfr.sunmoon.data.data_source.model.task.SubTaskEntity
+import com.yotfr.sunmoon.data.datasource.entity.task.SubTaskEntity
 
 interface SubTaskRepository {
     suspend fun createSubTask(subTask: SubTaskEntity)

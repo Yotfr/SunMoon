@@ -2,8 +2,8 @@ package com.yotfr.sunmoon.presentation.task.unplanned_task_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.usecase.task.TaskUseCase
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.event.UnplannedTaskListEvent
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.event.UnplannedTaskListUiEvent
 import com.yotfr.sunmoon.presentation.task.unplanned_task_list.mapper.UnplannedTaskListMapper

@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.sunmoon.di.AppModule
-import com.yotfr.sunmoon.domain.interactor.note.NoteUseCase
+import com.yotfr.sunmoon.domain.usecase.note.NoteUseCase
 import com.yotfr.sunmoon.presentation.notes.add_category.event.AddCategoryDialogEvent
 import com.yotfr.sunmoon.presentation.notes.add_category.mapper.AddCategoryDialogMapper
 import com.yotfr.sunmoon.presentation.notes.add_category.model.AddCategoryDialogModel

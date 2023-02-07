@@ -42,39 +42,43 @@ android {
 
 dependencies {
 
-    implementation("androidx.room:room-runtime:2.5.0")
-    kapt("androidx.room:room-compiler:2.5.0")
+    def room_version = "2.4.3"
+    def coroutines_version = "1.6.4"
+    def nav_version = "2.5.3"
+    def hilt_version = "2.44.1"
 
-    //DataStore
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // RV
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+
+    // DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-    //Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-    implementation("androidx.room:room-ktx:2.5.0")
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
 
-
-    implementation 'androidx.fragment:fragment-ktx:1.5.5'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
-
-    //RV
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    // NavComponent
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     //Dagger-Hilt
-    implementation "com.google.dagger:hilt-android:2.44.1"
-    kapt "com.google.dagger:hilt-android-compiler:2.44.1"
-    implementation "androidx.activity:activity-ktx:1.6.1"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
+    //leakCanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-    //leakCanary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 }

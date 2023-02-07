@@ -3,8 +3,8 @@ package com.yotfr.sunmoon.presentation.task.add_task
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.task.TaskUseCase
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.usecase.task.TaskUseCase
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.add_task.event.BottomSheetAddTaskEvent
 import com.yotfr.sunmoon.presentation.task.add_task.event.BottomSheetAddTaskUiEvent
 import com.yotfr.sunmoon.presentation.task.add_task.mapper.AddTaskMapper

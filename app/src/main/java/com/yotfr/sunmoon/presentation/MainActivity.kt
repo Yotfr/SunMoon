@@ -14,7 +14,7 @@ import com.yotfr.sunmoon.ContextUtils
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.data.repository.DataStoreRepositoryImpl
 import com.yotfr.sunmoon.databinding.ActivityMainBinding
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.utils.ActionBarOnDestinationChangedListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking

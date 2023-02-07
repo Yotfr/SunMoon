@@ -1,7 +1,7 @@
 package com.yotfr.sunmoon.data.repository
 
-import com.yotfr.sunmoon.data.data_source.NoteDao
-import com.yotfr.sunmoon.data.data_source.model.note.NoteEntity
+import com.yotfr.sunmoon.data.datasource.NoteDao
+import com.yotfr.sunmoon.data.datasource.entity.note.NoteEntity
 import com.yotfr.sunmoon.domain.repository.note.NoteRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -13,7 +13,7 @@ class NoteRepositoryImpl @Inject constructor(
 ) : NoteRepository {
 
     override suspend fun upsertNote(noteEntity: NoteEntity): Long {
-        return noteDao.upsertNote(noteEntity)
+        return noteDao.insertNote(noteEntity)
     }
 
     override suspend fun deleteNote(noteEntity: NoteEntity) {

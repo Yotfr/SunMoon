@@ -2,8 +2,8 @@ package com.yotfr.sunmoon.presentation.notes.note_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.note.*
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.usecase.note.*
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.event.NoteListUiEvent
 import com.yotfr.sunmoon.presentation.notes.note_list.mapper.CategoryNoteListMapper

@@ -3,7 +3,7 @@ package com.yotfr.sunmoon.presentation.notes.add_edit_note
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.note.NoteUseCase
+import com.yotfr.sunmoon.domain.usecase.note.NoteUseCase
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.event.AddEditNoteEvent
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.event.AddEditNoteUiEvent
 import com.yotfr.sunmoon.presentation.notes.add_edit_note.mapper.AddEditNoteCategoryMapper

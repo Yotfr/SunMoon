@@ -5,8 +5,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.preferencesDataStore
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -15,34 +14,32 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "DATA_STORE")
-
 class DataStoreRepositoryImpl @Inject constructor(
+    private val dataStore: DataStore<Preferences>,
     @ApplicationContext private val context: Context
 ) : DataStoreRepository {
 
     override suspend fun updateTheme(theme: String) {
-        context.dataStore.edit { settings ->
+        dataStore.edit { settings ->
             settings[PreferencesKeys.THEME] = theme
         }
     }
 
     override suspend fun getTheme(): String? {
-        val preferences = context.dataStore.data.first()
+        val preferences = dataStore.data.first()
         return preferences[PreferencesKeys.THEME]
     }
 
     override suspend fun updateDateFormat(dateFormat: String) {
-        context.dataStore.edit { settings ->
+        dataStore.edit { settings ->
             settings[PreferencesKeys.DATE_FORMAT] = dateFormat
         }
     }
 
     override suspend fun getDateFormat(): Flow<String> {
-        val dateFormat = context.dataStore.data
+        val dateFormat = dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
-                    Log.e("PREFMANAGER", "Error reading data store", exception)
                     emit(emptyPreferences())
                 } else {
                     throw exception
@@ -55,10 +52,9 @@ class DataStoreRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTimePattern(): Flow<String> {
-        val datePattern = context.dataStore.data
+        val datePattern = dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
-                    Log.e("PREFMANAGER", "Error reading data store", exception)
                     emit(emptyPreferences())
                 } else {
                     throw exception
@@ -74,7 +70,7 @@ class DataStoreRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTimeFormat(): Flow<Int?> {
-        val timeFormat = context.dataStore.data
+        val timeFormat = dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
                     Log.e("PREFMANAGER", "Error reading data store", exception)
@@ -90,14 +86,14 @@ class DataStoreRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTimeFormat(timePattern: String, timeFormat: Int) {
-        context.dataStore.edit { settings ->
+        dataStore.edit { settings ->
             settings[PreferencesKeys.TIME_PATTERN] = timePattern
             settings[PreferencesKeys.TIME_FORMAT] = timeFormat
         }
     }
 
     override suspend fun getDateTimeSettings(): Flow<Triple<String?, String, Int?>> {
-        val settings = context.dataStore.data
+        val settings = dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
                     Log.e("PREFMANAGER", "Error reading data store", exception)
@@ -122,13 +118,13 @@ class DataStoreRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateLanguage(languageCode: String) {
-        context.dataStore.edit { settings ->
+        dataStore.edit { settings ->
             settings[PreferencesKeys.LANGUAGE] = languageCode
         }
     }
 
     override suspend fun getLanguage(): String {
-        val preferences = context.dataStore.data.first()
+        val preferences = dataStore.data.first()
         return preferences[PreferencesKeys.LANGUAGE] ?: "en"
     }
 

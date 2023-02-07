@@ -2,8 +2,8 @@ package com.yotfr.sunmoon.presentation.task.scheduled_task_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yotfr.sunmoon.domain.interactor.task.*
-import com.yotfr.sunmoon.domain.repository.data_store.DataStoreRepository
+import com.yotfr.sunmoon.domain.usecase.task.*
+import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.event.ScheduledTaskListEvent
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.event.ScheduledTaskListUiEvent
 import com.yotfr.sunmoon.presentation.task.scheduled_task_list.mapper.ScheduledTaskListMapper

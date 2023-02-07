@@ -1,8 +1,8 @@
 package com.yotfr.sunmoon.data.repository
 
-import com.yotfr.sunmoon.data.data_source.CategoryDao
-import com.yotfr.sunmoon.data.data_source.model.note.CategoryEntity
-import com.yotfr.sunmoon.data.data_source.model.relations.CategoriesWithNotesRelation
+import com.yotfr.sunmoon.data.datasource.CategoryDao
+import com.yotfr.sunmoon.data.datasource.entity.note.CategoryEntity
+import com.yotfr.sunmoon.data.datasource.entity.relations.CategoriesWithNotesRelation
 import com.yotfr.sunmoon.domain.repository.note.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -14,7 +14,7 @@ class CategoryRepositoryImpl @Inject constructor(
 ) : CategoryRepository {
 
     override suspend fun upsertCategory(categoryEntity: CategoryEntity) {
-        categoryDao.upsertCategory(categoryEntity)
+        categoryDao.insertCategory(categoryEntity)
     }
 
     override suspend fun deleteCategory(categoryEntity: CategoryEntity) {

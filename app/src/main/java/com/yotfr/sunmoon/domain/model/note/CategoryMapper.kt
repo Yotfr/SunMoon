@@ -1,7 +1,7 @@
 package com.yotfr.sunmoon.domain.model.note
 
-import com.yotfr.sunmoon.data.data_source.model.note.CategoryEntity
-import com.yotfr.sunmoon.data.data_source.model.relations.CategoriesWithNotesRelation
+import com.yotfr.sunmoon.data.datasource.entity.note.CategoryEntity
+import com.yotfr.sunmoon.data.datasource.entity.relations.CategoriesWithNotesRelation
 
 class CategoryMapper {
 
