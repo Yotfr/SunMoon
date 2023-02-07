@@ -1,13 +1,11 @@
 package com.yotfr.sunmoon.di
 
-import com.yotfr.sunmoon.domain.usecase.note.*
-import com.yotfr.sunmoon.domain.usecase.note.use_case.*
-import com.yotfr.sunmoon.domain.usecase.task.*
-import com.yotfr.sunmoon.domain.usecase.task.use_case.*
 import com.yotfr.sunmoon.domain.repository.note.CategoryRepository
 import com.yotfr.sunmoon.domain.repository.note.NoteRepository
 import com.yotfr.sunmoon.domain.repository.task.SubTaskRepository
 import com.yotfr.sunmoon.domain.repository.task.TaskRepository
+import com.yotfr.sunmoon.domain.usecase.note.*
+import com.yotfr.sunmoon.domain.usecase.task.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

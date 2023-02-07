@@ -117,22 +117,10 @@ class DataStoreRepositoryImpl @Inject constructor(
         return settings
     }
 
-    override suspend fun updateLanguage(languageCode: String) {
-        dataStore.edit { settings ->
-            settings[PreferencesKeys.LANGUAGE] = languageCode
-        }
-    }
-
-    override suspend fun getLanguage(): String {
-        val preferences = dataStore.data.first()
-        return preferences[PreferencesKeys.LANGUAGE] ?: "en"
-    }
-
     private object PreferencesKeys {
         val THEME = stringPreferencesKey("THEME")
         val DATE_FORMAT = stringPreferencesKey("DATE_FORMAT")
         val TIME_PATTERN = stringPreferencesKey("TIME_PATTERN")
         val TIME_FORMAT = intPreferencesKey("TIME_FORMAT")
-        val LANGUAGE = stringPreferencesKey("LANGUAGE")
     }
 }

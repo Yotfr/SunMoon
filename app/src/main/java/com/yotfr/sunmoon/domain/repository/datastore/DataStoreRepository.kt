@@ -11,6 +11,4 @@ interface DataStoreRepository {
     suspend fun getTimePattern(): Flow<String>
     suspend fun getTimeFormat(): Flow<Int?>
     suspend fun getDateTimeSettings(): Flow<Triple<String?, String, Int?>>
-    suspend fun updateLanguage(languageCode: String)
-    suspend fun getLanguage(): String
 }

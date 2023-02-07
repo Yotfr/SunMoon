@@ -4,21 +4,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yotfr.sunmoon.R
 import com.yotfr.sunmoon.databinding.FragmentSettingsBinding
 import com.yotfr.sunmoon.presentation.MainActivity
 import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsEvent
-import com.yotfr.sunmoon.presentation.settings.settings_root.event.SettingsUiEvent
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.DatePattern
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.LanguageCode
 import com.yotfr.sunmoon.presentation.settings.settings_root.model.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -68,33 +63,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                         timeFormat = timeFormat
                     )
                 )
-            }
-        }
-
-        // show language picker dialog
-        binding.btnLanguage.setOnClickListener {
-            showLanguageSelectorDialog(
-                currentLanguage = viewModel.languageUiState.value
-            ) { languageCode ->
-                viewModel.onEvent(
-                    SettingsEvent.ChangeLanguage(
-                        language = languageCode
-                    )
-                )
-            }
-        }
-
-        // collectUiEvents
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiEvent.collect { uiEvent ->
-                    when (uiEvent) {
-                        SettingsUiEvent.RestartActivity -> {
-                            // restart activity when new language picked
-                            requireActivity().recreate()
-                        }
-                    }
-                }
             }
         }
     }

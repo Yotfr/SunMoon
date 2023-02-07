@@ -1,7 +1,5 @@
 package com.yotfr.sunmoon.presentation
 
-import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -10,15 +8,12 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import com.google.android.material.appbar.MaterialToolbar
-import com.yotfr.sunmoon.ContextUtils
 import com.yotfr.sunmoon.R
-import com.yotfr.sunmoon.data.repository.DataStoreRepositoryImpl
 import com.yotfr.sunmoon.databinding.ActivityMainBinding
 import com.yotfr.sunmoon.domain.repository.datastore.DataStoreRepository
 import com.yotfr.sunmoon.presentation.utils.ActionBarOnDestinationChangedListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
-import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,25 +27,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var destinationChangedListener: ActionBarOnDestinationChangedListener
 
-    override fun attachBaseContext(newBase: Context) {
-        var localeToSwitchTo: Locale
-        runBlocking {
-            localeToSwitchTo = Locale(
-                DataStoreRepositoryImpl(
-                    context = newBase
-                ).getLanguage()
-            )
-        }
-        val localeUpdatedContext: ContextWrapper = ContextUtils.updateLocale(
-            newBase,
-            localeToSwitchTo
-        )
-        super.attachBaseContext(localeUpdatedContext)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // to ensure that apply theme executes before setContentView
         runBlocking {
             when (dataStoreRepository.getTheme()) {
                 "orange" -> {
